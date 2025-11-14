@@ -1988,11 +1988,9 @@
     "iframeUrl": "https://easl-board.vercel.app/",
     "color": "#ffffff",
     "rotation": 0,
-    "conversationHistory": [
-
-    ],
+    "conversationHistory": [],
     "createdAt": "2025-10-28T12:00:00.000Z",
-    "updatedAt": "2025-11-14T04:41:43.828Z"
+    "updatedAt": "2025-10-28T12:00:00.000Z"
   },
   {
     "id": "ehr-hub-nervecentre",
@@ -2205,6 +2203,7 @@
     "buttonIcon": "",
     "buttonColor": "#1E88E5",
     "buttonAction": "generateDiagnosis",
+    "draggable": false,
     "createdAt": "2025-11-10T16:00:00.000Z",
     "updatedAt": "2025-11-10T16:00:00.000Z"
   },
@@ -2212,13 +2211,14 @@
     "id": "dashboard-item-generate-report-button",
     "type": "button",
     "x": 420,
-    "y": 11550,
+    "y": 12550,
     "width": 650,
     "height": 50,
     "buttonText": "Generate Patient Report",
     "buttonIcon": "",
     "buttonColor": "#1E88E5",
     "buttonAction": "generateReport",
+    "draggable": false,
     "createdAt": "2025-11-10T16:00:00.000Z",
     "updatedAt": "2025-11-10T16:00:00.000Z"
   },
@@ -2226,7 +2226,7 @@
     "id": "dashboard-item-share-board-to-hepato",
     "type": "button",
     "x": 1425,
-    "y": 10480,
+    "y": 11480,
     "width": 650,
     "height": 50,
     "buttonText": "Share the board to Hepatologist",
@@ -2235,6 +2235,7 @@
     "buttonAction": "shareToHepato",
     "showHandles": true,
     "handlePosition": "left",
+    "draggable": false,
     "createdAt": "2025-11-10T16:00:00.000Z",
     "updatedAt": "2025-11-10T16:00:00.000Z"
   },
@@ -2242,15 +2243,16 @@
     "id": "dashboard-item-hepato-referal-decline",
     "type": "button",
     "x": 1425,
-    "y": 10850,
+    "y": 11850,
     "width": 650,
     "height": 50,
-    "buttonText": "Decline Hepatlogist Referral",
+    "buttonText": "Decline Hepatologist Referral",
     "buttonIcon": "",
     "buttonColor": "#F44336",
     "buttonAction": "declineHepato",
     "showHandles": true,
     "handlePosition": "left",
+    "draggable": false,
     "createdAt": "2025-11-10T16:00:00.000Z",
     "updatedAt": "2025-11-10T16:00:00.000Z"
   },
@@ -2258,7 +2260,7 @@
     "id": "dashboard-item-push-to-ehr-new",
     "type": "button",
     "x": 425,
-    "y": 14600,
+    "y": 16600,
     "width": 650,
     "height": 50,
     "buttonText": "Push to EHR System",
@@ -2266,6 +2268,7 @@
     "buttonColor": "#2196F3",
     "buttonAction": "pushToEHR",
     "showHandles": true,
+    "draggable": false,
     "createdAt": "2025-11-10T16:00:00.000Z",
     "updatedAt": "2025-11-10T16:00:00.000Z"
   }

@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { Edit2, Save, X, Download, Printer, User, Calendar, Hash, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp } from 'lucide-react';
+import { Edit2, Save, X, Download, Printer, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, Heart } from 'lucide-react';
 
-// Dynamic imports for print libraries (will be installed separately)
+// Dynamic imports for print libraries
 let jsPDF: any = null;
 let html2canvas: any = null;
 
-// Try to import libraries if available
 try {
   jsPDF = require('jspdf').jsPDF;
   html2canvas = require('html2canvas');
@@ -14,61 +13,16 @@ try {
   console.log('Print libraries not installed. Run: npm install jspdf html2canvas');
 }
 
-// Shared input styles
-const EditableInput = styled.input`
-  width: 100%;
-  border: none;
-  background: transparent;
-  font-size: 11pt;
-  color: #000;
-  padding: 4px;
-  border-radius: 2px;
-  font-family: 'Arial', sans-serif;
-
-  &:hover {
-    background: #f8f9fa;
-  }
-
-  &:focus {
-    outline: none;
-    background: #e8f0fe;
-  }
-`;
-
-const EditableTextArea = styled.textarea`
-  width: 100%;
-  border: none;
-  background: transparent;
-  font-size: 11pt;
-  color: #000;
-  padding: 4px;
-  border-radius: 2px;
-  font-family: 'Arial', sans-serif;
-  resize: vertical;
-  min-height: 100px;
-  line-height: 1.6;
-
-  &:hover {
-    background: #f8f9fa;
-  }
-
-  &:focus {
-    outline: none;
-    background: #e8f0fe;
-  }
-`;
-
-// View Mode Styles (Enhanced)
+// View Mode Styles
 const ViewContainer = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
   border-radius: 12px;
-  padding: 32px;
+  padding: 32px 48px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  overflow-y: auto;
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 `;
@@ -141,7 +95,9 @@ const ViewSection = styled.div`
 const TwoColumnLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 32px;
+  max-width: 2000px;
+  margin: 0 auto;
 `;
 
 const LeftColumn = styled.div`
@@ -210,238 +166,111 @@ const ViewListItem = styled.li`
   }
 `;
 
-// Edit Mode Styles
-const EditContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  background: #f5f5f5;
-  overflow-y: auto;
-  padding: 40px 20px;
-`;
-
-const DocumentContainer = styled.div`
-  max-width: 1100px;
-  margin: 0 auto;
-  background: white;
-  padding: 72px 96px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  min-height: 1056px;
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  color: #1a202c;
-`;
-
-const EditToolbar = styled.div`
-  position: sticky;
-  top: 0;
-  background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
-  border-bottom: none;
-  padding: 12px 20px;
-  margin: -72px -96px 32px -96px;
-  border-radius: 12px 12px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-`;
-
-const ToolbarButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const ToolbarButton = styled.button<{ variant?: string }>`
-  padding: 8px 16px;
-  border: none;
-  background: ${props => props.variant === 'primary' ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.2)'};
-  color: ${props => props.variant === 'primary' ? '#0891b2' : 'white'};
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
-
-  &:hover {
-    background: ${props => props.variant === 'primary' ? 'white' : 'rgba(255, 255, 255, 0.3)'};
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-`;
-
-const DocHeading = styled.div`
-  font-size: 28pt;
-  font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 3px solid #e2e8f0;
-`;
-
-const DocSectionHeading = styled.div`
-  font-size: 16pt;
-  font-weight: 700;
-  color: #0891b2;
-  margin-top: 32px;
-  margin-bottom: 16px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
-  border-left: 4px solid #0891b2;
-  border-radius: 4px;
-`;
-
-const DocSubheading = styled.div`
-  font-size: 13pt;
-  font-weight: 600;
-  color: #475569;
-  margin-top: 20px;
-  margin-bottom: 12px;
-  padding-left: 8px;
-  border-left: 3px solid #cbd5e1;
-`;
-
-const DocTable = styled.div`
-  margin: 20px 0;
-  border: 2px solid #e2e8f0;
+const HighlightBox = styled.div`
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  margin: 16px 0;
 `;
 
-const DocTableRow = styled.div`
+const LabGrid = styled.div`
   display: grid;
-  grid-template-columns: 200px 1fr;
-  border-bottom: 1px solid #e2e8f0;
-  transition: background 0.2s ease;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &:hover {
-    background: #f8fafc;
-  }
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
 `;
 
-const DocTableCell = styled.div<{ header?: boolean }>`
-  padding: 14px 16px;
-  font-size: 11pt;
-  border-right: 1px solid #e2e8f0;
-  background: ${props => props.header ? 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' : 'white'};
-  font-weight: ${props => props.header ? '700' : '400'};
-  color: ${props => props.header ? '#334155' : '#1a202c'};
+const LabCard = styled.div`
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 14px;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 
-  &:last-child {
-    border-right: none;
-  }
+const LabLabel = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const LabValue = styled.div`
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a202c;
+  line-height: 1.4;
 `;
 
 interface PatientReportProps {
   patientData?: {
     name?: string;
-    date_of_birth?: string;
-    age?: number;
-    sex?: string;
     mrn?: string;
-    primaryDiagnosis?: string;
-    problem_list?: Array<{ name: string; status: string }>;
-    allergies?: string[];
-    medication_history?: Array<{ name: string; dose: string }>;
-    acute_event_summary?: string;
-    diagnosis_acute_event?: string[];
-    causality?: string;
-    management_recommendations?: string[];
+    age_sex?: string;
+    date_of_summary?: string;
+    one_sentence_impression?: string;
+    clinical_context_baseline?: {
+      comorbidities?: string[];
+      key_baseline_labs?: string;
+      social_history?: string;
+    };
+    suspect_drug_timeline?: {
+      chief_complaint?: string;
+      hopi_significant_points?: string;
+      chronic_medications?: string[];
+      acute_medication_onset?: string;
+      possibilities_for_dili?: string[];
+    };
+    rule_out_complete?: {
+      viral_hepatitis?: string;
+      autoimmune?: string;
+      other_competing_dx_ruled_out?: string;
+    };
+    injury_pattern_trends?: {
+      pattern?: string;
+      hys_law?: string;
+      meld_na?: string;
+      lft_data_peak_onset?: {
+        ALT?: string;
+        AST?: string;
+        Alk_Phos?: string;
+        T_Bili?: string;
+        INR?: string;
+      };
+      lft_sparklines_trends?: string;
+      complications?: string[];
+      noh_graz_law?: string;
+    };
+    severity_prognosis?: {
+      severity_features?: string[];
+      prognosis_statement?: string;
+    };
+    key_diagnostics?: {
+      imaging_performed?: string;
+      biopsy?: string;
+      methotrexate_level?: string;
+    };
+    management_monitoring?: {
+      stopped_culprit_drugs?: string[];
+      active_treatments?: string[];
+      consults_initiated?: string[];
+      nutrition?: string;
+      vte_ppx?: string;
+      causality_rucam?: string;
+      monitoring_plan?: string[];
+    };
+    current_status_last_48h?: string;
   };
-  onUpdate?: (updatedData: any) => void;
 }
 
-const PatientReport: React.FC<PatientReportProps> = ({ patientData, onUpdate }) => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  
-  // Initialize with safe defaults
-  const safePatientData = {
-    name: patientData?.name || '',
-    date_of_birth: patientData?.date_of_birth || '',
-    age: patientData?.age || 0,
-    sex: patientData?.sex || '',
-    mrn: patientData?.mrn || '',
-    primaryDiagnosis: patientData?.primaryDiagnosis || '',
-    problem_list: patientData?.problem_list || [],
-    allergies: patientData?.allergies || [],
-    medication_history: patientData?.medication_history || [],
-    acute_event_summary: patientData?.acute_event_summary || '',
-    diagnosis_acute_event: patientData?.diagnosis_acute_event || [],
-    causality: patientData?.causality || '',
-    management_recommendations: patientData?.management_recommendations || []
-  };
-  
-  const [editableData, setEditableData] = useState(safePatientData);
+const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
   const documentRef = useRef<HTMLDivElement>(null);
-
-  // Update editableData when patientData prop changes
-  useEffect(() => {
-    const updatedData = {
-      name: patientData?.name || '',
-      date_of_birth: patientData?.date_of_birth || '',
-      age: patientData?.age || 0,
-      sex: patientData?.sex || '',
-      mrn: patientData?.mrn || '',
-      primaryDiagnosis: patientData?.primaryDiagnosis || '',
-      problem_list: patientData?.problem_list || [],
-      allergies: patientData?.allergies || [],
-      medication_history: patientData?.medication_history || [],
-      acute_event_summary: patientData?.acute_event_summary || '',
-      diagnosis_acute_event: patientData?.diagnosis_acute_event || [],
-      causality: patientData?.causality || '',
-      management_recommendations: patientData?.management_recommendations || []
-    };
-    setEditableData(updatedData);
-  }, [patientData]);
-
-  const handleSave = () => {
-    console.log('Saving document content:', editableData);
-    
-    // Call the onUpdate callback to persist changes to parent
-    if (onUpdate) {
-      onUpdate(editableData);
-    }
-    
-    setIsEditMode(false);
-  };
-
-  const handleCancel = () => {
-    // Reset to original with safe defaults
-    const resetData = {
-      name: patientData?.name || '',
-      date_of_birth: patientData?.date_of_birth || '',
-      age: patientData?.age || 0,
-      sex: patientData?.sex || '',
-      mrn: patientData?.mrn || '',
-      primaryDiagnosis: patientData?.primaryDiagnosis || '',
-      problem_list: patientData?.problem_list || [],
-      allergies: patientData?.allergies || [],
-      medication_history: patientData?.medication_history || [],
-      acute_event_summary: patientData?.acute_event_summary || '',
-      diagnosis_acute_event: patientData?.diagnosis_acute_event || [],
-      causality: patientData?.causality || '',
-      management_recommendations: patientData?.management_recommendations || []
-    };
-    setEditableData(resetData);
-    setIsEditMode(false);
-  };
 
   const handleDownload = async () => {
     if (!jsPDF || !html2canvas) {
@@ -449,7 +278,7 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData, onUpdate }) 
       return;
     }
 
-    const element = documentRef.current || document.querySelector('[data-print-content]');
+    const element = documentRef.current;
     if (!element) return;
 
     try {
@@ -480,7 +309,7 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData, onUpdate }) 
       }
 
       const timestamp = new Date().toISOString().split('T')[0];
-      const filename = `Patient_Report_${patientData.name.replace(/\s+/g, '_')}_${timestamp}.pdf`;
+      const filename = `Patient_Report_${patientData?.name?.replace(/\s+/g, '_')}_${timestamp}.pdf`;
       
       pdf.save(filename);
     } catch (error) {
@@ -490,456 +319,13 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData, onUpdate }) 
   };
 
   const handlePrint = () => {
-    console.log('Print button clicked');
-    
-    const element = documentRef.current;
-    
-    if (!element) {
-      console.error('Print element not found, using fallback');
-      window.print();
-      return;
-    }
-
-    console.log('Element found, opening print window');
-
-    try {
-      const printWindow = window.open('', '_blank', 'width=800,height=600');
-      
-      if (!printWindow) {
-        console.error('Pop-up blocked');
-        alert('Please allow pop-ups to print. Using fallback print...');
-        window.print();
-        return;
-      }
-
-      console.log('Print window opened successfully');
-      
-      const printContent = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Patient Report - ${editableData.name}</title>
-            <meta charset="UTF-8">
-            <style>
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-              
-              body {
-                font-family: 'Helvetica Neue', Arial, sans-serif;
-                line-height: 1.6;
-                color: #000;
-                background: white;
-                padding: 15mm;
-                font-size: 11pt;
-              }
-              
-              @media print {
-                body { padding: 0; }
-                @page { 
-                  margin: 20mm 15mm; 
-                  size: A4 portrait; 
-                }
-              }
-              
-              .print-header {
-                text-align: right;
-                font-size: 9pt;
-                color: #666;
-                font-style: italic;
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #e0e0e0;
-              }
-              
-              .print-footer {
-                text-align: center;
-                font-size: 9pt;
-                color: #666;
-                font-style: italic;
-                margin-top: 40px;
-                padding-top: 15px;
-                border-top: 1px solid #e0e0e0;
-              }
-              
-              button, svg, [role="button"], [data-toolbar], input, textarea {
-                display: none !important;
-              }
-              
-              h1 {
-                font-size: 22pt;
-                font-weight: 700;
-                margin-bottom: 25px;
-                padding-bottom: 12px;
-                border-bottom: 3px solid #000;
-                color: #000;
-              }
-              
-              h2 {
-                font-size: 14pt;
-                font-weight: 700;
-                margin-top: 25px;
-                margin-bottom: 12px;
-                padding-bottom: 6px;
-                border-bottom: 2px solid #ccc;
-                color: #000;
-              }
-              
-              h3 {
-                font-size: 12pt;
-                font-weight: 600;
-                margin-top: 18px;
-                margin-bottom: 10px;
-                color: #000;
-              }
-              
-              p {
-                font-size: 11pt;
-                margin-bottom: 12px;
-                line-height: 1.7;
-              }
-              
-              table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 18px 0;
-                border: 1px solid #ccc;
-              }
-              
-              tr {
-                border-bottom: 1px solid #ddd;
-              }
-              
-              tr:last-child {
-                border-bottom: none;
-              }
-              
-              td {
-                padding: 10px 12px;
-                font-size: 11pt;
-                border-right: 1px solid #ddd;
-                vertical-align: top;
-              }
-              
-              td:last-child {
-                border-right: none;
-              }
-              
-              td:first-child {
-                background: #f8f8f8;
-                font-weight: 600;
-                width: 180px;
-                color: #333;
-              }
-              
-              strong {
-                font-weight: 700;
-                color: #000;
-              }
-              
-              h2 {
-                page-break-after: avoid;
-              }
-              
-              table {
-                page-break-inside: avoid;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="print-header">Generated By MedForce AI</div>
-            ${element.innerHTML}
-            <div class="print-footer">Generated By MedForce AI • ${new Date().toLocaleDateString()}</div>
-          </body>
-        </html>
-      `;
-      
-      console.log('Writing content to print window');
-      printWindow.document.write(printContent);
-      printWindow.document.close();
-      
-      console.log('Content written, triggering print');
-      
-      setTimeout(() => {
-        try {
-          printWindow.focus();
-          printWindow.print();
-          setTimeout(() => {
-            printWindow.close();
-          }, 1000);
-        } catch (e) {
-          console.error('Error in print dialog:', e);
-        }
-      }, 500);
-    } catch (error) {
-      console.error('Error printing:', error);
-      alert('Print error. Using browser print as fallback.');
-      window.print();
-    }
+    window.print();
   };
 
-  if (isEditMode) {
-    return (
-      <EditContainer>
-        <DocumentContainer ref={documentRef} data-print-content>
-          <EditToolbar data-toolbar>
-            <div style={{ fontSize: '13px', fontWeight: 500, color: '#5f6368' }}>
-              Editing Patient Report
-            </div>
-            <ToolbarButtons>
-              <ToolbarButton onClick={handleCancel}>
-                <X />
-                Cancel
-              </ToolbarButton>
-              <ToolbarButton onClick={handleDownload}>
-                <Download />
-                PDF
-              </ToolbarButton>
-              <ToolbarButton onClick={handlePrint}>
-                <Printer />
-                Print
-              </ToolbarButton>
-              <ToolbarButton variant="primary" onClick={handleSave}>
-                <Save />
-                Save
-              </ToolbarButton>
-            </ToolbarButtons>
-          </EditToolbar>
-
-          <DocHeading>Patient Summary Report</DocHeading>
-
-          <DocSectionHeading>Patient Demographics</DocSectionHeading>
-
-          <DocTable>
-            <DocTableRow>
-              <DocTableCell header>Patient Name</DocTableCell>
-              <DocTableCell>
-                <EditableInput
-                  value={editableData.name}
-                  onChange={(e) => setEditableData({ ...editableData, name: e.target.value })}
-                />
-              </DocTableCell>
-            </DocTableRow>
-            <DocTableRow>
-              <DocTableCell header>Date of Birth</DocTableCell>
-              <DocTableCell>
-                <EditableInput
-                  value={editableData.date_of_birth}
-                  onChange={(e) => setEditableData({ ...editableData, date_of_birth: e.target.value })}
-                />
-              </DocTableCell>
-            </DocTableRow>
-            <DocTableRow>
-              <DocTableCell header>Age</DocTableCell>
-              <DocTableCell>
-                <EditableInput
-                  value={`${editableData.age} years`}
-                  onChange={(e) => {
-                    const age = parseInt(e.target.value.replace(/\D/g, '')) || 0;
-                    setEditableData({ ...editableData, age });
-                  }}
-                />
-              </DocTableCell>
-            </DocTableRow>
-            <DocTableRow>
-              <DocTableCell header>Sex</DocTableCell>
-              <DocTableCell>
-                <EditableInput
-                  value={editableData.sex}
-                  onChange={(e) => setEditableData({ ...editableData, sex: e.target.value })}
-                />
-              </DocTableCell>
-            </DocTableRow>
-            <DocTableRow>
-              <DocTableCell header>Medical Record Number</DocTableCell>
-              <DocTableCell>
-                <EditableInput
-                  value={editableData.mrn}
-                  onChange={(e) => setEditableData({ ...editableData, mrn: e.target.value })}
-                />
-              </DocTableCell>
-            </DocTableRow>
-          </DocTable>
-
-          <DocSectionHeading>Clinical Information</DocSectionHeading>
-
-          <DocSubheading>Primary Diagnosis</DocSubheading>
-          <EditableTextArea
-            value={editableData.primaryDiagnosis}
-            onChange={(e) => setEditableData({ ...editableData, primaryDiagnosis: e.target.value })}
-          />
-
-          <DocSubheading>Problem List</DocSubheading>
-          {editableData.problem_list.map((problem, index) => (
-            <EditableInput
-              key={index}
-              value={`• ${problem.name} (${problem.status})`}
-              onChange={(e) => {
-                const text = e.target.value.replace(/^•\s*/, '');
-                const match = text.match(/^(.+?)\s*\((.+?)\)$/);
-                if (match) {
-                  const newList = [...editableData.problem_list];
-                  newList[index] = { name: match[1].trim(), status: match[2].trim() };
-                  setEditableData({ ...editableData, problem_list: newList });
-                }
-              }}
-            />
-          ))}
-          <EditableInput
-            placeholder="• Add new problem (status)..."
-            onBlur={(e) => {
-              const text = e.target.value.replace(/^•\s*/, '');
-              if (text.trim()) {
-                const match = text.match(/^(.+?)\s*\((.+?)\)$/);
-                if (match) {
-                  setEditableData({
-                    ...editableData,
-                    problem_list: [...editableData.problem_list, { name: match[1].trim(), status: match[2].trim() }]
-                  });
-                  e.target.value = '';
-                }
-              }
-            }}
-          />
-
-          <DocSubheading>Allergies</DocSubheading>
-          {editableData.allergies.map((allergy, index) => (
-            <EditableInput
-              key={index}
-              value={`• ${allergy}`}
-              onChange={(e) => {
-                const newAllergies = [...editableData.allergies];
-                newAllergies[index] = e.target.value.replace(/^•\s*/, '');
-                setEditableData({ ...editableData, allergies: newAllergies });
-              }}
-            />
-          ))}
-          <EditableInput
-            placeholder="• Add new allergy..."
-            onBlur={(e) => {
-              const text = e.target.value.replace(/^•\s*/, '').trim();
-              if (text) {
-                setEditableData({
-                  ...editableData,
-                  allergies: [...editableData.allergies, text]
-                });
-                e.target.value = '';
-              }
-            }}
-          />
-
-          <DocSubheading>Medication History</DocSubheading>
-          {editableData.medication_history.map((med, index) => (
-            <EditableInput
-              key={index}
-              value={`• ${med.name} - ${med.dose}`}
-              onChange={(e) => {
-                const text = e.target.value.replace(/^•\s*/, '');
-                const match = text.match(/^(.+?)\s*-\s*(.+)$/);
-                if (match) {
-                  const newMeds = [...editableData.medication_history];
-                  newMeds[index] = { name: match[1].trim(), dose: match[2].trim() };
-                  setEditableData({ ...editableData, medication_history: newMeds });
-                }
-              }}
-            />
-          ))}
-          <EditableInput
-            placeholder="• Add new medication - dose..."
-            onBlur={(e) => {
-              const text = e.target.value.replace(/^•\s*/, '');
-              if (text.trim()) {
-                const match = text.match(/^(.+?)\s*-\s*(.+)$/);
-                if (match) {
-                  setEditableData({
-                    ...editableData,
-                    medication_history: [...editableData.medication_history, { name: match[1].trim(), dose: match[2].trim() }]
-                  });
-                  e.target.value = '';
-                }
-              }
-            }}
-          />
-
-          <DocSectionHeading>Acute Event Summary</DocSectionHeading>
-          <EditableTextArea
-            value={editableData.acute_event_summary}
-            onChange={(e) => setEditableData({ ...editableData, acute_event_summary: e.target.value })}
-            rows={5}
-          />
-
-          <DocSectionHeading>Diagnosis - Acute Event</DocSectionHeading>
-          {editableData.diagnosis_acute_event.map((diagnosis, index) => (
-            <EditableInput
-              key={index}
-              value={`• ${diagnosis}`}
-              onChange={(e) => {
-                const newDiagnoses = [...editableData.diagnosis_acute_event];
-                newDiagnoses[index] = e.target.value.replace(/^•\s*/, '');
-                setEditableData({ ...editableData, diagnosis_acute_event: newDiagnoses });
-              }}
-            />
-          ))}
-          <EditableInput
-            placeholder="• Add new diagnosis..."
-            onBlur={(e) => {
-              const text = e.target.value.replace(/^•\s*/, '').trim();
-              if (text) {
-                setEditableData({
-                  ...editableData,
-                  diagnosis_acute_event: [...editableData.diagnosis_acute_event, text]
-                });
-                e.target.value = '';
-              }
-            }}
-          />
-
-          <DocSectionHeading>Causality Analysis</DocSectionHeading>
-          <EditableTextArea
-            value={editableData.causality}
-            onChange={(e) => setEditableData({ ...editableData, causality: e.target.value })}
-            rows={5}
-          />
-
-          <DocSectionHeading>Management Recommendations</DocSectionHeading>
-          {editableData.management_recommendations.map((rec, index) => (
-            <EditableInput
-              key={index}
-              value={`• ${rec}`}
-              onChange={(e) => {
-                const newRecs = [...editableData.management_recommendations];
-                newRecs[index] = e.target.value.replace(/^•\s*/, '');
-                setEditableData({ ...editableData, management_recommendations: newRecs });
-              }}
-            />
-          ))}
-          <EditableInput
-            placeholder="• Add new recommendation..."
-            onBlur={(e) => {
-              const text = e.target.value.replace(/^•\s*/, '').trim();
-              if (text) {
-                setEditableData({
-                  ...editableData,
-                  management_recommendations: [...editableData.management_recommendations, text]
-                });
-                e.target.value = '';
-              }
-            }}
-          />
-
-          <DocSectionHeading>Additional Notes</DocSectionHeading>
-          <EditableTextArea
-            placeholder="Click here to add notes..."
-            style={{ minHeight: '100px' }}
-          />
-        </DocumentContainer>
-      </EditContainer>
-    );
+  if (!patientData) {
+    return <div>No patient data available</div>;
   }
 
-  // View Mode
   return (
     <ViewContainer ref={documentRef} data-print-content>
       <ViewHeader>
@@ -948,10 +334,6 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData, onUpdate }) 
           Patient Summary Report
         </ViewTitle>
         <ActionButtons>
-          <ActionButton onClick={() => setIsEditMode(true)} variant="primary">
-            <Edit2 />
-            Edit
-          </ActionButton>
           <ActionButton onClick={handleDownload}>
             <Download />
             Download
@@ -966,106 +348,390 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData, onUpdate }) 
       <TwoColumnLayout>
         {/* LEFT COLUMN */}
         <LeftColumn>
+          {/* Patient Demographics */}
           <ViewSection>
             <ViewSectionTitle>
               <User />
               Patient Demographics
             </ViewSectionTitle>
             <ViewText>
-              <strong>Name:</strong> {editableData.name}<br/>
-              <strong>DOB:</strong> {editableData.date_of_birth}<br/>
-              <strong>Age:</strong> {editableData.age} years<br/>
-              <strong>Sex:</strong> {editableData.sex}<br/>
-              <strong>MRN:</strong> {editableData.mrn}
+              <strong>Name:</strong> {patientData.name}<br/>
+              <strong>MRN:</strong> {patientData.mrn}<br/>
+              <strong>Age/Sex:</strong> {patientData.age_sex}<br/>
+              <strong>Date of Summary:</strong> {patientData.date_of_summary}
             </ViewText>
           </ViewSection>
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <Stethoscope />
-              Clinical Information
-            </ViewSectionTitle>
-            <ViewText><strong>Primary Diagnosis:</strong> {editableData.primaryDiagnosis}</ViewText>
-          </ViewSection>
+          {/* One Sentence Impression */}
+          {patientData.one_sentence_impression && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <Stethoscope />
+                Clinical Impression
+              </ViewSectionTitle>
+              <HighlightBox>
+                <ViewText>{patientData.one_sentence_impression}</ViewText>
+              </HighlightBox>
+            </ViewSection>
+          )}
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <ClipboardList />
-              Problem List
-            </ViewSectionTitle>
-            <ViewList>
-              {editableData.problem_list.map((problem, index) => (
-                <ViewListItem key={index}>{problem.name} ({problem.status})</ViewListItem>
-              ))}
-            </ViewList>
-          </ViewSection>
+          {/* Clinical Context Baseline */}
+          {patientData.clinical_context_baseline && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <Heart />
+                Clinical Context - Baseline
+              </ViewSectionTitle>
+              
+              {patientData.clinical_context_baseline.comorbidities && patientData.clinical_context_baseline.comorbidities.length > 0 && (
+                <>
+                  <ViewText><strong>Comorbidities:</strong></ViewText>
+                  <ViewList>
+                    {patientData.clinical_context_baseline.comorbidities.map((item, index) => (
+                      <ViewListItem key={index}>{item}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+              
+              {patientData.clinical_context_baseline.key_baseline_labs && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Key Baseline Labs:</strong><br/>
+                  {patientData.clinical_context_baseline.key_baseline_labs}
+                </ViewText>
+              )}
+              
+              {patientData.clinical_context_baseline.social_history && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Social History:</strong><br/>
+                  {patientData.clinical_context_baseline.social_history}
+                </ViewText>
+              )}
+            </ViewSection>
+          )}
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <AlertCircle />
-              Allergies
-            </ViewSectionTitle>
-            <ViewList>
-              {editableData.allergies.map((allergy, index) => (
-                <ViewListItem key={index}>{allergy}</ViewListItem>
-              ))}
-            </ViewList>
-          </ViewSection>
+          {/* Suspect Drug Timeline */}
+          {patientData.suspect_drug_timeline && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <Pill />
+                Suspect Drug Timeline
+              </ViewSectionTitle>
+              
+              {patientData.suspect_drug_timeline.chief_complaint && (
+                <ViewText>
+                  <strong>Chief Complaint:</strong><br/>
+                  {patientData.suspect_drug_timeline.chief_complaint}
+                </ViewText>
+              )}
+              
+              {patientData.suspect_drug_timeline.hopi_significant_points && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>History of Present Illness:</strong><br/>
+                  {patientData.suspect_drug_timeline.hopi_significant_points}
+                </ViewText>
+              )}
+              
+              {patientData.suspect_drug_timeline.chronic_medications && patientData.suspect_drug_timeline.chronic_medications.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Chronic Medications:</strong></ViewText>
+                  <ViewList>
+                    {patientData.suspect_drug_timeline.chronic_medications.map((med, index) => (
+                      <ViewListItem key={index}>{med}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+              
+              {patientData.suspect_drug_timeline.acute_medication_onset && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Acute Medication Onset:</strong><br/>
+                  {patientData.suspect_drug_timeline.acute_medication_onset}
+                </ViewText>
+              )}
+              
+              {patientData.suspect_drug_timeline.possibilities_for_dili && patientData.suspect_drug_timeline.possibilities_for_dili.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Possibilities for DILI:</strong></ViewText>
+                  <ViewList>
+                    {patientData.suspect_drug_timeline.possibilities_for_dili.map((item, index) => (
+                      <ViewListItem key={index}>{item}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+            </ViewSection>
+          )}
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <Pill />
-              Medication History
-            </ViewSectionTitle>
-            <ViewList>
-              {editableData.medication_history.map((med, index) => (
-                <ViewListItem key={index}>{med.name} - {med.dose}</ViewListItem>
-              ))}
-            </ViewList>
-          </ViewSection>
+          {/* Rule Out Complete */}
+          {patientData.rule_out_complete && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <AlertCircle />
+                Rule Out Assessment
+              </ViewSectionTitle>
+              
+              {patientData.rule_out_complete.viral_hepatitis && (
+                <ViewText>
+                  <strong>Viral Hepatitis:</strong><br/>
+                  {patientData.rule_out_complete.viral_hepatitis}
+                </ViewText>
+              )}
+              
+              {patientData.rule_out_complete.autoimmune && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Autoimmune:</strong><br/>
+                  {patientData.rule_out_complete.autoimmune}
+                </ViewText>
+              )}
+              
+              {patientData.rule_out_complete.other_competing_dx_ruled_out && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Other Competing Diagnoses:</strong><br/>
+                  {patientData.rule_out_complete.other_competing_dx_ruled_out}
+                </ViewText>
+              )}
+            </ViewSection>
+          )}
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <Activity />
-              Acute Event Summary
-            </ViewSectionTitle>
-            <ViewText>{editableData.acute_event_summary}</ViewText>
-          </ViewSection>
+          {/* Severity & Prognosis */}
+          {patientData.severity_prognosis && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <TrendingUp />
+                Severity & Prognosis
+              </ViewSectionTitle>
+              
+              {patientData.severity_prognosis.severity_features && patientData.severity_prognosis.severity_features.length > 0 && (
+                <>
+                  <ViewText><strong>Severity Features:</strong></ViewText>
+                  <ViewList>
+                    {patientData.severity_prognosis.severity_features.map((feature, index) => (
+                      <ViewListItem key={index}>{feature}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+              
+              {patientData.severity_prognosis.prognosis_statement && (
+                <HighlightBox style={{ marginTop: '12px' }}>
+                  <ViewText>
+                    <strong>Prognosis:</strong><br/>
+                    {patientData.severity_prognosis.prognosis_statement}
+                  </ViewText>
+                </HighlightBox>
+              )}
+            </ViewSection>
+          )}
         </LeftColumn>
 
         {/* RIGHT COLUMN */}
         <RightColumn>
-          <ViewSection>
-            <ViewSectionTitle>
-              <Stethoscope />
-              Diagnosis - Acute Event
-            </ViewSectionTitle>
-            <ViewList>
-              {editableData.diagnosis_acute_event.map((diagnosis, index) => (
-                <ViewListItem key={index}>{diagnosis}</ViewListItem>
-              ))}
-            </ViewList>
-          </ViewSection>
+          {/* Injury Pattern & Trends */}
+          {patientData.injury_pattern_trends && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <Beaker />
+                Injury Pattern & Trends
+              </ViewSectionTitle>
+              
+              {patientData.injury_pattern_trends.pattern && (
+                <ViewText>
+                  <strong>Pattern:</strong><br/>
+                  {patientData.injury_pattern_trends.pattern}
+                </ViewText>
+              )}
+              
+              {patientData.injury_pattern_trends.hys_law && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Hy's Law:</strong><br/>
+                  {patientData.injury_pattern_trends.hys_law}
+                </ViewText>
+              )}
+              
+              {patientData.injury_pattern_trends.meld_na && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>MELD-Na:</strong><br/>
+                  {patientData.injury_pattern_trends.meld_na}
+                </ViewText>
+              )}
+              
+              {patientData.injury_pattern_trends.lft_data_peak_onset && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Peak Laboratory Values:</strong></ViewText>
+                  <LabGrid>
+                    {patientData.injury_pattern_trends.lft_data_peak_onset.ALT && (
+                      <LabCard>
+                        <LabLabel>ALT</LabLabel>
+                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.ALT}</LabValue>
+                      </LabCard>
+                    )}
+                    {patientData.injury_pattern_trends.lft_data_peak_onset.AST && (
+                      <LabCard>
+                        <LabLabel>AST</LabLabel>
+                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.AST}</LabValue>
+                      </LabCard>
+                    )}
+                    {patientData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos && (
+                      <LabCard>
+                        <LabLabel>Alk Phos</LabLabel>
+                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos}</LabValue>
+                      </LabCard>
+                    )}
+                    {patientData.injury_pattern_trends.lft_data_peak_onset.T_Bili && (
+                      <LabCard>
+                        <LabLabel>Total Bilirubin</LabLabel>
+                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.T_Bili}</LabValue>
+                      </LabCard>
+                    )}
+                    {patientData.injury_pattern_trends.lft_data_peak_onset.INR && (
+                      <LabCard>
+                        <LabLabel>INR</LabLabel>
+                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.INR}</LabValue>
+                      </LabCard>
+                    )}
+                  </LabGrid>
+                </>
+              )}
+              
+              {patientData.injury_pattern_trends.lft_sparklines_trends && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>LFT Trends:</strong><br/>
+                  {patientData.injury_pattern_trends.lft_sparklines_trends}
+                </ViewText>
+              )}
+              
+              {patientData.injury_pattern_trends.complications && patientData.injury_pattern_trends.complications.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Complications:</strong></ViewText>
+                  <ViewList>
+                    {patientData.injury_pattern_trends.complications.map((comp, index) => (
+                      <ViewListItem key={index}>{comp}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+            </ViewSection>
+          )}
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <TrendingUp />
-              Causality Analysis
-            </ViewSectionTitle>
-            <ViewText>{editableData.causality}</ViewText>
-          </ViewSection>
+          {/* Key Diagnostics */}
+          {patientData.key_diagnostics && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <Activity />
+                Key Diagnostics
+              </ViewSectionTitle>
+              
+              {patientData.key_diagnostics.imaging_performed && (
+                <ViewText>
+                  <strong>Imaging:</strong><br/>
+                  {patientData.key_diagnostics.imaging_performed}
+                </ViewText>
+              )}
+              
+              {patientData.key_diagnostics.biopsy && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Biopsy:</strong><br/>
+                  {patientData.key_diagnostics.biopsy}
+                </ViewText>
+              )}
+              
+              {patientData.key_diagnostics.methotrexate_level && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Methotrexate Level:</strong><br/>
+                  {patientData.key_diagnostics.methotrexate_level}
+                </ViewText>
+              )}
+            </ViewSection>
+          )}
 
-          <ViewSection>
-            <ViewSectionTitle>
-              <ClipboardList />
-              Management Recommendations
-            </ViewSectionTitle>
-            <ViewList>
-              {editableData.management_recommendations.map((rec, index) => (
-                <ViewListItem key={index}>{rec}</ViewListItem>
-              ))}
-            </ViewList>
-          </ViewSection>
+          {/* Management & Monitoring */}
+          {patientData.management_monitoring && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <ClipboardList />
+                Management & Monitoring
+              </ViewSectionTitle>
+              
+              {patientData.management_monitoring.causality_rucam && (
+                <HighlightBox>
+                  <ViewText>
+                    <strong>Causality Assessment:</strong><br/>
+                    {patientData.management_monitoring.causality_rucam}
+                  </ViewText>
+                </HighlightBox>
+              )}
+              
+              {patientData.management_monitoring.stopped_culprit_drugs && patientData.management_monitoring.stopped_culprit_drugs.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Stopped Culprit Drugs:</strong></ViewText>
+                  <ViewList>
+                    {patientData.management_monitoring.stopped_culprit_drugs.map((drug, index) => (
+                      <ViewListItem key={index}>{drug}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+              
+              {patientData.management_monitoring.active_treatments && patientData.management_monitoring.active_treatments.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Active Treatments:</strong></ViewText>
+                  <ViewList>
+                    {patientData.management_monitoring.active_treatments.map((treatment, index) => (
+                      <ViewListItem key={index}>{treatment}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+              
+              {patientData.management_monitoring.consults_initiated && patientData.management_monitoring.consults_initiated.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Consults Initiated:</strong></ViewText>
+                  <ViewList>
+                    {patientData.management_monitoring.consults_initiated.map((consult, index) => (
+                      <ViewListItem key={index}>{consult}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+              
+              {patientData.management_monitoring.nutrition && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>Nutrition:</strong><br/>
+                  {patientData.management_monitoring.nutrition}
+                </ViewText>
+              )}
+              
+              {patientData.management_monitoring.vte_ppx && (
+                <ViewText style={{ marginTop: '12px' }}>
+                  <strong>VTE Prophylaxis:</strong><br/>
+                  {patientData.management_monitoring.vte_ppx}
+                </ViewText>
+              )}
+              
+              {patientData.management_monitoring.monitoring_plan && patientData.management_monitoring.monitoring_plan.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Monitoring Plan:</strong></ViewText>
+                  <ViewList>
+                    {patientData.management_monitoring.monitoring_plan.map((plan, index) => (
+                      <ViewListItem key={index}>{plan}</ViewListItem>
+                    ))}
+                  </ViewList>
+                </>
+              )}
+            </ViewSection>
+          )}
+
+          {/* Current Status */}
+          {patientData.current_status_last_48h && (
+            <ViewSection>
+              <ViewSectionTitle>
+                <Activity />
+                Current Status (Last 48h)
+              </ViewSectionTitle>
+              <ViewText>{patientData.current_status_last_48h}</ViewText>
+            </ViewSection>
+          )}
         </RightColumn>
       </TwoColumnLayout>
     </ViewContainer>

@@ -11,6 +11,7 @@ import LabChart from "./dashboard/LabChart";
 import DifferentialDiagnosis from "./dashboard/DifferentialDiagnosis";
 import DILIDiagnostic from "./dashboard/DILIDiagnostic";
 import PatientReport from "./dashboard/PatientReport";
+import DiagnosticReport from "./dashboard/DiagnosticReport";
 import EHRSystemComponent from "./encounters/EHRSystemComponent";
 import EncounterDocument from "./encounters/EncounterDocument";
 import SingleEncounterDocument from "./encounters/SingleEncounterDocument";
@@ -942,11 +943,10 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
         return (
           <div style={{
             width: "100%",
-            height: "100%",
+            minHeight: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "flex-start",
-            overflow: "auto"
+            alignItems: "flex-start"
           }}>
             <DILIDiagnostic
               pattern={item.diliData?.pattern || {}}
@@ -961,18 +961,28 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
         return (
           <div style={{
             width: "100%",
-            height: "100%",
+            minHeight: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "flex-start",
-            overflow: "auto"
+            alignItems: "flex-start"
           }}>
             <PatientReport
               patientData={item.patientData || {}}
-              onUpdate={(updatedData) => {
-                console.log('Updating patient report data:', updatedData);
-                onUpdate(item.id, { patientData: updatedData });
-              }}
+            />
+          </div>
+        );
+
+      case "diagnostic-report":
+        return (
+          <div style={{
+            width: "100%",
+            minHeight: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start"
+          }}>
+            <DiagnosticReport
+              diagnosticData={item.diagnosticData || {}}
             />
           </div>
         );

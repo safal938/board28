@@ -1054,7 +1054,7 @@ function Canvas2() {
         const reportConsolidatorNode: Node = {
           id: 'report-consolidator',
           type: 'custom',
-          position: { x: 360, y: 10400 },
+          position: { x: 360, y: 11400 },
           data: {
             label: 'Hepatology Expert Agent',
             content: 'Clinical decision point for hepatology referral and patient report generation.',

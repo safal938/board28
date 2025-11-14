@@ -1,0 +1,102 @@
+{
+    "patientData": {
+        "name": "Sarah Miller",
+        "mrn": "MC-001001",
+        "age_sex": "63-year-old Female",
+        "date_of_summary": "November 15, 2025",
+        "one_sentence_impression": "Sarah Miller has severe acute liver injury with acute liver failure, most likely drug-induced by Trimethoprim-Sulfamethoxazole, potentiated by chronic Methotrexate use, requiring urgent ICU management and multidisciplinary care.",
+        "clinical_context_baseline": {
+            "comorbidities": [
+                "Rheumatoid arthritis",
+                "Essential hypertension",
+                "Mild chronic kidney disease"
+            ],
+            "key_baseline_labs": "Baseline labs (prior to 2025-06-15) showed stable renal function (eGFR ~58-85 mL/min/1.73m2), normal LFTs (ALT/AST <40 U/L, Total Bilirubin <1.2 mg/dL), and normal CBC/platelets.",
+            "social_history": "Regular alcohol consumption (7-14 units/week); ex-smoker (quit 2017, 20 pack-year history). Retired carpenter."
+        },
+        "suspect_drug_timeline": {
+            "chief_complaint": "Severe fatigue, jaundice, epigastric pain, confusion, and nausea.",
+            "hopi_significant_points": "63-year-old female with RA on MTX and HTN on Lisinopril presented with acute onset of severe fatigue, jaundice, epigastric pain, and confusion starting ~6 days after initiating Trimethoprim-Sulfamethoxazole for sinusitis. Noted oral mucosal ulcerations.",
+            "chronic_medications": [
+                "Methotrexate 20 mg PO weekly",
+                "Folic Acid 5 mg PO weekly",
+                "Lisinopril 10 mg PO daily"
+            ],
+            "acute_medication_onset": "Trimethoprim-Sulfamethoxazole 800/160 mg PO BID, started on 2025-06-15 for sinusitis.",
+            "possibilities_for_dili": [
+                "Trimethoprim-Sulfamethoxazole",
+                "Methotrexate"
+            ]
+        },
+        "rule_out_complete": {
+            "viral_hepatitis": "Pending (HAV IgM, HBsAg/IgM, HCV Ab ordered).",
+            "autoimmune": "Workup pending; low suspicion given acute onset and clear drug exposure.",
+            "other_competing_dx_ruled_out": "No signs or symptoms suggestive of sepsis, ischemic hepatitis, Wilson's disease, or significant alcohol-related liver disease (beyond contributing risk factor) at presentation."
+        },
+        "injury_pattern_trends": {
+            "pattern": "Hepatocellular (ALT 1650 U/L, AST 2100 U/L, ALT/ULN : AST/ULN ratio ~0.56).",
+            "hys_law": "Hy's Law criteria are met or strongly suggested: Marked elevation in transaminases (>3x ULN) with significant jaundice (Total Bilirubin >3x ULN) and likely coagulopathy (INR potentially >1.5, though INR 1.0 on presentation, trends are critical), in the setting of drug exposure. This indicates a high risk for severe outcomes.",
+            "meld_na": "Based on current presentation (high bilirubin, likely elevated creatinine), MELD-Na score would be elevated, suggesting significant liver dysfunction and poor prognosis without intervention. Precise calculation pending full results, but likely >15-20.",
+            "lft_data_peak_onset": {
+                "ALT": "1650 U/L",
+                "AST": "2100 U/L",
+                "Alk_Phos": "350 U/L",
+                "T_Bili": "12.5 mg/dL",
+                "INR": "1.0"
+            },
+            "lft_sparklines_trends": "Labs show a dramatic acute rise in ALT, AST, Total Bilirubin, and Alkaline Phosphatase following TMP-SMX initiation, consistent with acute DILI.",
+            "complications": [
+                "Hepatic Encephalopathy (Grade 4 - disorientation, asterixis)",
+                "Acute Liver Failure",
+                "Oral mucosal ulcerations",
+                "Acute Kidney Injury (Creatinine 1.5 mg/dL, eGFR 58)"
+            ],
+            "noh_graz_law": "Not applicable as the primary suspected agent is not Acetaminophen."
+        },
+        "severity_prognosis": {
+            "severity_features": [
+                "Hepatic Encephalopathy (GCS 13)",
+                "Severe Jaundice (Total Bilirubin 12.5 mg/dL)",
+                "Marked Transaminase Elevation (ALT 1650, AST 2100)",
+                "Acute Kidney Injury",
+                "Potential for rapid progression of coagulopathy",
+                "Requiring ICU admission"
+            ],
+            "prognosis_statement": "The patient has severe acute liver injury meeting criteria for acute liver failure, carrying a significant risk of mortality or need for liver transplantation if liver function does not rapidly improve. Prognosis is guarded and dependent on rapid intervention and supportive care."
+        },
+        "key_diagnostics": {
+            "imaging_performed": "Abdominal Ultrasound (2025-06-22) showed minimal IVC collapsibility, suggesting adequate intravascular volume but did not assess the liver parenchyma or biliary tree directly. Abdominal CT and MRI reports were not retrieved.",
+            "biopsy": "Liver biopsy not performed at presentation but may be considered if diagnosis remains uncertain or recovery is atypical.",
+            "methotrexate_level": "Ordered urgently on presentation (2025-06-21); results pending."
+        },
+        "management_monitoring": {
+            "stopped_culprit_drugs": [
+                "Trimethoprim-Sulfamethoxazole",
+                "Methotrexate"
+            ],
+            "active_treatments": [
+                "Intravenous fluids",
+                "N-acetylcysteine (IV)",
+                "Ongoing supportive care in ICU"
+            ],
+            "consults_initiated": [
+                "Hepatology",
+                "Gastroenterology",
+                "Hematology",
+                "Intensive Care Unit (ICU)"
+            ],
+            "nutrition": "NPO initially, transitioning to appropriate nutritional support under dietician guidance, carefully considering hepatic and renal function.",
+            "vte_ppx": "Initiated based on ICU admission and acute illness status.",
+            "causality_rucam": "RUCAM score not explicitly calculated, but clinical features are highly suggestive of probable DILI from TMP-SMX, potentiated by Methotrexate, based on temporal association, known hepatotoxicity, and exclusion of other causes.",
+            "monitoring_plan": [
+                "Liver function tests (ALT, AST, Bilirubin, INR) every 12-24 hours",
+                "Renal function and electrolytes",
+                "Neurological status checks (frequent)",
+                "Vital signs monitoring",
+                "Hematologic parameters (CBC, platelets)"
+            ]
+        },
+        "current_status_last_48h": "Critically ill in ICU with severe acute liver injury and hepatic encephalopathy. Close monitoring and supportive care are ongoing. Response to NAC and withdrawal of offending agents is being assessed."
+    },
+    "zone": "patient-report-zone"
+}
