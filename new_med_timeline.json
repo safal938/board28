@@ -1,0 +1,275 @@
+{
+    "id": "dashboard-item-1759906076097-medication-timeline",
+    "type": "component",
+    "x": 1750,
+    "y": 100,
+    "width": 1600,
+    "height": "auto",
+    "componentType": "MedicationTimeline",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+        "title": "Medication Timeline",
+        "component": "MedicationTimeline",
+        "props": {
+            "encounters": [
+                {
+                    "encounter_no": 1,
+                    "date": "2015-08-10",
+                    "type": "Rheumatology Initial Consult",
+                    "provider": "Dr. Elizabeth Hayes",
+                    "diagnosis": "Seropositive Rheumatoid Arthritis (active)",
+                    "medications": [
+                        "Methotrexate 10mg weekly",
+                        "Folic Acid 5mg weekly",
+                        "Ibuprofen 200mg Occasional previously"
+                    ],
+                    "notes": "Started MTX therapy with folic acid supplementation"
+                },
+                {
+                    "encounter_no": 2,
+                    "date": "2016-02-20",
+                    "type": "General Practice",
+                    "provider": "GP",
+                    "diagnosis": "Stable RA on MTX",
+                    "medications": [
+                        "Methotrexate 10mg weekly",
+                        "Folic Acid 5mg weekly"
+                    ],
+                    "notes": "Good RA control on MTX 10 mg weekly; no MTX side effects"
+                },
+                {
+                    "encounter_no": 3,
+                    "date": "2018-09-05",
+                    "type": "General Practice",
+                    "provider": "GP",
+                    "diagnosis": "New essential hypertension; RA stable; plan MTX dose increase",
+                    "medications": [
+                        "Methotrexate 20mg weekly",
+                        "Folic Acid 5mg weekly",
+                        "Lisinopril 10mg daily"
+                    ],
+                    "notes": "Elevated BP readings 145\u2013155/90\u201395; MTX increased to 20mg"
+                },
+                {
+                    "encounter_no": 4,
+                    "date": "2021-03-15",
+                    "type": "General Practice",
+                    "provider": "GP",
+                    "diagnosis": "Stable RA; controlled HTN; mild CKD (stable)",
+                    "medications": [
+                        "Methotrexate 20mg weekly",
+                        "Folic Acid 5mg weekly",
+                        "Lisinopril 10mg daily"
+                    ],
+                    "notes": "Overall well; RA controlled on MTX 20 mg; BP controlled"
+                },
+                {
+                    "encounter_no": 5,
+                    "date": "2025-06-15",
+                    "type": "General Practice",
+                    "provider": "GP",
+                    "diagnosis": "Acute bacterial sinusitis; RA/HTN/CKD stable",
+                    "medications": [
+                        "Trimethoprim-Sulfamethoxazole 800/160mg BID"
+                    ],
+                    "notes": "5 days nasal congestion, facial pain, headache, green discharge"
+                },
+                {
+                    "encounter_no": 6,
+                    "date": "2025-06-21",
+                    "type": "Emergency Medicine",
+                    "provider": "Dr. Sarah Chen",
+                    "diagnosis": "Acute liver injury likely DILI and/or severe methotrexate toxicity",
+                    "medications": [],
+                    "notes": "Severe fatigue, jaundice, epigastric pain, confusion"
+                }
+            ],
+            "medicationTimeline": [
+                {
+                    "name": "Methotrexate",
+                    "startDate": "2015-08-10",
+                    "endDate": "2018-09-05",
+                    "dose": "10mg weekly",
+                    "indication": "RA"
+                },
+                {
+                    "name": "Methotrexate",
+                    "startDate": "2018-09-05",
+                    "dose": "20mg weekly",
+                    "indication": "RA"
+                },
+                {
+                    "name": "Folic Acid",
+                    "startDate": "2015-08-10",
+                    "dose": "5mg weekly",
+                    "indication": "MTX supplementation"
+                },
+                {
+                    "name": "Lisinopril",
+                    "startDate": "2018-09-05",
+                    "dose": "10mg daily",
+                    "indication": "Hypertension"
+                },
+                {
+                    "name": "Trimethoprim-Sulfamethoxazole",
+                    "startDate": "2025-06-15",
+                    "endDate": "2025-06-25",
+                    "dose": "800/160mg BID",
+                    "indication": "Acute bacterial sinusitis"
+                }
+            ],
+            
+            "labTimeline": [
+                    {
+                    "biomarker": "ESR",
+                    "unit": "mm/hr",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 45 }
+                    ]
+                    },
+                    {
+                    "biomarker": "CRP",
+                    "unit": "mg/L",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 25 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Rheumatoid Factor",
+                    "unit": "IU/mL",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 120 }
+                    ]
+                    },
+                    {
+                    "biomarker": "WBC",
+                    "unit": "x10^9/L",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 7.5 },
+                        { "t": "2016-02-20T09:30:00", "value": 6.8 },
+                        { "t": "2018-09-05T10:00:00", "value": 7.2 },
+                        { "t": "2025-06-15T10:30:00", "value": 6.5 },
+                        { "t": "2025-06-21T14:00:00", "value": 5.0 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Neutrophils",
+                    "unit": "%",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 65 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Lymphocytes",
+                    "unit": "%",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 23 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Hemoglobin",
+                    "unit": "g/dL",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 14.5 },
+                        { "t": "2018-09-05T10:00:00", "value": 14.0 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Platelets",
+                    "unit": "x10^9/L",
+                    "values": [
+                        { "t": "2015-08-10T11:00:00", "value": 270 },
+                        { "t": "2018-09-05T10:00:00", "value": 250 }
+                    ]
+                    },
+                    {
+                    "biomarker": "ALT",
+                    "unit": "U/L",
+                    "values": [
+                        { "t": "2018-09-05T10:00:00", "value": 35 },
+                        { "t": "2025-06-15T10:30:00", "value": 1520 },
+                        { "t": "2025-06-21T14:00:00", "value": 1380 }
+                    ]
+                    },
+                    {
+                    "biomarker": "AST",
+                    "unit": "U/L",
+                    "values": [
+                        { "t": "2018-09-05T10:00:00", "value": 32 },
+                        { "t": "2025-06-15T10:30:00", "value": 1380 },
+                        { "t": "2025-06-21T14:00:00", "value": 1200 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Alkaline Phosphatase",
+                    "unit": "U/L",
+                    "values": [
+                        { "t": "2018-09-05T10:00:00", "value": 110 },
+                        { "t": "2025-06-15T10:30:00", "value": 130 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Total Bilirubin",
+                    "unit": "mg/dL",
+                    "values": [
+                        { "t": "2018-09-05T10:00:00", "value": 0.9 },
+                        { "t": "2025-06-15T10:30:00", "value": 8.4 }
+                    ]
+                    },
+                    {
+                    "biomarker": "INR",
+                    "unit": "",
+                    "values": [
+                        { "t": "2025-06-15T10:30:00", "value": 1.8 }
+                    ]
+                    },
+                    {
+                    "biomarker": "Creatinine",
+                    "unit": "mg/dL",
+                    "values": [
+                        { "t": "2018-09-05T10:00:00", "value": 1.1 }
+                    ]
+                    },
+                    {
+                    "biomarker": "eGFR",
+                    "unit": "mL/min/1.73m2",
+                    "values": [
+                        { "t": "2018-09-05T10:00:00", "value": 65 }
+                    ]
+                    }
+                ],
+            "keyEvents": [
+                {
+                "event": "Jaundice onset",
+                "t": "2025-06-15T10:30:00",
+                "note": "Clinical jaundice first documented; bilirubin significantly elevated."
+                },
+                {
+                "event": "Coagulopathy detected",
+                "t": "2025-06-15T10:30:00",
+                "note": "INR > 1.5 indicating impaired hepatic synthetic function."
+                },
+                {
+                "event": "Acute hepatic encephalopathy",
+                "t": "2025-06-21T14:00:00",
+                "note": "Confusion and asterixis observed; GCS 13, disoriented to time/place."
+                },
+                {
+                "event": "N-acetylcysteine infusion started",
+                "t": "2025-06-21T14:00:00",
+                "note": "Initiated IV NAC protocol due to acute liver injury and encephalopathy."
+                },
+                {
+                "event": "Hepatology consulted",
+                "t": "2025-06-21T14:00:00",
+                "note": "Urgent hepatology evaluation requested for suspected severe DILI."
+                }
+            ]
+        
+
+        }
+    },
+    "createdAt": "2025-10-14T16:47:56.098Z",
+    "updatedAt": "2025-10-14T16:47:56.098Z"
+}

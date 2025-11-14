@@ -1,0 +1,133 @@
+{
+  "zones": [
+    {
+      "name": "adv-event-zone",
+      "label": "Adverse Events Zone",
+      "x": -1250,
+      "y": 3500,
+      "width": 4000,
+      "height": 2300,
+      "color": "#4CAF50",
+      "gradient": "linear-gradient(135deg, rgba(190, 190, 190, 0.5) 0%, rgba(158, 158, 158, 0.6) 50%, rgba(224, 224, 224, 0.4) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "System-level components and monitoring",
+      "handlePosition": "both"
+    },
+  {
+      "name": "dili-analysis-zone",
+      "label": "DILI Analysis Zone",
+      "x": -625,
+      "y": 7000,
+      "width": 2750,
+      "height": 2800,
+      "color": "#1E88E5",
+      "gradient": "linear-gradient(135deg, rgba(227, 242, 253, 0.6) 0%, rgba(225, 245, 254, 0.6) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "DILI diagnostic reasoning and analysis",
+      "handlePosition": "both"
+    },
+    {
+      "name": "patient-report-zone",
+      "label": "Patient Report Zone",
+      "x": -625,
+      "y": 11400,
+      "width": 2750,
+      "height": 2800,
+      "color": "#1E88E5",
+      "gradient": "linear-gradient(135deg, rgba(227, 242, 253, 0.6) 0%, rgba(225, 245, 254, 0.6) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Patient report generation and documentation",
+      "handlePosition": "both"
+    },
+    {
+      "name": "raw-ehr-data-zone",
+      "label": "Raw EHR Data Zone",
+      "x": -2500,
+      "y": -5600,
+      "width": 6500,
+      "height": 4200,
+      "color": "#9C27B0",
+      "gradient": "linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(142, 36, 170, 0.15) 50%, rgba(156, 39, 176, 0.1) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Raw data from different EHR systems (Nervecentre, Medilogik, Viper, ICE, BigHand)",
+      "handlePosition": "bottom,right"
+    },
+    {
+      "name": "data-zone",
+      "label": "Data Zone- Encounter Wise Processed Data",
+      "x": -1500,
+      "y": 500,
+      "width": 4500,
+      "height": 1500,
+      "color": "#FFA500",
+      "gradient": "linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 140, 0, 0.15) 50%, rgba(255, 165, 0, 0.1) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Data visualization and analytics",
+      "handlePosition": "both"
+    },
+
+    {
+      "name": "retrieved-data-zone",
+      "label": "Raw Data Zone - On Request Retrieved Data",
+      "x": 5800,
+      "y": -4600,
+      "width": 2000,
+      "height": 2100,
+      "color": "#9C27B0",
+      "gradient": "linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(142, 36, 170, 0.15) 50%, rgba(156, 39, 176, 0.1) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Agent results, lab results, and retrieved data from API",
+      "handlePosition": "left"
+    },
+    {
+      "name": "doctors-note-zone",
+      "label": "Doctor's Notes Zone",
+      "x": 2600,
+      "y": 11400,
+      "width": 2000,
+      "height": 2100,
+      "color": "#00BCD4",
+      "gradient": "linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(0, 172, 193, 0.15) 50%, rgba(0, 188, 212, 0.1) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Clinical notes and observations"
+    },
+    {
+      "name": "task-management-zone",
+      "label": "Task Management Zone",
+      "x": 5800,
+      "y": -2300,
+      "width": 2000,
+      "height": 2100,
+      "color": "#2196F3",
+      "gradient": "linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(30, 136, 229, 0.15) 50%, rgba(33, 150, 243, 0.1) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Todos from API",
+      "handlePosition": "left"
+    },
+    {
+      "name": "easl-chatbot-zone",
+      "label": "Guideline Assistant Zone",
+      "x": 2600,
+      "y": 7000,
+      "width": 2000,
+      "height": 1400,
+      "color": "#FF6B6B",
+      "gradient": "linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(238, 82, 83, 0.15) 50%, rgba(255, 107, 107, 0.1) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "AI-powered chat interface for clinical queries and assistance"
+    }
+  ],
+  "settings": {
+    "borderWidth": 3,
+    "borderStyle": "solid",
+    "backgroundOpacity": 1,
+    "borderRadius": 12,
+    "labelFontSize": 13,
+    "labelFontWeight": "600",
+    "labelPadding": "6px 12px",
+    "labelBackgroundColor": "rgba(255, 255, 255, 0.95)",
+    "labelTextColor": "#333",
+    "boxShadow": "0 4px 20px rgba(0, 0, 0, 0.1)",
+    "hoverEffect": true
+  }
+}
