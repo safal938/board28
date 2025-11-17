@@ -1,15 +1,15 @@
 {
   "addOns": {
     "common": {
-      "name": "MedForce_DILI_L1_v2.6",
-      "logoUrl": "https://boardv27.vercel.app/logo.png"
+      "name": "MedForce_DILI_L1_v2.8",
+      "logoUrl": "https://boardv28.vercel.app/logo.png"
     },
     "meet": {
       "web": {
         "supportsScreenSharing": true,
-        "logoUrl": "https://boardv27.vercel.app/logo.png",
-        "addOnOrigins": ["https://boardv27.vercel.app"],
-        "sidePanelUrl": "https://boardv27.vercel.app/meet/Sidepanel"
+        "logoUrl": "https://boardv28.vercel.app/logo.png",
+        "addOnOrigins": ["https://boardv28.vercel.app"],
+        "sidePanelUrl": "https://boardv28.vercel.app/meet/Sidepanel"
       }
     },
     "httpOptions": {
