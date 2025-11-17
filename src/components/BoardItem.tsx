@@ -16,6 +16,7 @@ import EHRSystemComponent from "./encounters/EHRSystemComponent";
 import EncounterDocument from "./encounters/EncounterDocument";
 import SingleEncounterDocument from "./encounters/SingleEncounterDocument";
 import RawClinicalNote from "./encounters/RawClinicalNote";
+import RadiologyImage from "./encounters/RadiologyImage";
 import ICELabData from "./encounters/ICELabData";
 import DoctorNote from "./DoctorNote";
 import AlertModal from "./AlertModal";
@@ -885,6 +886,20 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                 rawText={componentProps.rawText}
                 dataSource={componentProps.dataSource}
                 highlights={componentProps.highlights}
+              />
+            );
+
+          case "RadiologyImage":
+            return (
+              <RadiologyImage
+                encounterNumber={componentProps.encounterNumber}
+                date={componentProps.date}
+                studyType={componentProps.studyType}
+                provider={componentProps.provider}
+                specialty={componentProps.specialty}
+                imageUrl={componentProps.imageUrl}
+                caption={componentProps.caption}
+                dataSource={componentProps.dataSource}
               />
             );
 

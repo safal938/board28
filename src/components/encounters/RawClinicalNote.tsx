@@ -20,10 +20,10 @@ const NoteContainer = styled.div`
 const HighlightedText = styled.span<{ $color: string }>`
   background-color: ${props => {
     switch (props.$color) {
-      case 'yellow': return '#fff59d';
-      case 'green': return '#c8e6c9';
+      case 'yellow': return  '#ff95006c';
+      case 'green': return '#ff950028';
       case 'blue': return '#bbdefb';
-      case 'red': return '#ffcdd2';
+      case 'red': return '   #ff9500a1';
       case 'orange': return '#ffe0b2';
       case 'purple': return '#e1bee7';
       default: return '#fff59d';
