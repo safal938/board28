@@ -1083,7 +1083,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                     });
                     
                     // Get API base URL from environment or default
-                    const API_BASE_URL = 'https://api.medforce-ai.com';
+                    const API_BASE_URL = 'https://api3.mefroce-ai.com';
                     
                     const response = await fetch(`${API_BASE_URL}/generate_diagnosis`, {
                       method: 'POST',
@@ -1129,7 +1129,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                     });
                     
                     // Get API base URL from environment or default
-                    const API_BASE_URL = 'https://api.medforce-ai.com';
+                    const API_BASE_URL = 'https://api3.mefroce-ai.com';
                     
                     const response = await fetch(`${API_BASE_URL}/generate_report`, {
                       method: 'POST',

@@ -2,7 +2,7 @@
  * Vercel Serverless Function - Proxy for Join Meeting API
  * 
  * This acts as a CORS-safe proxy between your frontend and the actual API
- * Use this if you cannot modify CORS settings on api.medforce-ai.com
+ * Use this if you cannot modify CORS settings on api3.mefroce-ai.com
  */
 
 export default async function handler(req, res) {
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
     console.log('🤖 Proxying join request to API for:', meetUrl);
 
     // Forward the request to the actual API
-    const apiUrl = 'https://api.medforce-ai.com/join-meeting';
+    const apiUrl = 'https://api3.mefroce-ai.com/join-meeting';
     
     const response = await fetch(apiUrl, {
       method: 'POST',
