@@ -1,0 +1,63 @@
+{
+    "title": "Encounter #2 - Outpatient",
+    "component": "SingleEncounterDocument",
+    "props": {
+        "encounter": {
+            "encounter_no": 2,
+            "meta": {
+                "visit_type": "Outpatient",
+                "date_time": "2024-04-01T15:00:45",
+                "provider": {
+                    "name": "Dr. P. Stevens",
+                    "specialty": "Unknown"
+                },
+                "ui_risk_color": "yellow"
+            },
+            "assessment": {
+                "impression": "Elevated ALT of 78 U/L, concerning for hepatocellular inflammation, potentially related to Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD). Methotrexate initiation deferred pending further investigation.",
+                "differential": [
+                    "Hepatocellular inflammation",
+                    "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD)",
+                    "Viral Hepatitis",
+                    "Autoimmune Hepatitis",
+                    "Hemochromatosis",
+                    "Alpha-1-Antitrypsin Deficiency"
+                ]
+            },
+            "chief_complaint": "Review of abnormal liver function tests and planning for rheumatoid arthritis treatment.",
+            "hpi": "Patient reports making small changes to diet and activity since the last visit, with an approximate 0.5\u20131 kg weight loss. The elevated ALT of 78 U/L was reviewed. Potential Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD) was discussed as a contributing factor. Patient was educated on the significance of these results and the potential risk for liver injury if starting Methotrexate without further clearance.",
+            "medications_prior": [],
+            "physical_exam": {
+                "general": "Vital Signs: BP 142/90 mmHg (sitting), HR 80 bpm, RR 16/min, Temp 36.7\u00b0C, SpO\u2082 99% on room air. Anthropometrics: Weight 85.5 kg (BMI 31.8 kg/m\u00b2).",
+                "msk": "",
+                "other_systems": ""
+            },
+            "plan": {
+                "investigations": {
+                    "imaging": [],
+                    "labs": [
+                        "HBsAg",
+                        "HCV Ab",
+                        "ANA",
+                        "ASMA",
+                        "Ferritin",
+                        "TIBC",
+                        "Full liver panel"
+                    ]
+                },
+                "management": {
+                    "follow_up": "Return for follow-up in 4 weeks to review investigation results. Continued monitoring and lifestyle modifications advised.",
+                    "medications_started": []
+                }
+            },
+            "reason_for_visit": "Review of abnormal liver function tests and planning for rheumatoid arthritis treatment."
+        },
+        "patient": {
+            "name": "Sarah Miller",
+            "sex": "Female",
+            "age_at_first_encounter": 43
+        },
+        "encounterIndex": 2,
+        "dataSource": "BigHand"
+    }
+}

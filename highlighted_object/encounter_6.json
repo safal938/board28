@@ -1,0 +1,64 @@
+{
+    "title": "Encounter #1 - Urgent Review",
+    "component": "SingleEncounterDocument",
+    "props": {
+        "encounter": {
+            "encounter_no": 6,
+            "meta": {
+                "visit_type": "Emergency Department (ED)",
+                "date_time": "2024-08-12T14:00:00",
+                "provider": {
+                    "name": "Dr. P. Stevens",
+                    "specialty": "General Practitioner"
+                },
+                "ui_risk_color": "red"
+            },
+            "assessment": {
+                "impression": "Severe, Acute Drug-Induced Liver Injury (DILI) with developing cholestasis.",
+                "differential": [
+                    "Mechanical obstruction (e.g., choledocholithiasis)"
+                ]
+            },
+            "chief_complaint": "Urgent review for new onset jaundice, dark urine, and constant, severe nausea leading to anorexia.",
+            "hpi": "Patient presented with new onset jaundice, dark urine, and severe nausea leading to anorexia. Initial ED vital signs: BP 132/88 mmHg (sitting), HR 102 bpm, RR 18/min, Temp 37.3\u00b0C, SpO\u2082 97% on room air. Weight 81.5 kg (BMI 30.3 kg/m\u00b2). Patient reported significant weight loss of approximately 4.5 kg over the past 4\u20136 weeks due to nausea and anorexia. Jaundice noted upon waking, dark urine observed. Symptoms are severe and persistent. Laboratory analysis revealed significantly elevated ALT levels and bilirubin of 110 \u03bcmol/L, indicating severe cholestasis. INR was stable at 1.1.",
+            "medications_prior": [
+                {
+                    "name": "Methotrexate",
+                    "route": "Oral"
+                }
+            ],
+            "physical_exam": {
+                "general": "Jaundice noted. Patient appears anorectic."
+            },
+            "plan": {
+                "investigations": {
+                    "imaging": [
+                        "USG Abdomen Complete - STAT (Accession Number: USG-240812-001). Report indicates severe MASH/MASLD, no mechanical obstruction. Impression: Severe hepatocellular DILI superimposed on advanced chronic liver disease (MASH)."
+                    ],
+                    "labs": [
+                        "ALT levels elevated",
+                        "Bilirubin levels elevated to 110 \u03bcmol/L",
+                        "INR stable at 1.1"
+                    ]
+                },
+                "management": {
+                    "follow_up": "Close follow-up post-hospital discharge to reassess liver function and re-evaluate RA treatment plan, considering contraindication for future Methotrexate use.",
+                    "medications_started": [
+                        {
+                            "name": "N-acetylcysteine (NAC)",
+                            "route": "IV Infusion (3-bag protocol, 85kg weight)"
+                        }
+                    ]
+                }
+            },
+            "reason_for_visit": "New onset jaundice, dark urine, severe nausea, and anorexia, concerning for acute liver injury."
+        },
+        "patient": {
+            "name": "Sarah Miller",
+            "sex": "Female",
+            "age_at_first_encounter": 43
+        },
+        "encounterIndex": 1,
+        "dataSource": "ICE/VueExplore"
+    }
+}

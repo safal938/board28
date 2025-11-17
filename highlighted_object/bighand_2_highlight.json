@@ -1,0 +1,95 @@
+{
+    "title": "BigHand - Dr. P. Stevens",
+    "component": "RawClinicalNote",
+    "props": {
+        "encounterNumber": 2,
+        "date": "2024-04-01",
+        "visitType": "Outpatient",
+        "provider": "Dr. P. Stevens",
+        "specialty": "Unknown",
+        "rawText": "\n# **Expanded BigHand Dictation **\n\n**Transcript ID:** GP_SM_0401_WorkupAndCaution_Full (Expanded Version)\n**Dictated by:** Dr. P. Stevens, MD, MRCGP\n**Length:** ~4 minutes, 45 seconds\n\n---\n\n### **Text (Full Dictation and Clinical Commentary)**\n\n\"Dictation for Sarah Miller, date of birth 3rd June 1981, reviewed today in clinic for follow-up of her abnormal liver function tests and to discuss suitability for commencing Methotrexate for rheumatoid arthritis.\n\nThis was a longer consultation than standard, as the focus today was not only on reviewing numbers but explaining the meaning behind them and ensuring the patient understands the implications for future treatment choices. Sarah presented well, in no acute distress, but her blood tests from last month remain concerning, specifically an ALT of 78 U/L, which is nearly twice the upper limit of normal. The pattern continues to suggest a hepatocellular injury, consistent with the background suspicion of metabolic dysfunction-associated steatotic liver disease\u00e2\u20ac\u201dMASLD\u00e2\u20ac\u201dand the long-standing metabolic risk factors we documented previously, including type 2 diabetes, suboptimal glycaemic control, and moderate alcohol intake.\n\nI spent a large portion of this appointment clarifying what this raised ALT means in the context of planning Methotrexate therapy. Methotrexate is a highly effective DMARD, but one with well-established hepatotoxic potential. Its safe use depends entirely on starting it in a liver that is already stable, ideally with completely normal aminotransferases. Even mild instability in LFTs increases risk, but when the baseline ALT is already elevated, as in Sarah\u00e2\u20ac\u2122s case, the risk of clinically meaningful injury\u00e2\u20ac\u201dpotentially even severe DILI\u00e2\u20ac\u201drises significantly.\n\nI explained in detail the concept of **synergistic hepatotoxicity** \u00e2\u20ac\u201d that is, the combined effect of two stressors on the liver producing significantly more damage than either would alone. In her scenario, the \u00e2\u20ac\u02dcfirst hit\u00e2\u20ac\u2122 is MASLD, which causes chronic low-grade hepatic inflammation. Adding Methotrexate, which itself generates oxidative stress and can create hepatic stellate activation, easily tips the balance into injury. The risk is not theoretical: the evidence base clearly shows that patients with MASLD are more vulnerable to Methotrexate-induced hepatic fibrosis and steatohepatitis.\n\nBecause of this, I emphasised to Sarah that we cannot safely proceed with Methotrexate until we definitively exclude other possible chronic liver diseases that would compound the risk further. I explained that viral hepatitis\u00e2\u20ac\u201dparticularly hepatitis B core antibody positivity\u00e2\u20ac\u201dwould fundamentally change monitoring requirements and contraindications. Autoimmune hepatitis must also be excluded because Methotrexate is strongly contraindicated in active AIH, as it can both exacerbate hepatic inflammation and mask clinical symptoms until severe injury has occurred. We therefore agreed to perform the most comprehensive first-line hepatitis and autoimmune screening panel.\n\nI walked Sarah through each test ordered today:\n\u00e2\u20ac\u00a2 Viral serology \u00e2\u20ac\u201d HBsAg, hepatitis B core total antibody, hepatitis C antibody, and HEV IgG. I explained that even if surface antigen is negative, a positive core antibody would require modification of future DMARD regimens, and possible prophylaxis, depending on risk.\n\u00e2\u20ac\u00a2 Autoimmune screen \u00e2\u20ac\u201d ANA, ASMA, LKM-1 and total IgG, which allow us to reliably detect autoimmune hepatitis patterns.\n\u00e2\u20ac\u00a2 Metabolic screen \u00e2\u20ac\u201d ferritin, transferrin saturation and alpha-1-antitrypsin levels, to exclude haemochromatosis and AAT deficiency. Both of these conditions increase susceptibility to DILI and accelerate fibrosis if Methotrexate is used.\n\u00e2\u20ac\u00a2 And a repeat full LFT panel in four weeks, which will help differentiate between a stable chronic mild MASLD pattern versus a dynamic or inflammatory process.\n\nI made it clear to Sarah that if this workup shows viral or autoimmune pathology, Methotrexate would be absolutely contraindicated and we would need to pursue alternative RA management, likely hydroxychloroquine or a biologic agent depending on rheumatology input. If the panel is negative, but ALT remains raised, we will still need to be extremely cautious, as underlying steatohepatitis, even if non-viral and non-autoimmune, carries higher risk.\n\nSarah was understandably disappointed as she has been hoping for Methotrexate to improve her arthritis symptoms. However, by the end of the discussion she demonstrated good insight into the reasons for delaying treatment. She agreed that patient safety must take precedence, and she verbalised understanding that rushing into therapy could expose her to serious complications.\n\nI also advised Sarah strongly to avoid all NSAID use for now\u00e2\u20ac\u201dparticularly ibuprofen\u00e2\u20ac\u201dwhich she normally takes up to five times a week. NSAIDs do carry their own hepatotoxic potential, and we must avoid any additional hepatic irritants until her LFTs settle and the screening is complete.\n\nFinally, I confirmed that she should contact the surgery promptly if she develops any new symptoms such as nausea, jaundice, upper abdominal pain, or dark urine. I documented that a follow-up appointment is scheduled in four weeks to review the full panel and decide on suitability for DMARD initiation.\n\nEnd of dictation.\"\n",
+        "dataSource": "BigHand"
+    },
+    "highlights": [
+        {
+            "text": "specifically an ALT of 78 U/L, which is nearly twice the upper limit of normal.",
+            "color": "yellow"
+        },
+        {
+            "text": "The pattern continues to suggest a hepatocellular injury, consistent with the background suspicion of metabolic dysfunction-associated steatotic liver disease\u00e2\u20ac\u201dMASLD\u00e2\u20ac\u201dand the long-standing metabolic risk factors we documented previously, including type 2 diabetes, suboptimal glycaemic control, and moderate alcohol intake.",
+            "color": "yellow"
+        },
+        {
+            "text": "Methotrexate is a highly effective DMARD, but one with well-established hepatotoxic potential.",
+            "color": "yellow"
+        },
+        {
+            "text": "Even mild instability in LFTs increases risk, but when the baseline ALT is already elevated, as in Sarah\u00e2\u20ac\u2122s case, the risk of clinically meaningful injury\u00e2\u20ac\u201dpotentially even severe DILI\u00e2\u20ac\u201drises significantly.",
+            "color": "red"
+        },
+        {
+            "text": "In her scenario, the \u00e2\u20ac\u02dcfirst hit\u00e2\u20ac\u2122 is MASLD, which causes chronic low-grade hepatic inflammation.",
+            "color": "yellow"
+        },
+        {
+            "text": "Adding Methotrexate, which itself generates oxidative stress and can create hepatic stellate activation, easily tips the balance into injury.",
+            "color": "red"
+        },
+        {
+            "text": "The risk is not theoretical: the evidence base clearly shows that patients with MASLD are more vulnerable to Methotrexate-induced hepatic fibrosis and steatohepatitis.",
+            "color": "red"
+        },
+        {
+            "text": "I explained that viral hepatitis\u00e2\u20ac\u201dparticularly hepatitis B core antibody positivity\u00e2\u20ac\u201dwould fundamentally change monitoring requirements and contraindications.",
+            "color": "red"
+        },
+        {
+            "text": "Autoimmune hepatitis must also be excluded because Methotrexate is strongly contraindicated in active AIH, as it can both exacerbate hepatic inflammation and mask clinical symptoms until severe injury has occurred.",
+            "color": "red"
+        },
+        {
+            "text": "\u00e2\u20ac\u00a2 Viral serology \u00e2\u20ac\u201d HBsAg, hepatitis B core total antibody, hepatitis C antibody, and HEV IgG.",
+            "color": "yellow"
+        },
+        {
+            "text": "I explained that even if surface antigen is negative, a positive core antibody would require modification of future DMARD regimens, and possible prophylaxis, depending on risk.",
+            "color": "yellow"
+        },
+        {
+            "text": "\u00e2\u20ac\u00a2 Autoimmune screen \u00e2\u20ac\u201d ANA, ASMA, LKM-1 and total IgG, which allow us to reliably detect autoimmune hepatitis patterns.",
+            "color": "yellow"
+        },
+        {
+            "text": "\u00e2\u20ac\u00a2 Metabolic screen \u00e2\u20ac\u201d ferritin, transferrin saturation and alpha-1-antitrypsin levels, to exclude haemochromatosis and AAT deficiency.",
+            "color": "yellow"
+        },
+        {
+            "text": "Both of these conditions increase susceptibility to DILI and accelerate fibrosis if Methotrexate is used.",
+            "color": "red"
+        },
+        {
+            "text": "\u00e2\u20ac\u00a2 And a repeat full LFT panel in four weeks, which will help differentiate between a stable chronic mild MASLD pattern versus a dynamic or inflammatory process.",
+            "color": "yellow"
+        },
+        {
+            "text": "I made it clear to Sarah that if this workup shows viral or autoimmune pathology, Methotrexate would be absolutely contraindicated and we would need to pursue alternative RA management, likely hydroxychloroquine or a biologic agent depending on rheumatology input.",
+            "color": "red"
+        },
+        {
+            "text": "If the panel is negative, but ALT remains raised, we will still need to be extremely cautious, as underlying steatohepatitis, even if non-viral and non-autoimmune, carries higher risk.",
+            "color": "red"
+        },
+        {
+            "text": "I also advised Sarah strongly to avoid all NSAID use for now\u00e2\u20ac\u201dparticularly ibuprofen\u00e2\u20ac\u201dwhich she normally takes up to five times a week.",
+            "color": "yellow"
+        },
+        {
+            "text": "NSAIDs do carry their own hepatotoxic potential, and we must avoid any additional hepatic irritants until her LFTs settle and the screening is complete.",
+            "color": "yellow"
+        },
+        {
+            "text": "Finally, I confirmed that she should contact the surgery promptly if she develops any new symptoms such as nausea, jaundice, upper abdominal pain, or dark urine.",
+            "color": "red"
+        }
+    ]
+}

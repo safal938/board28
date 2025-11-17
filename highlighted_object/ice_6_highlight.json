@@ -1,0 +1,127 @@
+{
+    "title": "ICE - Dr. P. Stevens",
+    "component": "RawClinicalNote",
+    "props": {
+        "encounterNumber": 6,
+        "date": "2024-08-12",
+        "visitType": "Routine",
+        "provider": "Dr. P. Stevens",
+        "specialty": "Unknown",
+        "rawText": "\n**ICE**\n**Order Set:** *Acute Liver Injury Diagnostic & Management Pathway (ED Rapid Evaluation Protocol)*\n**Ordering Clinician:** Dr. P. Stevens\n**Date:** 2024-08-12\n**Location:** ED \u2013 Rapid Assessment Bay\n**Indication:** *Severe Acute Hepatocellular DILI with bilirubin >100 \u03bcmol/L, ALT 490 U/L*\n**Priority:** **STAT / Emergency**\n**Linked Diagnosis Codes:**\n\n* *Drug-Induced Liver Injury (DILI) \u2014 SNOMED CT: 240517000*\n* *Acute Jaundice \u2014 43959009*\n* *Cholestasis \u2014 14140009*\n\n---\n\n# **1. Acute Liver Function & Synthetic Function Panel (STAT)**\n\n**Tests Ordered:**\n\n* ALT\n* AST\n* ALP\n* GGT\n* Total Bilirubin\n* Direct (Conjugated) Bilirubin\n* INR / PT\n* APTT\n* Albumin\n* Platelet count (FBC)\n* R-Factor auto-calculation\n* MELD components\n\n**Specimen:** Serum (Gold top) + Coagulation tube (Blue top)\n**Turnaround:** **1 hour**\n**Laboratory Notes:**\n\u201cPrioritize processing\u2014patient meets criteria for severe DILI.\nIf INR \u2265 1.5, notify Hepatology Consultant immediately and escalate to level II care.\u201d\n\n**Clinical Rationale:**\n\u201cTo quantify severity of hepatocellular injury, identify synthetic dysfunction early, and determine risk of progression to acute liver failure.\u201d\n\n---\n\n# **2. Complete ED Acute Hepatitis Panel (STAT)**\n\n**Tests Ordered:**\n\n* HBsAg\n* Anti-HBc IgM\n* HBV DNA (reflex if HBsAg positive OR if IgM equivocal)\n* HAV IgM\n* HCV Ab with reflex PCR\n* HEV IgM & IgG\n\n**Specimen:** Serum\n**Turnaround:** 24\u201348h for serology, PCR reflex automatically flagged\n\n**Extended Notes to Laboratory:**\n\u201cPatient presents with DILI picture but high bilirubin requires exclusion of superimposed acute viral hepatitis.\nReflex HBV DNA and HCV RNA without waiting for GP approval.\u201d\n\n**Clinical Rationale:**\n\u201cTo rule out acute viral hepatitis coexisting with drug-induced hepatocellular injury.\u201d\n\n---\n\n# **3. Autoimmune Hepatitis Acute Panel (Urgent)**\n\n**Tests Ordered:**\n\n* ANA\n* ASMA\n* LKM-1\n* IgG\n* AMA (Anti-Mitochondrial Antibody)\n\n**Priority:** Urgent\n**Specimen:** Serum\n**Turnaround:** 48\u201372 hours\n\n**Extended Notes:**\n\u201cIf IgG > ULN or ANA positive, flag as \u2018Potential AIH\u2019 and notify Hepatology.\u201d\n\n---\n\n# **4. Metabolic Liver Injury Screen (Urgent)**\n\n**Tests Ordered:**\n\n* Ferritin\n* Transferrin saturation\n* TIBC\n* Alpha-1-antitrypsin\n* Ceruloplasmin (to exclude Wilson\u2019s disease in <45 y/o)\n\n**Specimen:** Serum\n\n**Clinical Rationale:**\n\u201cTo identify possible metabolic or genetic cofactors worsening acute DILI.\u201d\n\n---\n\n# **5. Abdominal Ultrasound (USG Abdomen Upper) \u2013 STAT (1 hour)**\n\n**Order:** USG Abdomen Complete\n**Target time:** 1 hour\n**Indication:** *Bilirubin 110 \u03bcmol/L \u2014 exclude obstruction, gallstones, duct dilation, hepatic lesions, biliary obstruction.*\n\n**Radiology Notes:**\n\u201cHigh suspicion for hepatocellular injury, but bilirubin >100 requires urgent exclusion of obstructive pathology.\nIf bile duct dilation >8 mm \u2192 escalate to MRCP.\u201d\n\n---\n\n# **6. MRCP (Conditional Reflex Order)**\n\n**Criteria to trigger reflex:**\n\n* Ultrasound suggests ductal dilation OR\n* Suspicion of choledocholithiasis OR\n* Cholestasis disproportionate to transaminases\n\n**Priority:** Urgent\n**Clinical Rationale:**\n\u201cTo confirm or exclude mechanical obstruction as cause of intense jaundice.\u201d\n\n---\n\n# **7. NAC IV Infusion \u2014 Emergency Order**\n\n**Order:** N-acetylcysteine 3-bag infusion protocol\n**Dose:** Weight: 85 kg\n**Bag 1:** 150 mg/kg over 1 hour\n**Bag 2:** 50 mg/kg over 4 hours\n**Bag 3:** 100 mg/kg over 16 hours\n\n**Pharmacy Notes:**\n\u201cThis is *non-paracetamol DILI*, but NAC indicated due to ALT >1000/12\u00d7 ULN risk category.\nStart immediately\u2014do not delay for lab confirmation.\u201d\n\n**Clinical Rationale:**\n\u201cNAC improves outcomes in non-paracetamol DILI by reducing oxidative stress.\u201d\n\n---\n\n# **8. Hepatology Consult \u2013 STAT**\n\n**Consult level:** Consultant Hepatologist\n**Criteria:**\n\n* Bilirubin >100\n* ALT >10\u00d7 ULN\n* AST >350\n* Jaundice + severe nausea\n* MASLD background\n\n**Clinical Rationale:**\n\u201cRequires specialist oversight and risk stratification for acute liver failure.\u201d\n\n---\n\n# **9. Inpatient Admission Order \u2013 Hepatology Ward**\n\n**Level:** Urgent\n**Destination:** Hepatology Ward (High Monitoring Pathway)\n**Reason:**\n\n* Severe DILI\n* Need for neuro status monitoring q4h\n* INR monitoring daily\n* Ongoing NAC therapy\n\n---\n\n# **10. ICE System Safety Flags Applied**\n\n* **Red Flag:** \u201cACUTE SEVERE DILI \u2014 DO NOT DISCHARGE FROM ED.\u201d\n* **Auto-alert:**\n\n  * If INR \u2265 1.5 \u2192 escalate to Consultant + Critical Care\n  * If bilirubin rises by >25% in 12 hours \u2192 notify Hepatology\n* **Medication Stop Order:**\n\n  * \u201cMethotrexate marked as PERMANENTLY CONTRAINDICATED\u201d\n* **Trend Reminder:**\n\n  * New LFT panel automatically scheduled at **+12 hours**\n\n---\n\n# **11. Specimen Collection Instructions**\n\n* Collect **two sets** of serum tubes due to high probability of add-on testing\n* Coagulation tube must be processed within 30 minutes\n* Mark all specimens \u201cSTAT \u2014 ACUTE LIVER INJURY\u201d\n* Ensure patient receives IV access prior to NAC initiation\n\n---\n",
+        "dataSource": "ICE"
+    },
+    "highlights": [
+        {
+            "text": "Severe Acute Hepatocellular DILI with bilirubin >100 \u03bcmol/L, ALT 490 U/L",
+            "color": "red"
+        },
+        {
+            "text": "Drug-Induced Liver Injury (DILI) \u2014 SNOMED CT: 240517000",
+            "color": "red"
+        },
+        {
+            "text": "Acute Jaundice \u2014 43959009",
+            "color": "red"
+        },
+        {
+            "text": "Cholestasis \u2014 14140009",
+            "color": "red"
+        },
+        {
+            "text": "\u201cPrioritize processing\u2014patient meets criteria for severe DILI.",
+            "color": "red"
+        },
+        {
+            "text": "\u201cTo quantify severity of hepatocellular injury, identify synthetic dysfunction early, and determine risk of progression to acute liver failure.\u201d",
+            "color": "red"
+        },
+        {
+            "text": "\u201cPatient presents with DILI picture but high bilirubin requires exclusion of superimposed acute viral hepatitis.",
+            "color": "red"
+        },
+        {
+            "text": "\u201cTo rule out acute viral hepatitis coexisting with drug-induced hepatocellular injury.\u201d",
+            "color": "red"
+        },
+        {
+            "text": "\u201cIf IgG > ULN or ANA positive, flag as \u2018Potential AIH\u2019 and notify Hepatology.\u201d",
+            "color": "yellow"
+        },
+        {
+            "text": "\u201cTo identify possible metabolic or genetic cofactors worsening acute DILI.\u201d",
+            "color": "yellow"
+        },
+        {
+            "text": "Bilirubin 110 \u03bcmol/L \u2014 exclude obstruction, gallstones, duct dilation, hepatic lesions, biliary obstruction.",
+            "color": "red"
+        },
+        {
+            "text": "\u201cHigh suspicion for hepatocellular injury, but bilirubin >100 requires urgent exclusion of obstructive pathology.",
+            "color": "red"
+        },
+        {
+            "text": "\u201cTo confirm or exclude mechanical obstruction as cause of intense jaundice.\u201d",
+            "color": "red"
+        },
+        {
+            "text": "This is *non-paracetamol DILI*, but NAC indicated due to ALT >1000/12\u00d7 ULN risk category.",
+            "color": "red"
+        },
+        {
+            "text": "NAC improves outcomes in non-paracetamol DILI by reducing oxidative stress.\u201d",
+            "color": "yellow"
+        },
+        {
+            "text": "Bilirubin >100",
+            "color": "red"
+        },
+        {
+            "text": "ALT >10\u00d7 ULN",
+            "color": "red"
+        },
+        {
+            "text": "Jaundice + severe nausea",
+            "color": "red"
+        },
+        {
+            "text": "\u201cRequires specialist oversight and risk stratification for acute liver failure.\u201d",
+            "color": "red"
+        },
+        {
+            "text": "Severe DILI",
+            "color": "red"
+        },
+        {
+            "text": "Need for neuro status monitoring q4h",
+            "color": "red"
+        },
+        {
+            "text": "Red Flag: \u201cACUTE SEVERE DILI \u2014 DO NOT DISCHARGE FROM ED.\u201d",
+            "color": "red"
+        },
+        {
+            "text": "Auto-alert:",
+            "color": "red"
+        },
+        {
+            "text": "If INR \u2265 1.5 \u2192 escalate to Consultant + Critical Care",
+            "color": "red"
+        },
+        {
+            "text": "If bilirubin rises by >25% in 12 hours \u2192 notify Hepatology",
+            "color": "red"
+        },
+        {
+            "text": "Methotrexate marked as PERMANENTLY CONTRAINDICATED",
+            "color": "red"
+        },
+        {
+            "text": "New LFT panel automatically scheduled at +12 hours",
+            "color": "yellow"
+        },
+        {
+            "text": "Mark all specimens \u201cSTAT \u2014 ACUTE LIVER INJURY\u201d",
+            "color": "red"
+        }
+    ]
+}

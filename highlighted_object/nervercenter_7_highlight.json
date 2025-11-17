@@ -1,0 +1,51 @@
+{
+    "title": "Nervecentre - Encounter 7",
+    "component": "RawClinicalNote",
+    "props": {
+        "encounterNumber": 7,
+        "date": "2024-09-02",
+        "visitType": "Outpatient",
+        "provider": "Dr. K. Hussain",
+        "specialty": "AMU SHO",
+        "rawText": "\n### **Nervecentre**\n\n**Module:** Laboratory Alerting, Inpatient Monitoring & Early Warning Scores\n**Event Type:** *Critical LFT Alert + AMU Deterioration Observation Trigger*\n**Location:** Acute Medical Unit (AMU) \u2013 Bed 12\n\n---\n\n## **1. Alert Event Summary**\n\n* **System Alert ID:** NC-LFT-20240902-009\n\n* **Patient:** **Sarah Miller** (MRN: SM43850603, 43F)\n\n* **Linked Encounter:**\n\n  * Admission Type: **Emergency \u2013 Medical**\n  * Date & Time: **2024-09-02 @ 18:22**\n  * Admitting Clinician: **Dr. K. Hussain (AMU SHO)**\n  * Responsible Consultant: **Dr. A. Bennett (Gastroenterology)**\n\n* **Clinical Presentation:**\n\n  * Nausea, reduced appetite, right upper quadrant discomfort\n  * Recent MTX cessation after abnormal LFTs\n  * Query **Methotrexate-related DILI vs MASLD flare**\n\n---\n\n## **2. Trigger Details \u2013 Critical LFT Alarm**\n\n### **Primary Trigger Rule:**\n\n* **Rule 4.7 \u2013 ALT \u2265 5 \u00d7 ULN OR significant rise since last test.**\n* **ALT: 242 U/L** (ULN 40 \u2192 **6.05 \u00d7 ULN**)\n* **AST: 198 U/L (H)**\n* **ALP: 130 U/L (upper-normal)**\n* **GGT: 165 U/L (H)**\n* **Total Bilirubin: 26 \u03bcmol/L (mild elevation)**\n* **Direct Bilirubin: 8 \u03bcmol/L**\n* **INR: 1.2 (upper-normal, no synthetic failure)**\n* **Albumin: 39 g/L (normal)**\n* **Platelets: 212 \u00d7 10\u2079/L**\n\n### **Pattern of Injury:**\n\n* **Marked hepatocellular injury**\n* Mild bilirubin elevation (not cholestatic)\n* No acute liver failure criteria\n\n### **Severity Level:**\n\n* **Level 4 \u2013 Critical Alert (Inpatient)**\n* Requires **review within 30 minutes**\n\n### **Medication Linkage:**\n\n* MTX stopped 2 weeks ago\n* Patient on **prednisolone 10 mg** for RA flare\n* PRN paracetamol (flagged for dosing review)\n\n---\n\n## **3. Early Warning Score (NEWS2) Trigger**\n\n* **NEWS2 Score:** **4** (Yellow)\n\n  * HR 108\n  * RR 20\n  * Temp 37.8\u00b0C\n  * SpO\u2082 98% RA\n  * BP 122/78\n* Trigger: \u201c**Physiological change + abnormal blood tests \u2192 senior review required**\u201d\n\n### **Observation Alert ID:** NC-OBS-20240902-04\n\nDelivered simultaneously with the LFT alert.\n\n---\n\n## **4. Distribution & Delivery Log**\n\n**Primary Recipients:**\n\n* Dr. Hussain (Admitting SHO)\n* AMU Registrar (Dr. Maxwell)\n* Gastroenterology On-Call Team\n* Medicines Safety Team (due to previous MTX exposure)\n\n**Secondary Recipients:**\n\n* AMU Nurse in Charge\n* EWS (NEWS2) Monitoring Dashboard\n* Liver Pathway Tracker\n\n### **Delivery Timeline**\n\n1. **18:24:50** \u2013 LFTs verified\n2. **18:24:55** \u2013 Rule 4.7 fired (ALT 242)\n3. **18:25:00** \u2013 Critical alert sent (Level 4)\n4. **18:25:05** \u2013 NEWS2 trigger elevated to \u201cUrgent Review\u201d\n5. **18:25:10** \u2013 On-call Gastroenterology bleeped automatically\n6. **18:27:14** \u2013 Acknowledged by **Dr. Hussain (AMU SHO)**\n7. **18:33:22** \u2013 Registrar review documented (Maxwell_J)\n\n---\n\n## **5. Acknowledgment & Escalation Logic**\n\n* **Required Acknowledgement:** Within **30 min**\n* **Status:**\n\n  * **Acknowledged \u2013 On time (Dr. Hussain @ 18:27)**\n\n### **Escalation process (auto-triggered but closed):**\n\n* **Stage 1 \u2013 SHO (5 min)** \u2192 Completed\n* **Stage 2 \u2013 Registrar (15 min)** \u2192 Completed\n* **Stage 3 \u2013 Gastro Consultant (manual if worsening)** \u2192 Not required\n\n### **Registrar Safety Note:**\n\n\u201cLikely MTX-related hepatocellular injury, improving bilirubin. Keep NBM for abdominal US, order hepatitis serologies, and trend LFTs q12h.\u201d\n\n---\n\n## **6. Linked Inpatient Tasks (Automatic)**\n\n### **1. NC-TASK-20240902-LFTQ12**\n\n* **Title:** \u201cRepeat LFT + INR every 12 hours\u201d\n* **Owner:** AMU Nursing & Phlebotomy\n* **Due:** First repeat at **06:00 (03-Sept)**\n* **Status:** Open\n\n---\n\n### **2. NC-TASK-20240902-US-LIVER**\n\n* **Title:** \u201cArrange urgent liver ultrasound\u201d\n* **Owner:** Radiology \u2013 Priority Queue\n* **Due:** Within 24h\n* **Status:** Open\n* **Notes:** NBM from midnight.\n\n---\n\n### **3. NC-TASK-20240902-VIRAL-AUTOIMMUNE-SCREEN**\n\n* **Title:** \u201cComplete full non-invasive liver screen (viral, autoimmune, metabolic)\u201d\n* **Owner:** AMU SHO\n* **Due:** 2024-09-03 @ 14:00\n* **Status:** Open\n* **Pre-populated Notes:**\n\n  * HBV surface antigen\n  * HCV Ab\n  * ANA, ASMA, AMA\n  * Ferritin, transferrin saturation\n  * Coeliac serology\n\n---\n\n### **4. NC-TASK-20240902-DILI-REVIEW**\n\n* **Title:** \u201cConsultant Gastro review for suspected DILI\u201d\n* **Owner:** Dr. Bennett\n* **Due:** Same day (post-ward round)\n* **Status:** Pending Consultant signature\n\n---\n\n## **7. Safety & Governance Notes**\n\n* **Policies Applied:**\n\n  * Acute Liver Injury Protocol v4.0\n  * DMARD Monitoring (MTX section)\n  * NEWS2 Escalation Framework\n  * Risk of DILI \u2013 high if ALT > 5\u00d7 ULN\n\n* **System Warnings:**\n\n  * \u201cRecent MTX exposure \u2013 evaluate for DILI.\u201d\n  * \u201cTrend LFTs closely; risk of progression without synthetic failure yet.\u201d\n  * \u201cInvestigate MASLD overlap given BMI and T2DM.\u201d\n\n* **Audit Trail (Extract):**\n\n  * 18:25 \u2013 Alert created\n  * 18:25 \u2013 Gastro team notified\n  * 18:27 \u2013 SHO acknowledgment\n  * 18:33 \u2013 Registrar review documented\n  * 18:34 \u2013 LFT-trend monitoring scheduled\n\n---\n\n## **8. Inpatient Liver Monitoring Dashboard Update**\n\n* **Status:** HIGH RISK \u2013 Hepatocellular injury\n* **Next data refresh:** 12-hourly\n* **Outstanding items:**\n\n  * Ultrasound\n  * Viral/autoimmune screen\n  * Consultant review\n  * LFT trend check\n",
+        "dataSource": "Nervecentre"
+    },
+    "highlights": [
+        {
+            "text": "ALT: 242 U/L (ULN 40 \u2192 6.05 \u00d7 ULN)",
+            "color": "red"
+        },
+        {
+            "text": "AST: 198 U/L (H)",
+            "color": "red"
+        },
+        {
+            "text": "GGT: 165 U/L (H)",
+            "color": "red"
+        },
+        {
+            "text": "Total Bilirubin: 26 \u03bcmol/L (mild elevation)",
+            "color": "yellow"
+        },
+        {
+            "text": "Marked hepatocellular injury",
+            "color": "red"
+        },
+        {
+            "text": "Level 4 \u2013 Critical Alert (Inpatient)",
+            "color": "red"
+        },
+        {
+            "text": "Risk of DILI \u2013 high if ALT > 5\u00d7 ULN",
+            "color": "red"
+        },
+        {
+            "text": "Recent MTX exposure \u2013 evaluate for DILI.",
+            "color": "red"
+        },
+        {
+            "text": "Trend LFTs closely; risk of progression without synthetic failure yet.",
+            "color": "red"
+        }
+    ]
+}

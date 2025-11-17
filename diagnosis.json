@@ -1,0 +1,164 @@
+{
+    "patientInformation": {
+        "name": "Sarah Miller",
+        "mrn": "MC-001001",
+        "dateOfBirth": "1962-03-15",
+        "age": 63,
+        "sex": "Female"
+    },
+    "presentingComplaint": "Severe fatigue, jaundice, epigastric pain, confusion.",
+    "medicalHistory": {
+        "conditions": [
+            "Rheumatoid arthritis",
+            "Essential hypertension",
+            "Mild chronic kidney disease"
+        ],
+        "allergies": [
+            "Penicillin (rash)"
+        ],
+        "socialHistory": "Drinks ~1-2 beers/day (7-14 units/week). Smoked ~1 pack/day (35 pack-year history), quit in 2017. Retired carpenter."
+    },
+    "medications": {
+        "chronicPriorToEvent": [
+            "Methotrexate 20 mg weekly",
+            "Folic Acid 5 mg weekly",
+            "Lisinopril 10 mg daily"
+        ],
+        "initiatedAtAcuteEvent": "Trimethoprim-Sulfamethoxazole 800/160 mg BID (June 15, 2025 - June 25, 2025)"
+    },
+    "keyLaboratoryFindings": {
+        "encounterDate": "2025-06-21",
+        "results": [
+            {
+                "test": "ALT",
+                "value": "1650 U/L",
+                "flag": "H",
+                "reference": "7.0 - 56",
+                "note": "↑↑↑"
+            },
+            {
+                "test": "AST",
+                "value": "2100 U/L",
+                "flag": "H",
+                "reference": "8.0 - 40",
+                "note": "↑↑↑"
+            },
+            {
+                "test": "Alkaline Phosphatase",
+                "value": "350 U/L",
+                "flag": "H",
+                "reference": "40 - 150",
+                "note": "↑↑"
+            },
+            {
+                "test": "Total Bilirubin",
+                "value": "12.5 mg/dL",
+                "flag": "H",
+                "reference": "0.2 - 1.2",
+                "note": "↑↑↑"
+            },
+            {
+                "test": "INR",
+                "value": "1",
+                "flag": "",
+                "reference": "0.8 - 1.2",
+                "note": "Normal"
+            }
+        ]
+    },
+    "diagnosis": {
+        "main": "Drug-Induced Liver Injury (DILI)",
+        "causality": "Acute hepatocellular injury most likely induced by Trimethoprim-Sulfamethoxazole, with potential potentiation or contribution from chronic Methotrexate therapy.",
+        "mechanism": "Trimethoprim-Sulfamethoxazole can cause idiosyncratic DILI. It can also interact with Methotrexate, increasing its serum levels and potentiating hepatotoxicity. The acute onset following TMP-SMX initiation strongly suggests it as the primary culprit."
+    },
+    "differentialDiagnosisTracker": {
+        "diagnoses": [
+            {
+                "name": "Drug-Induced Liver Injury (DILI)",
+                "status": "PRIMARY",
+                "notes": "Strong temporal association with TMP-SMX initiation, characteristic lab pattern (hepatocellular), and presence of jaundice/confusion."
+            },
+            {
+                "name": "Methotrexate Toxicity",
+                "status": "INVESTIGATE",
+                "notes": "Chronic MTX use, known hepatotoxin. May be contributing or potentiated by TMP-SMX. Need to check MTX levels."
+            },
+            {
+                "name": "Acute Viral Hepatitis",
+                "status": "PENDING",
+                "notes": "Pending serologies."
+            }
+        ],
+        "ruledOut": []
+    },
+    "easlAssessment": {
+        "overallImpression": "Sarah Miller, a 63-year-old female, presents with severe hepatocellular DILI, most likely triggered by trimethoprim-sulfamethoxazole (TMP-SMX) initiated 6 days prior to presentation, in the context of chronic methotrexate use. She presents with jaundice, confusion, elevated transaminases (ALT 1650 U/L), and elevated bilirubin (12.5 mg/dL), consistent with significant liver injury.",
+        "diliDiagnosticCriteriaMet": [
+            {
+                "criterion": "ALT ≥ 5 × ULN",
+                "status": "MET",
+                "details": "ALT 1650 U/L. Assuming a typical ULN of 56 U/L, this is approximately 29.5x ULN."
+            },
+            {
+                "criterion": "ALT ≥ 3 × ULN with bilirubin ≥ 2 × ULN",
+                "status": "MET",
+                "details": "ALT 1650 U/L (approx. 29.5x ULN) and Total Bilirubin 12.5 mg/dL (assuming ULN of 1.2 mg/dL, this is approx. 10.4x ULN). Both thresholds are met."
+            },
+            {
+                "criterion": "Alkaline Phosphatase (ALP) ≥ 2 × ULN (cholestatic pattern)",
+                "status": "NOT MET",
+                "details": "ALP 350 U/L. Assuming a typical ULN of 150 U/L, this is approx. 2.3x ULN. However, the ALT elevation is far more pronounced, indicating a hepatocellular pattern rather than cholestatic."
+            },
+            {
+                "criterion": "R-ratio (ALT/ALP) / (ULN ALT/ULN ALP)",
+                "status": "MET",
+                "details": "ALT 1650 U/L, ALP 350 U/L. Assuming ULNs of ALT 56 U/L and ALP 150 U/L, the R-ratio is (1650/350) / (56/150) = 4.71 / 0.373 ≈ 12.6. An R-ratio > 5 indicates a hepatocellular pattern."
+            }
+        ],
+        "causativeAgentAssessment": [
+            {
+                "agent": "Trimethoprim-Sulfamethoxazole",
+                "role": "HIGHLY SUSPECTED PRIMARY TRIGGER",
+                "rationale": "Temporal association: initiated 6 days prior to symptom onset and presentation. Known hepatotoxin with idiosyncratic DILI potential. Interaction with methotrexate is also a concern."
+            },
+            {
+                "agent": "Methotrexate",
+                "role": "SIGNIFICANT CO-FACTOR",
+                "rationale": "Long-term use in patient with DILI risk factors (age, potential alcohol use, mild CKD). Methotrexate itself is a known cause of DILI and can interact with TMP-SMX, potentially exacerbating liver injury."
+            },
+            {
+                "agent": "Lisinopril",
+                "role": "UNLIKELY",
+                "rationale": "Long-term use without prior hepatic events. Not typically associated with acute severe hepatocellular injury of this pattern."
+            }
+        ],
+        "severityAssessment": {
+            "overallSeverity": "SEVERE DILI / ACUTE LIVER FAILURE RISK",
+            "features": [
+                "Jaundice (Total Bilirubin 12.5 mg/dL)",
+                "Hepatic Encephalopathy (Confusion, disorientation, asterixis, GCS 13)",
+                "Marked transaminitis (ALT 1650 U/L, AST 2100 U/L)",
+                "Elevated INR (though currently 1, can rapidly change)"
+            ],
+            "prognosisNote": "The patient presents with features concerning for acute liver failure. The presence of encephalopathy and high bilirubin levels indicates a high risk of severe outcomes. Prompt management, including drug withdrawal and supportive care, is critical."
+        },
+        "exclusionOfAlternativeCausesRequired": [
+            "Viral hepatitis (HAV, HBV, HCV, HEV)",
+            "Autoimmune hepatitis",
+            "Alcohol-related liver disease",
+            "Ischemic hepatitis",
+            "Sepsis/multiorgan failure",
+            "Metabolic or inherited disorders"
+        ],
+        "localGuidelinesComparison": {
+            "status": "GAP IDENTIFIED",
+            "details": "The provided local guidelines focus on specific conditions like Tacrolimus treatment, alcohol-related liver disease, and interventional procedures. They do not contain specific diagnostic criteria or frameworks for Drug-Induced Liver Injury (DILI). Therefore, EASL guidelines are the sole basis for DILI assessment in this case."
+        },
+        "references": [
+            "EASL Clinical Practice Guidelines: Drug-induced liver injury - Introduction to DILI Classification",
+            "EASL Clinical Practice Guidelines: Drug-induced liver injury - Patterns of DILI",
+            "EASL Clinical Practice Guidelines: Drug-induced liver injury - Laboratory Workup for Excluding Alternative Causes"
+        ]
+    },
+    "zone": "dili-analysis-zone"
+}

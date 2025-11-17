@@ -1,0 +1,63 @@
+{
+    "title": "Medilogik - Outpatient",
+    "component": "RawClinicalNote",
+    "props": {
+        "encounterNumber": 4,
+        "date": "2024-06-03",
+        "visitType": "Outpatient",
+        "provider": "Dr. P. Stevens",
+        "specialty": "MRCGP",
+        "rawText": "\n**Medilogik**\n**Task Group:** DMARD Safety Monitoring & Patient Engagement Workflow\n**Created By:** Dr. P. Stevens, MD, MRCGP\n**Date Created:** 2024-06-03\n**Priority:** **High**\n**Status:** Active\n**Task ID:** **MTX_MONITOR_SM_01_RECUR**\n**Associated Encounter:** Outpatient \u2013 Methotrexate Initiation Consultation\n\n---\n\n## **1. Task Description (Expanded)**\n\n\u201cEstablish a comprehensive Methotrexate (MTX) monitoring workflow for Sarah Miller following initiation of 7.5 mg weekly MTX therapy for Rheumatoid Arthritis.\nThe objective is to ensure safe continuation of MTX, early detection of hepatotoxicity, cytopenias, or intolerance, and reinforcement of adherence to patient education and safety-netting protocols.\u201d\n\n---\n\n# **2. Monitoring Schedule (Detailed)**\n\n### **Initial Post-Initiation Assessment**\n\n* **Due Date:** **2024-07-15**\n* **Tests Required:**\n\n  * Full Liver Function Panel (ALT, AST, ALP, GGT, Bilirubin, INR)\n  * Full Blood Count (FBC)\n* **Purpose:**\n\n  * Assess early hepatic response to MTX\n  * Detect early cytopenias\n  * Evaluate need for dose adjustment or pause\n\n---\n\n### **Ongoing Routine Monitoring**\n\n* **Frequency:** Every **6 weeks**\n* **Duration:** First 6 months (June\u2013December 2024)\n* **Tests at each interval:**\n\n  * **LFT**\n  * **FBC**\n  * **Renal Profile (U+E)**\n  * **CRP (optional, if RA control uncertain)**\n\n### **Post-6-Month Monitoring**\n\n* If stable \u2192 move to **every 8\u201312 weeks** per DMARD safety protocol.\n\n---\n\n# **3. Medilogik Auto-Alert Configuration**\n\n### **High-Priority Auto-Alerts (Immediate clinician notification)**\n\n* **ALT > 2\u00d7 ULN (>80 U/L)**\n* **AST > 2\u00d7 ULN**\n* **Platelets < 150 \u00d710\u2079/L**\n* **Neutrophils <1.5 \u00d710\u2079/L**\n* **WBC <3.0 \u00d710\u2079/L**\n* **Bilirubin rising trend across two tests**\n\n**Action Trigger:**\n\u2192 Display interruptive alert in Medilogik clinician inbox\n\u2192 Flag patient chart with **\u201cDMARD Safety Alert \u2013 Review Required\u201d**\n\n---\n\n### **Moderate-Priority Auto-Alerts**\n\n* **Gradual ALT rise but < 2\u00d7 ULN**\n* **New macrocytosis**\n* **eGFR decline**\n  \u2192 Routed to GP monitoring pool for review within 72 hours.\n\n---\n\n# **4. Associated Patient Education Tasks**\n\n### **Patient Education Pack Delivery**\n\n* Includes:\n\n  * MTX Information Leaflet (British Society for Rheumatology standard)\n  * Liver toxicity symptoms sheet\n  * Medication schedule card (MTX + folic acid)\n* Marked as **Completed \u2013 Provided in clinic, 2024-06-03**\n\n---\n\n### **Compliance Check Call**\n\n* **Scheduled:** 7 days post initiation (2024-06-10)\n* **Purpose:**\n\n  * Confirm correct dosing (once weekly only)\n  * Verify folic acid timing\n  * Screen for early side effects\n* Responsible Team: GP Support / Clinical Pharmacist\n\n---\n\n### **Alcohol Intake Advisory**\n\n* Task to review patient\u2019s alcohol intake at each monitoring appointment\n* Documented baseline: \u201cPatient consumes 12 units/week\u201d\n* Goal: Reduce to < 6 units/week for MTX safety\n\n---\n\n# **5. Clinical Safety & Governance Notes**\n\n* MTX initiation authorized based on:\n\n  * ALT normalization (ALT 35)\n  * Negative viral hepatitis screen\n  * Negative autoimmune hepatitis screen\n  * Normal synthetic liver profile\n  * Low Fib-4 (0.9)\n\n* MASLD acknowledged as background risk; enhanced vigilance maintained.\n\n* MTX classified as a **high-risk drug**, requiring strict adherence to monitoring timeline.\n\n* Medilogik will:\n\n  * Log missed tests\n  * Auto-generate overdue notices after 48 hours\n  * Escalate persistent failures to GP clinical lead\n\n---\n\n# **6. Follow-Up & Tracking**\n\n### **Next Steps**\n\n* **Next scheduled test:** 2024-07-15\n* **Next clinician review:** Early August appointment already booked\n* **Rheumatology liaison:** If RA control insufficient at 12 weeks, Medilogik flags GP to consider rheumatology review\n\n### **Dashboard Integration**\n\nMedilogik integrates with the practice DMARD dashboard:\n\n* Displays latest LFT/FBC trends\n* Risk colour-coding (Green \u2192 Amber \u2192 Red)\n* Task completion metrics\n\nSarah is currently classified as:\n**Amber \u2013 New MTX Start (requires intensified monitoring)**\n\n---\n",
+        "dataSource": "Medilogik"
+    },
+    "highlights": [
+        {
+            "text": "ALT > 2\u00d7 ULN (>80 U/L)",
+            "color": "red"
+        },
+        {
+            "text": "AST > 2\u00d7 ULN",
+            "color": "red"
+        },
+        {
+            "text": "Bilirubin rising trend across two tests",
+            "color": "red"
+        },
+        {
+            "text": "Gradual ALT rise but < 2\u00d7 ULN",
+            "color": "yellow"
+        },
+        {
+            "text": "Patient consumes 12 units/week",
+            "color": "yellow"
+        },
+        {
+            "text": "MTX initiation authorized based on: ALT normalization (ALT 35)",
+            "color": "green"
+        },
+        {
+            "text": "Negative viral hepatitis screen",
+            "color": "green"
+        },
+        {
+            "text": "Negative autoimmune hepatitis screen",
+            "color": "green"
+        },
+        {
+            "text": "Normal synthetic liver profile",
+            "color": "green"
+        },
+        {
+            "text": "Low Fib-4 (0.9)",
+            "color": "green"
+        },
+        {
+            "text": "MASLD acknowledged as background risk; enhanced vigilance maintained.",
+            "color": "yellow"
+        },
+        {
+            "text": "MTX classified as a high-risk drug, requiring strict adherence to monitoring timeline.",
+            "color": "yellow"
+        }
+    ]
+}

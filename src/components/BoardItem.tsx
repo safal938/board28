@@ -884,6 +884,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                 specialty={componentProps.specialty}
                 rawText={componentProps.rawText}
                 dataSource={componentProps.dataSource}
+                highlights={componentProps.highlights}
               />
             );
 

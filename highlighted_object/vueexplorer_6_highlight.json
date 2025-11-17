@@ -1,0 +1,51 @@
+{
+    "title": "VueExplore - Ultrasound 6",
+    "component": "RawClinicalNote",
+    "props": {
+        "encounterNumber": 6,
+        "date": "2024-08-12",
+        "visitType": "Radiology",
+        "provider": "Dr. P. Stevens",
+        "specialty": "MRCGP",
+        "rawText": "**VueExplore**\n**Study Type:** *Ultrasound Abdomen \u2013 Emergency / STAT*\n**Accession Number:** **USG-240812-001**\n**Exam Date & Time:** **2024-08-12 @ 15:02**\n**Referring Clinician:** Dr. P. Stevens\n**Location:** Emergency Department \u2192 Radiology Acute Imaging Bay\n**Clinical Indication:**\n\n* Severe acute jaundice\n* ALT 490 U/L, AST 350 U/L\n* Bilirubin 110 \u03bcmol/L\n* Suspected **Acute Drug-Induced Liver Injury**\n* Need to rule out **obstructive cholestasis** or **biliary obstruction**\n\n---\n\n# **1. Acquisition Details**\n\n* **Modality:** Ultrasound (US) \u2013 B-mode + Colour Doppler\n* **Scanner:** Philips EPIQ Elite\n* **Operator:** Senior Sonographer \u2013 S. Patel\n* **Views Obtained:**\n\n  * Longitudinal and transverse liver views\n  * CBD (common bile duct) measurement\n  * Gallbladder (multiple planes)\n  * Right kidney\n  * Pancreatic head region\n  * Portal vein Doppler waveform\n* **Exam Quality:** Good; patient tolerated exam despite nausea.\n\n---\n\n# **2. Detailed Radiology Report**\n\n### **Liver**\n\n* Liver size: Normal range\n* Parenchymal echotexture: Mildly increased, consistent with **steatosis / MASLD**\n* No focal hepatic lesions\n* No intrahepatic biliary ductal dilatation\n* No free fluid\n* No signs of hepatic congestion\n\n### **Gallbladder**\n\n* Normal wall thickness\n* No gallstones seen\n* No pericholecystic fluid\n* Sonographic Murphy\u2019s sign: **Negative**\n\n### **Biliary Tree**\n\n* **Common bile duct (CBD): 5.1 mm (normal)**\n* No evidence of obstruction\n* No choledocholithiasis\n* Normal tapering at the pancreatic head\n\n### **Pancreas**\n\n* Head and proximal body visualised; no mass or dilation of pancreatic duct\n* No evidence of obstructive tumour causing cholestasis\n\n### **Portal Vein (Doppler)**\n\n* Normal hepatopetal flow\n* Velocity within normal physiological range\n* No portal vein thrombosis or flow abnormality\n\n### **Spleen**\n\n* Normal size, no splenomegaly (supports absence of portal hypertension)\n\n### **Kidneys**\n\n* Right kidney normal, no hydronephrosis\n* Left kidney partially visualised; normal contour\n\n---\n\n# **3. Radiologist Impression (Final Report)**\n\n**Reported by:** Dr. L. Andrews, Consultant Radiologist\n**Report Time:** 2024-08-12 @ 15:25\n\n**Impression:**\n\n1. **No sonographic evidence of biliary obstruction** \u2013 CBD normal, no stones, and no intrahepatic duct dilation.\n2. Liver shows **mild steatosis**, compatible with known MASLD.\n3. No structural cause identified for the acute rise in bilirubin.\n4. Findings support a **hepatocellular process**, consistent with **Drug-Induced Liver Injury (DILI)** rather than obstructive jaundice.\n5. No free fluid, no focal liver lesions, and no signs of acute cholecystitis.\n\n---\n\n# **4. VueExplore System Flags**\n\n* **Flag Applied:** *\u201cNo mechanical obstruction detected \u2013 hepatocellular injury pathway confirmed.\u201d*\n* **Auto-Trigger:**\n\n  * \u201cMRCP not indicated unless bilirubin rises beyond 150 \u03bcmol/L OR clinical suspicion changes.\u201d\n  * Notify Hepatology Consultant of completed imaging.\n* **Priority Update:** Imaging urgency downgraded from \u201cSTAT\u201d to \u201cRoutine Monitoring\u201d after non-obstructive findings.\n\n---\n\n# **5. Recommendations (Auto-generated VueExplore decision block)**\n\n* Continue with **NAC protocol** for severe hepatocellular injury.\n* Maintain **Hepatology admission** for close monitoring.\n* Repeat ultrasound only if:\n\n  * bilirubin increases\n  * cholestasis worsens\n  * new abdominal pain develops\n* Consider MR elastography or Fibroscan post-recovery (3\u20136 months).\n\n---\n\n# **6. Audit & Workflow Log**\n\n* 14:58 \u2014 ED order placed\n* 15:02 \u2014 Patient arrived in ultrasound bay\n* 15:03 \u2014 First image acquired\n* 15:25 \u2014 Report finalized by Consultant Radiologist\n* 15:27 \u2014 Report auto-delivered to:\n\n  * ED Clinician Inbox\n  * Hepatology On-Call Team\n  * Nervecentre alert module\n* 15:28 \u2014 Care plan updated to: \u201cProceed with hepatocellular DILI pathway\u201d\n",
+        "dataSource": "Viper"
+    },
+    "highlights": [
+        {
+            "text": "Severe acute jaundice",
+            "color": "red"
+        },
+        {
+            "text": "ALT 490 U/L, AST 350 U/L",
+            "color": "red"
+        },
+        {
+            "text": "Bilirubin 110 \u03bcmol/L",
+            "color": "red"
+        },
+        {
+            "text": "Suspected **Acute Drug-Induced Liver Injury**",
+            "color": "red"
+        },
+        {
+            "text": "Liver shows **mild steatosis**, compatible with known MASLD.",
+            "color": "yellow"
+        },
+        {
+            "text": "Findings support a **hepatocellular process**, consistent with **Drug-Induced Liver Injury (DILI)** rather than obstructive jaundice.",
+            "color": "red"
+        },
+        {
+            "text": "Continue with **NAC protocol** for severe hepatocellular injury.",
+            "color": "red"
+        },
+        {
+            "text": "Maintain **Hepatology admission** for close monitoring.",
+            "color": "red"
+        },
+        {
+            "text": "Care plan updated to: \u201cProceed with hepatocellular DILI pathway\u201d",
+            "color": "red"
+        }
+    ]
+}

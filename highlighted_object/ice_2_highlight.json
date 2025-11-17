@@ -1,0 +1,87 @@
+{
+    "title": "ICE - Dr. P. Stevens",
+    "component": "RawClinicalNote",
+    "props": {
+        "encounterNumber": 2,
+        "date": "2024-04-01",
+        "visitType": "Routine",
+        "provider": "Dr. P. Stevens",
+        "specialty": "Unknown",
+        "rawText": "\n**ICE**\n**Order Set:** *Comprehensive Chronic Hepatitis & Hepatic Fitness Screening (Pre-DMARD Initiation)*\n**Ordering Clinician:** Dr. P. Stevens, MD, MRCGP\n**Date:** 2024-04-01\n**Location:** GP Outpatient Clinic\n**Indication:** *Abnormal ALT (78 U/L) and pre-Methotrexate screening*\n**Urgency:** Routine (Non-urgent, but required before treatment)\n**Associated Diagnosis Code:** SNOMED CT \u2013 *Rheumatoid arthritis (69896004)* + *Transaminitis (197315008)*\n\n---\n\n## **1. Viral Hepatitis Serology Panel**\n\n**Tests Ordered:**\n\n* HBsAg \u2013 Hepatitis B Surface Antigen\n* Anti-HBc Total \u2013 Hepatitis B Core Antibody\n* Anti-HCV \u2013 Hepatitis C Antibody\n* HEV IgG \u2013 Hepatitis E Antibody (IgG)\n\n**Priority:** Routine\n**Turnaround:** 48\u201372 hours\n**Specimen:** Serum (Gold top)\n\n**Extended Laboratory Note for Technologists:**\n\u201cPre-DMARD safety testing. Patient requires clearance prior to potential MTX initiation.\nPlease ensure reflex testing for HBV DNA if:\n\n* HBsAg positive OR\n* Isolated anti-HBc positivity.\n  This result determines antiviral prophylaxis requirements before DMARDs.\u201d\n\n**Clinical Rationale:**\n\u201cFull viral exclusion is mandatory. Even occult HBV could lead to reactivation under MTX. HCV/HEV exclusion required to avoid missed chronic inflammation.\u201d\n\n---\n\n## **2. Autoimmune Hepatitis Screening Panel**\n\n**Tests Ordered:**\n\n* ANA with reflex titre\n* ASMA (Anti-Smooth Muscle Antibody)\n* LKM-1 (Liver-Kidney Microsomal Antibody)\n* Total IgG\n\n**Priority:** Routine\n**Turnaround:** 5\u20137 days\n**Specimen:** Serum\n\n**Extended Note:**\n\u201cIf ANA positive, perform reflex titre and pattern ID.\nIf IgG > upper limit, flag result for consultant pathologist review.\u201d\n\n**Clinical Rationale:**\n\u201cRule out autoimmune hepatitis. Active AIH is an absolute contraindication to starting MTX. MTX may worsen hepatic autoimmune inflammation.\u201d\n\n---\n\n## **3. Metabolic Liver Screen**\n\n**Tests Ordered:**\n\n* Serum Ferritin\n* TIBC (Total Iron-Binding Capacity)\n* Transferrin Saturation (%)\n* Alpha-1 Antitrypsin Level\n\n**Priority:** Routine\n**Turnaround:** 48 hours\n**Specimen:** Serum\n\n**Extended Note:**\n\u201cFerritin >300 or transferrin saturation >45% should reflex to HFE genetic typing.\nLow A1AT level should reflex to phenotype typing if available.\u201d\n\n**Clinical Rationale:**\n\u201cExclude haemochromatosis and A1AT deficiency\u2014both amplify DILI risk and are critical to identify before MTX.\u201d\n\n---\n\n## **4. Repeat Liver Function Panel (Scheduled)**\n\n**Tests Ordered:**\n\n* ALT\n* AST\n* ALP\n* GGT\n* Bilirubin (Total & Direct)\n* INR\n* Albumin\n* Platelets (FBC add-on)\n* R-Factor auto-calculation\n\n**Priority:** Deferred / Scheduled for 4 weeks\n**Target Date:** 2024-05-01\n**Turnaround:** Same day\n**Specimen:** Serum + Coag tube\n\n**Extended Note:**\n\u201cTrend assessment required. If ALT remains above 1.5\u00d7 ULN, do not proceed with MTX.\nIf ALT normalizes, clear for low-dose MTX initiation.\nICE to generate automatic reminder 3 days before due date.\u201d\n\n**Clinical Rationale:**\n\u201cTo confirm normalization of hepatic inflammation and determine hepatic fitness prior to hepatotoxic DMARD therapy.\u201d\n\n---\n\n## **ICE System Flags Applied**\n\n* **Safety Flag:** \u201cMTX Pre-Check Required \u2013 Do Not Initiate Until Results Reviewed.\u201d\n* **Auto-Alert:** Notify ordering clinician if results show:\n\n  * HBsAg positive\n  * ALT > 2\u00d7 ULN\n  * IgG significantly elevated\n  * Positive autoimmune markers\n* **Patient Status Flag:** \u201cRecurrent MASLD flare \u2013 monitor trends.\u201d\n\n---\n\n## **Specimen Collection Instructions**\n\n* Fasting NOT required\n* Advise patient to avoid NSAIDs 48h prior to blood draw\n* Document alcohol intake in the last 72 hours\n* Ensure same-day processing for INR\n\n---\n",
+        "dataSource": "ICE"
+    },
+    "highlights": [
+        {
+            "text": "Abnormal ALT (78 U/L) and pre-Methotrexate screening",
+            "color": "yellow"
+        },
+        {
+            "text": "HBsAg \u2013 Hepatitis B Surface Antigen",
+            "color": "green"
+        },
+        {
+            "text": "Anti-HBc Total \u2013 Hepatitis B Core Antibody",
+            "color": "green"
+        },
+        {
+            "text": "Anti-HCV \u2013 Hepatitis C Antibody",
+            "color": "green"
+        },
+        {
+            "text": "HEV IgG \u2013 Hepatitis E Antibody (IgG)",
+            "color": "green"
+        },
+        {
+            "text": "HBV DNA if: HBsAg positive OR Isolated anti-HBc positivity.",
+            "color": "red"
+        },
+        {
+            "text": "Even occult HBV could lead to reactivation under MTX.",
+            "color": "red"
+        },
+        {
+            "text": "Rule out autoimmune hepatitis.",
+            "color": "red"
+        },
+        {
+            "text": "Active AIH is an absolute contraindication to starting MTX.",
+            "color": "red"
+        },
+        {
+            "text": "MTX may worsen hepatic autoimmune inflammation.",
+            "color": "red"
+        },
+        {
+            "text": "Exclude haemochromatosis and A1AT deficiency\u2014both amplify DILI risk and are critical to identify before MTX.",
+            "color": "yellow"
+        },
+        {
+            "text": "If ALT remains above 1.5\u00d7 ULN, do not proceed with MTX.",
+            "color": "yellow"
+        },
+        {
+            "text": "To confirm normalization of hepatic inflammation and determine hepatic fitness prior to hepatotoxic DMARD therapy.",
+            "color": "yellow"
+        },
+        {
+            "text": "HBsAg positive",
+            "color": "red"
+        },
+        {
+            "text": "ALT > 2\u00d7 ULN",
+            "color": "red"
+        },
+        {
+            "text": "Positive autoimmune markers",
+            "color": "red"
+        },
+        {
+            "text": "Recurrent MASLD flare \u2013 monitor trends.",
+            "color": "yellow"
+        },
+        {
+            "text": "Advise patient to avoid NSAIDs 48h prior to blood draw",
+            "color": "yellow"
+        }
+    ]
+}

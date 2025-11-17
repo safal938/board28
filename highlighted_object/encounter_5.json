@@ -1,0 +1,60 @@
+{
+    "title": "Encounter #5 - Outpatient",
+    "component": "SingleEncounterDocument",
+    "props": {
+        "encounter": {
+            "encounter_no": 5,
+            "meta": {
+                "visit_type": "Outpatient",
+                "date_time": "2024-07-15T14:00:30",
+                "provider": {
+                    "name": "Dr. P. Stevens",
+                    "specialty": "Rheumatology"
+                },
+                "ui_risk_color": "yellow"
+            },
+            "assessment": {
+                "impression": "Methotrexate-induced Drug-Induced Liver Injury (DILI) presenting with elevated ALT (185 U/L, 4.6x ULN), with new intermittent nausea and increased fatigue. Rheumatoid arthritis symptoms are improving on Methotrexate.",
+                "differential": [
+                    "Methotrexate-induced Drug-Induced Liver Injury (DILI)",
+                    "Underlying MASLD risk factors"
+                ]
+            },
+            "chief_complaint": "Routine Methotrexate (MTX) monitoring. Reports of new intermittent nausea and increased fatigue.",
+            "hpi": "Sarah Miller, a 43-year-old female, presents for routine Methotrexate monitoring. She reports ~1 kg unintentional weight loss over the past month, attributed to reduced appetite and intermittent nausea, primarily in the evenings. No vomiting or diarrhea. Fatigue levels have returned to pre-MTX initiation severity. Rheumatoid arthritis symptoms have significantly improved with diminished joint pain and increased daily function since starting Methotrexate. Recent labs show ALT elevated to 185 U/L (4.6x ULN).",
+            "medications_prior": [],
+            "physical_exam": {
+                "general": "Vital Signs: BP 144/92 mmHg (sitting), HR 88 bpm, RR 16/min, Temp 36.8\u00b0C, SpO\u2082 98% on room air.",
+                "msk": "Joint pain has diminished.",
+                "other_systems": "Weight 83 kg (BMI 30.8 kg/m\u00b2)."
+            },
+            "plan": {
+                "investigations": {
+                    "imaging": [],
+                    "labs": [
+                        "Repeat liver function tests in four weeks"
+                    ]
+                },
+                "management": {
+                    "follow_up": "Follow up in four weeks. Advised to remain vigilant for any worsening of symptoms or new signs of liver dysfunction such as jaundice, further exacerbated fatigue, or darker urine. Ensure adherence to adjusted Methotrexate regimen. Attend Hepatology consultation.",
+                    "medications_started": [
+                        {
+                            "dose": "5mg",
+                            "frequency": "weekly",
+                            "name": "Methotrexate",
+                            "route": ""
+                        }
+                    ]
+                }
+            },
+            "reason_for_visit": "Routine Methotrexate monitoring and management of new symptoms of nausea and fatigue, and elevated liver enzymes."
+        },
+        "patient": {
+            "name": "Sarah Miller",
+            "sex": "Female",
+            "age_at_first_encounter": 43
+        },
+        "encounterIndex": 5,
+        "dataSource": "Nervecentre"
+    }
+}
