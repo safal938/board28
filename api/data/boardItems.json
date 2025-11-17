@@ -2172,7 +2172,7 @@
   {
     "id": "ehr-hub-nervecentre",
     "type": "ehrHub",
-    "x": -4325,
+    "x": -4350,
     "y": -6400,
     "width": 350,
     "height": 250,
@@ -2204,7 +2204,7 @@
   {
     "id": "ehr-hub-viper",
     "type": "ehrHub",
-    "x": -2300,
+    "x": -2320,
     "y": -3850,
     "width": 350,
     "height": 250,
@@ -2236,7 +2236,7 @@
   {
     "id": "ehr-hub-bighand",
     "type": "ehrHub",
-    "x": 3175,
+    "x": 3155,
     "y": -3850,
     "width": 350,
     "height": 250,
@@ -2252,7 +2252,7 @@
   {
     "id": "ehr-hub-vueexplore",
     "type": "ehrHub",
-    "x": -100,
+    "x": -130,
     "y": -3850,
     "width": 350,
     "height": 250,
@@ -2968,7 +2968,7 @@
   {
     "id": "ehr-hub-radiology",
     "type": "ehrHub",
-    "x": -2025,
+    "x": -2050,
     "y": -6400,
     "width": 350,
     "height": 250,
