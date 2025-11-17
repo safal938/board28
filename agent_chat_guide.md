@@ -3,7 +3,7 @@
 ## **Endpoint**
 
 ```
-POST https://api3.mefroce-ai.com/send-chat
+POST https://api3.medforce-ai.com/send-chat
 ```
 
 ## **Description**
@@ -41,7 +41,7 @@ The request must be a **JSON array** of message objects:
 ```python
 import requests
 
-url = "https://api3.mefroce-ai.com/send-chat"
+url = "https://api3.medforce-ai.com/send-chat"
 
 payload = [
     {"role": "user", "content": "Create task to pull Sarah Miller Radiology data."}
@@ -74,7 +74,7 @@ After the workflow is created, you can ask **follow-up questions**.
 ```python
 import requests
 
-url = "https://api3.mefroce-ai.com/send-chat"
+url = "https://api3.medforce-ai.com/send-chat"
 
 payload = [
     {"role": "user", "content": "Create task to pull Sarah Miller Radiology data."},
