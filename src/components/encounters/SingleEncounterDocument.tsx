@@ -105,7 +105,7 @@ const RiskBadge = styled.span<{ color: string }>`
     switch (props.color) {
       case "red":
         return "#dc3545";
-      case "amber":
+      case "yellow":
         return "#ffc107";
       case "green":
         return "#28a745";

@@ -680,7 +680,7 @@ function SingleEncounterNode({ data }: NodeProps) {
   // Determine if this is the first or last encounter based on the item ID
   const itemId = data.item?.id || '';
   const isFirstEncounter = itemId.includes('single-encounter-1');
-  const isLastEncounter = itemId.includes('single-encounter-6');
+  const isLastEncounter = itemId.includes('single-encounter-7');
   
   return (
     <EncounterNodeContainer>
@@ -1128,6 +1128,16 @@ function Canvas2() {
             source: 'dashboard-item-1759906300004-single-encounter-5',
             sourceHandle: 'right',
             target: 'dashboard-item-1759906300004-single-encounter-6',
+            targetHandle: 'left',
+            type: 'default',
+            animated: true,
+            style: { stroke: '#ef4444', strokeWidth: 3 },
+          },
+           {
+            id: 'edge-encounter-5-6',
+            source: 'dashboard-item-1759906300004-single-encounter-6',
+            sourceHandle: 'right',
+            target: 'dashboard-item-1759906300004-single-encounter-7',
             targetHandle: 'left',
             type: 'default',
             animated: true,

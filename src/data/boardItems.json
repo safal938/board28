@@ -569,71 +569,75 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #1 - Initial Consult",
+      "title": "Encounter #1 - Outpatient Visit",
       "component": "SingleEncounterDocument",
       "props": {
         "encounter": {
           "encounter_no": 1,
           "meta": {
             "visit_type": "Outpatient",
-            "date_time": "2015-08-10T11:00:00",
+            "date_time": "2024-03-05T10:15:22Z",
             "provider": {
-              "name": "Dr. Elizabeth Hayes",
-              "specialty": "Rheumatology (Initial Consult)"
+              "name": "Dr. P. Stevens",
+              "specialty": "General Practice"
             },
-            "ui_risk_color": "green"
+            "ui_risk_color": "yellow"
           },
-          "reason_for_visit": "Initial rheumatology consult",
-          "chief_complaint": "Bilateral joint pain and swelling.",
-          "hpi": "53-year-old retired carpenter with 6 months progressive symmetrical small-joint pain/swelling (hands/feet), morning stiffness >60 min, fatigue, limited NSAID relief.",
+          "assessment": {
+            "impression": "Suboptimal control of T2DM/HTN, Chronic Fatigue Syndrome possibly related to MASLD.",
+            "differential": [
+              "T2DM suboptimal control",
+              "Hypertension suboptimal control",
+              "Chronic Fatigue Syndrome",
+              "MASLD"
+            ]
+          },
+          "chief_complaint": "Increased fatigue over the past 4-5 months",
+          "hpi": "Sarah Miller, a 43-year-old administrative assistant, presents with debilitating fatigue affecting work performance. She averages 6.5 hours of non-restorative sleep per night and experiences RA-related discomfort, particularly in the right wrist. She takes Ibuprofen 4-5 times per week for pain and chemically-induced frequent bloating.",
           "medications_prior": [
             {
+              "name": "Metformin",
+              "route": "Oral, unknown dose, BD frequency, for T2DM"
+            },
+            {
+              "name": "Ramipril",
+              "route": "Oral, 5mg, OD frequency, for Hypertension"
+            },
+            {
               "name": "Ibuprofen",
-              "dose": "200 mg",
-              "route": "PO",
-              "frequency": "PRN",
-              "indication": "Joint pain"
+              "route": "Oral, unknown dose, taken 4-5 times per week for RA pain"
+            },
+            {
+              "name": "Simethicone",
+              "route": "Oral, unknown dose, unknown frequency, for bloating"
             }
           ],
           "physical_exam": {
-            "general": "Fatigued but comfortable, NAD",
-            "msk": "Bilateral swelling/tenderness MCPs 2-3, PIPs 2-3, MTPs 2-3; synovitis; reduced grip"
-          },
-          "assessment": {
-            "impression": "Seropositive Rheumatoid Arthritis (active)",
-            "differential": [
-              "Psoriatic Arthritis",
-              "Systemic Lupus Erythematosus"
-            ]
+            "general": "Appears non-toxic and well-perfused.",
+            "msk": "Mild effusion in right MCP joint 3, mild pain on movement.",
+            "other_systems": "Vital Signs: BP 146/92 mmHg (sitting), HR 82 bpm, RR 16/min, Temp 36.8°C, SpO₂ 99% on room air. Anthropometrics: Height 1.64 m, Weight 86 kg (BMI 32.0 kg/m²; class I obesity). Weight reported as broadly stable over the past 12 months. Skin/Sclera: Anicteric sclerae; no chronic liver disease stigmata. Abdomen: Soft, lax, normal liver span, no tenderness."
           },
           "plan": {
             "investigations": {
               "labs": [
-                "RF",
-                "Anti-CCP",
-                "CBC",
-                "LFTs"
+                "Complete LFTs",
+                "HbA1c"
               ]
             },
             "management": {
-              "medications_started": [
-                {
-                  "name": "Methotrexate",
-                  "dose": "10 mg",
-                  "route": "PO",
-                  "frequency": "weekly"
-                }
-              ]
+              "follow_up": "Follow-up in 4 weeks to evaluate LFTs and MTX eligibility.",
+              "medications_started": []
             }
-          }
+          },
+          "reason_for_visit": "Increased fatigue"
         },
         "patient": {
           "name": "Sarah Miller",
           "sex": "Female",
-          "age_at_first_encounter": 53
+          "age_at_first_encounter": 43
         },
-        "encounterIndex": 0,
-        "dataSource": "Nervecentre"
+        "encounterIndex": 1,
+        "dataSource": "Electronic Health Record"
       }
     },
     "createdAt": "2025-10-14T16:55:00.003Z",
@@ -650,77 +654,66 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #2 - Outpatient Review",
+      "title": "Encounter #2 - Outpatient",
       "component": "SingleEncounterDocument",
       "props": {
         "encounter": {
           "encounter_no": 2,
           "meta": {
             "visit_type": "Outpatient",
-            "date_time": "2016-02-20T09:30:00",
+            "date_time": "2024-04-01T15:00:45",
             "provider": {
-              "name": null,
-              "specialty": "General Practice"
+              "name": "Dr. P. Stevens",
+              "specialty": "Unknown"
             },
-            "ui_risk_color": "green"
-          },
-          "reason_for_visit": "Routine MTX monitoring and RA review",
-          "chief_complaint": "Routine medication monitoring; RA follow-up",
-          "hpi": "Good RA control on MTX 10 mg weekly; no MTX side effects; occasional joint aches; adherent to MTX and folic acid; no new concerns.",
-          "medications_prior": [
-            {
-              "name": "Methotrexate",
-              "dose": "10 mg",
-              "route": "PO",
-              "frequency": "weekly"
-            },
-            {
-              "name": "Folic Acid",
-              "dose": "5 mg",
-              "route": "PO",
-              "frequency": "weekly"
-            },
-            {
-              "name": "Paracetamol",
-              "dose": null,
-              "route": "PO",
-              "frequency": "PRN"
-            }
-          ],
-          "physical_exam": {
-            "general": "Well; no jaundice",
-            "msk": "No active synovitis; mild residual hand deformities",
-            "vitals": "BP 132/80, HR 70, RR 16, Temp 36.7°C"
+            "ui_risk_color": "yellow"
           },
           "assessment": {
-            "impression": "Stable RA on MTX",
-            "differential": []
+            "impression": "Elevated ALT of 78 U/L, concerning for hepatocellular inflammation, potentially related to Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD). Methotrexate initiation deferred pending further investigation.",
+            "differential": [
+              "Hepatocellular inflammation",
+              "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD)",
+              "Viral Hepatitis",
+              "Autoimmune Hepatitis",
+              "Hemochromatosis",
+              "Alpha-1-Antitrypsin Deficiency"
+            ]
+          },
+          "chief_complaint": "Review of abnormal liver function tests and planning for rheumatoid arthritis treatment.",
+          "hpi": "Patient reports making small changes to diet and activity since the last visit, with an approximate 0.5–1 kg weight loss. The elevated ALT of 78 U/L was reviewed. Potential Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD) was discussed as a contributing factor. Patient was educated on the significance of these results and the potential risk for liver injury if starting Methotrexate without further clearance.",
+          "medications_prior": [],
+          "physical_exam": {
+            "general": "Vital Signs: BP 142/90 mmHg (sitting), HR 80 bpm, RR 16/min, Temp 36.7°C, SpO₂ 99% on room air. Anthropometrics: Weight 85.5 kg (BMI 31.8 kg/m²).",
+            "msk": "",
+            "other_systems": ""
           },
           "plan": {
             "investigations": {
+              "imaging": [],
               "labs": [
-                "CBC",
-                "LFTs",
-                "Renal function (Creatinine, eGFR)"
+                "HBsAg",
+                "HCV Ab",
+                "ANA",
+                "ASMA",
+                "Ferritin",
+                "TIBC",
+                "Full liver panel"
               ]
             },
             "management": {
-              "medications_started": [],
-              "education": [
-                "Continue Methotrexate 10 mg weekly and Folic Acid 5 mg weekly",
-                "Strict alcohol avoidance while on MTX",
-                "Smoking cessation encouraged; referral offered"
-              ]
+              "follow_up": "Return for follow-up in 4 weeks to review investigation results. Continued monitoring and lifestyle modifications advised.",
+              "medications_started": []
             }
-          }
+          },
+          "reason_for_visit": "Review of abnormal liver function tests and planning for rheumatoid arthritis treatment."
         },
         "patient": {
           "name": "Sarah Miller",
           "sex": "Female",
-          "age_at_first_encounter": 53
+          "age_at_first_encounter": 43
         },
-        "encounterIndex": 1,
-        "dataSource": "Medilogik"
+        "encounterIndex": 2,
+        "dataSource": "BigHand"
       }
     },
     "createdAt": "2025-10-15T08:00:00.000Z",
@@ -737,92 +730,70 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #3 - Outpatient (Elevated BP)",
+      "title": "Encounter #3 - Outpatient Follow-up",
       "component": "SingleEncounterDocument",
       "props": {
         "encounter": {
           "encounter_no": 3,
           "meta": {
             "visit_type": "Outpatient",
-            "date_time": "2018-09-05T10:00:00",
+            "date_time": "2024-05-06T09:00:10",
             "provider": {
-              "name": null,
-              "specialty": "General Practice"
+              "name": "Dr. P. Stevens",
+              "specialty": "Unknown"
             },
-            "ui_risk_color": "green"
-          },
-          "reason_for_visit": "Routine review; elevated blood pressure",
-          "chief_complaint": "Raised BP readings at home",
-          "hpi": "BP 145–155/90–95; asymptomatic. RA well-controlled on MTX 10 mg but specialist advised increase to 20 mg for mild flares. Quit smoking in 2017; continues 1–2 beers/day.",
-          "medications_prior": [
-            {
-              "name": "Methotrexate",
-              "dose": "10 mg",
-              "route": "PO",
-              "frequency": "weekly"
-            },
-            {
-              "name": "Folic Acid",
-              "dose": "5 mg",
-              "route": "PO",
-              "frequency": "weekly"
-            },
-            {
-              "name": "Paracetamol",
-              "dose": null,
-              "route": "PO",
-              "frequency": "PRN"
-            }
-          ],
-          "physical_exam": {
-            "general": "Well",
-            "vitals": "BP 148/92, HR 72, RR 16, Temp 36.8°C",
-            "cvs": "Normal S1/S2, no murmurs",
-            "msk": "No active synovitis"
+            "ui_risk_color": "yellow"
           },
           "assessment": {
-            "impression": "New essential hypertension; RA stable; plan MTX dose increase",
-            "differential": []
+            "impression": "Follow-up regarding normalization of liver function tests and initiation of Methotrexate for rheumatoid arthritis management. Normalization of LFTs with ALT at 35 U/L. Negative workup for chronic liver conditions. Likely transient elevation possibly related to MASLD. Cleared for Methotrexate initiation.",
+            "differential": [
+              "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD)",
+              "Acute self-limiting liver episode"
+            ]
+          },
+          "chief_complaint": "Follow-up regarding normalization of liver function tests (LFTs) and potential initiation of Methotrexate for rheumatoid arthritis management.",
+          "hpi": "Since the previous review, Sarah reports increased adherence to dietary advice and gentle walking most days, noting a ~1.5 kg weight loss since March. Comprehensive hepatitis workup (viral, autoimmune, metabolic) returned negative. ALT has decreased to 35 U/L, suggesting transient elevation. Patient is considered low-risk for MTX initiation.",
+          "medications_prior": [],
+          "physical_exam": {
+            "general": "Vital Signs: BP 140/88 mmHg (sitting), HR 78 bpm, RR 15/min, Temp 36.6°C, SpO₂ 99% on room air.",
+            "msk": "",
+            "other_systems": "Anthropometrics: Weight 84 kg (BMI 31.2 kg/m²)."
           },
           "plan": {
             "investigations": {
+              "imaging": [],
               "labs": [
-                "CBC",
-                "LFTs",
-                "Creatinine",
-                "eGFR"
+                "LFTs every 6 weeks",
+                "FBC every 6 weeks"
               ]
             },
             "management": {
+              "follow_up": "Follow-up appointment set for early August to review treatment response, adherence to monitoring, and adjust plan. Instructed to begin Methotrexate on 2024-06-03. Emphasized adherence to strict 6-weekly monitoring schedule.",
               "medications_started": [
                 {
-                  "name": "Lisinopril",
-                  "dose": "10 mg",
-                  "route": "PO",
-                  "frequency": "daily"
+                  "dose": "7.5mg",
+                  "frequency": "weekly",
+                  "name": "Methotrexate",
+                  "route": "Unknown"
                 },
                 {
-                  "name": "Methotrexate",
-                  "dose": "20 mg",
-                  "route": "PO",
-                  "frequency": "weekly"
+                  "dose": "5mg",
+                  "frequency": "weekly",
+                  "name": "Folic acid",
+                  "route": "Unknown"
                 }
-              ],
-              "education": [
-                "Lisinopril side effects (e.g., cough); monitor BP regularly",
-                "Reinforce alcohol moderation with higher MTX dose",
-                "Continue Folic Acid the day after MTX"
               ]
             }
-          }
+          },
+          "reason_for_visit": "Follow-up for liver function tests and rheumatoid arthritis management."
         },
         "patient": {
           "name": "Sarah Miller",
           "sex": "Female",
-          "age_at_first_encounter": 53
+          "age_at_first_encounter": 43
         },
-        "encounterIndex": 2,
-        "dataSource": "Viper"
+        "encounterIndex": 3,
+        "dataSource": "Electronic Health Record"
       }
     },
     "createdAt": "2025-10-15T08:00:00.000Z",
@@ -839,85 +810,67 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #4 - Outpatient (Chronic Review)",
+      "title": "Encounter #4 - Outpatient",
       "component": "SingleEncounterDocument",
       "props": {
         "encounter": {
           "encounter_no": 4,
           "meta": {
             "visit_type": "Outpatient",
-            "date_time": "2021-03-15T09:00:00",
+            "date_time": "2024-06-03T11:30:55",
             "provider": {
-              "name": null,
-              "specialty": "General Practice"
+              "name": "Dr. P. Stevens",
+              "specialty": "Unknown"
             },
-            "ui_risk_color": "green"
-          },
-          "reason_for_visit": "Routine chronic disease review (RA, HTN)",
-          "chief_complaint": "Routine follow-up for RA/HTN",
-          "hpi": "Overall well; RA controlled on MTX 20 mg; BP controlled on Lisinopril; occasional low back pain; eGFR mildly declined but stable; continues 1–2 beers/day.",
-          "medications_prior": [
-            {
-              "name": "Methotrexate",
-              "dose": "20 mg",
-              "route": "PO",
-              "frequency": "weekly"
-            },
-            {
-              "name": "Folic Acid",
-              "dose": "5 mg",
-              "route": "PO",
-              "frequency": "weekly (next day after MTX)"
-            },
-            {
-              "name": "Lisinopril",
-              "dose": "10 mg",
-              "route": "PO",
-              "frequency": "daily"
-            },
-            {
-              "name": "Paracetamol",
-              "dose": null,
-              "route": "PO",
-              "frequency": "PRN"
-            }
-          ],
-          "physical_exam": {
-            "general": "Fit/well",
-            "vitals": "BP 130/82, HR 68, RR 16, Temp 36.7°C",
-            "msk": "No synovitis",
-            "abdomen": "Soft, non-tender"
+            "ui_risk_color": "yellow"
           },
           "assessment": {
-            "impression": "Stable RA; controlled HTN; chronic mild low back pain; mild CKD (stable)",
+            "impression": "Initiation of Methotrexate for Rheumatoid Arthritis management.",
             "differential": []
+          },
+          "chief_complaint": "Initiation of Disease-Modifying Anti-Rheumatic Drug (DMARD) - Methotrexate (MTX) for Rheumatoid Arthritis (RA) management.",
+          "hpi": "Sarah Miller presents for the initiation of Methotrexate treatment for RA. She reports her joint pain has been stable but remains a significant source of discomfort, affecting her daily activities. A thorough review of her medical history, medication adherence, and lifestyle was conducted. The patient confirms receipt and comprehension of the Methotrexate informational leaflet, indicating understanding of the treatment regimen and potential adverse effects. The decision to commence Methotrexate was made following normalization of liver function tests (LFTs) as of May 6, 2024. The patient reiterated understanding of the importance of strict compliance with the monitoring schedule due to the severe hepatotoxicity risk associated with Methotrexate.",
+          "medications_prior": [],
+          "physical_exam": {
+            "general": "Vital Signs: BP 138/86 mmHg (sitting), HR 80 bpm, RR 15/min, Temp 36.7°C, SpO₂ 98% on room air. Anthropometrics: Weight 84 kg (BMI 31.2 kg/m²). Weight stable compared with early May.",
+            "msk": "",
+            "other_systems": ""
           },
           "plan": {
             "investigations": {
+              "imaging": [],
               "labs": [
-                "CBC",
-                "LFTs",
-                "Creatinine",
-                "eGFR"
+                "LFTs every six weeks",
+                "Full Blood Count (FBC) every six weeks"
               ]
             },
             "management": {
-              "medications_started": [],
-              "education": [
-                "Continue MTX 20 mg weekly, Folic Acid 5 mg weekly, Lisinopril 10 mg daily",
-                "Hydration importance with CKD and ACE inhibitor",
-                "Alcohol moderation reinforced"
+              "follow_up": "First LFT/FBC evaluation scheduled for July 15, 2024. Regular monitoring every six weeks for the next 6 months. Patient to contact clinic immediately if severe nausea, vomiting, or jaundice occur.",
+              "medications_started": [
+                {
+                  "dose": "7.5mg",
+                  "frequency": "once weekly",
+                  "name": "Methotrexate",
+                  "route": "orally"
+                },
+                {
+                  "dose": "5mg",
+                  "frequency": "weekly",
+                  "name": "Folic Acid",
+                  "route": "orally"
+                }
               ]
             }
-          }
+          },
+          "reason_for_visit": "Initiation of Methotrexate for Rheumatoid Arthritis management."
         },
         "patient": {
           "name": "Sarah Miller",
           "sex": "Female",
-          "age_at_first_encounter": 53
+          "age_at_first_encounter": 43
         },
-        "encounterIndex": 3,
-        "dataSource": "ICE"
+        "encounterIndex": 4,
+        "dataSource": "Medilogik"
       }
     },
     "createdAt": "2025-10-15T08:00:00.000Z",
@@ -934,83 +887,63 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #5 - Outpatient (Sinusitis)",
+      "title": "Encounter #5 - Outpatient",
       "component": "SingleEncounterDocument",
       "props": {
         "encounter": {
           "encounter_no": 5,
           "meta": {
             "visit_type": "Outpatient",
-            "date_time": "2025-06-15T10:30:00",
+            "date_time": "2024-07-15T14:00:30",
             "provider": {
-              "name": null,
-              "specialty": "General Practice"
+              "name": "Dr. P. Stevens",
+              "specialty": "Rheumatology"
             },
-            "ui_risk_color": "amber",
-            "ui_flags": [
-              "New potentially hepatotoxic/interactive drug (TMP-SMX) started while on MTX"
-            ]
-          },
-          "reason_for_visit": "Sinusitis symptoms",
-          "chief_complaint": "Facial pain, congestion, purulent nasal discharge",
-          "hpi": "5 days nasal congestion, facial pain, headache, green discharge; worse bending forward; afebrile; RA controlled; adherent to meds; requests antibiotics.",
-          "medications_prior": [
-            {
-              "name": "Methotrexate",
-              "dose": "20 mg",
-              "route": "PO",
-              "frequency": "weekly with Folic Acid next day"
-            },
-            {
-              "name": "Lisinopril",
-              "dose": "10 mg",
-              "route": "PO",
-              "frequency": "daily"
-            },
-            {
-              "name": "Paracetamol",
-              "dose": null,
-              "route": "PO",
-              "frequency": "PRN"
-            }
-          ],
-          "physical_exam": {
-            "general": "NAD",
-            "ent": "Maxillary tenderness; congested nasal mucosa with mucopurulent discharge; oropharynx clear",
-            "vitals": "BP 135/85, HR 72, RR 16, Temp 37.0°C"
+            "ui_risk_color": "yellow"
           },
           "assessment": {
-            "impression": "Acute bacterial sinusitis; RA/HTN/CKD stable",
-            "differential": []
+            "impression": "Methotrexate-induced Drug-Induced Liver Injury (DILI) presenting with elevated ALT (185 U/L, 4.6x ULN), with new intermittent nausea and increased fatigue. Rheumatoid arthritis symptoms are improving on Methotrexate.",
+            "differential": [
+              "Methotrexate-induced Drug-Induced Liver Injury (DILI)",
+              "Underlying MASLD risk factors"
+            ]
+          },
+          "chief_complaint": "Routine Methotrexate (MTX) monitoring. Reports of new intermittent nausea and increased fatigue.",
+          "hpi": "Sarah Miller, a 43-year-old female, presents for routine Methotrexate monitoring. She reports ~1 kg unintentional weight loss over the past month, attributed to reduced appetite and intermittent nausea, primarily in the evenings. No vomiting or diarrhea. Fatigue levels have returned to pre-MTX initiation severity. Rheumatoid arthritis symptoms have significantly improved with diminished joint pain and increased daily function since starting Methotrexate. Recent labs show ALT elevated to 185 U/L (4.6x ULN).",
+          "medications_prior": [],
+          "physical_exam": {
+            "general": "Vital Signs: BP 144/92 mmHg (sitting), HR 88 bpm, RR 16/min, Temp 36.8°C, SpO₂ 98% on room air.",
+            "msk": "Joint pain has diminished.",
+            "other_systems": "Weight 83 kg (BMI 30.8 kg/m²)."
           },
           "plan": {
             "investigations": {
-              "labs": []
+              "imaging": [],
+              "labs": [
+                "Repeat liver function tests in four weeks"
+              ]
             },
             "management": {
+              "follow_up": "Follow up in four weeks. Advised to remain vigilant for any worsening of symptoms or new signs of liver dysfunction such as jaundice, further exacerbated fatigue, or darker urine. Ensure adherence to adjusted Methotrexate regimen. Attend Hepatology consultation.",
               "medications_started": [
                 {
-                  "name": "Trimethoprim-Sulfamethoxazole",
-                  "dose": "800/160 mg",
-                  "route": "PO",
-                  "frequency": "BID",
-                  "duration_days": 10
+                  "dose": "5mg",
+                  "frequency": "weekly",
+                  "name": "Methotrexate",
+                  "route": ""
                 }
-              ],
-              "education": [
-                "Potential side effects of TMP-SMX",
-                "Seek care if symptoms worsen or new symptoms develop"
               ]
             }
-          }
+          },
+          "reason_for_visit": "Routine Methotrexate monitoring and management of new symptoms of nausea and fatigue, and elevated liver enzymes."
         },
         "patient": {
           "name": "Sarah Miller",
           "sex": "Female",
-          "age_at_first_encounter": 53
+          "age_at_first_encounter": 43
         },
-        "encounterIndex": 4,
-        "dataSource": "BigHand"
+        "encounterIndex": 5,
+        "dataSource": "Nervecentre"
       }
     },
     "createdAt": "2025-10-15T08:00:00.000Z",
@@ -1027,368 +960,379 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #6 - Emergency Visit",
+      "title": "Encounter #6 - Urgent Review",
       "component": "SingleEncounterDocument",
       "props": {
         "encounter": {
           "encounter_no": 6,
           "meta": {
-            "visit_type": "ED",
-            "date_time": "2025-06-21T14:00:00",
+            "visit_type": "Emergency Department (ED)",
+            "date_time": "2024-08-12T14:00:00",
             "provider": {
-              "name": "Dr. Sarah Chen",
-              "specialty": "Emergency Medicine"
+              "name": "Dr. P. Stevens",
+              "specialty": "General Practitioner"
             },
-            "ui_risk_color": "red",
-            "event_tags": [
-              "Suspected DILI",
-              "Potential MTX toxicity",
-              "Acute liver failure risk"
+            "ui_risk_color": "red"
+          },
+          "assessment": {
+            "impression": "Severe, Acute Drug-Induced Liver Injury (DILI) with developing cholestasis.",
+            "differential": [
+              "Mechanical obstruction (e.g., choledocholithiasis)"
             ]
           },
-          "reason_for_visit": "Severe fatigue, jaundice, epigastric pain, confusion",
-          "chief_complaint": "Severe fatigue, jaundice, epigastric pain, confusion",
-          "hpi": "63-year-old female with 24h severe fatigue, jaundice, epigastric pain; 4–6 days prior noted fatigue, mouth ulcers, nausea; started TMP-SMX 6 days ago for sinusitis",
+          "chief_complaint": "Urgent review for new onset jaundice, dark urine, and constant, severe nausea leading to anorexia.",
+          "hpi": "Patient presented with new onset jaundice, dark urine, and severe nausea leading to anorexia. Initial ED vital signs: BP 132/88 mmHg (sitting), HR 102 bpm, RR 18/min, Temp 37.3°C, SpO₂ 97% on room air. Weight 81.5 kg (BMI 30.3 kg/m²). Patient reported significant weight loss of approximately 4.5 kg over the past 4–6 weeks due to nausea and anorexia. Jaundice noted upon waking, dark urine observed. Symptoms are severe and persistent. Laboratory analysis revealed significantly elevated ALT levels and bilirubin of 110 μmol/L, indicating severe cholestasis. INR was stable at 1.1.",
           "medications_prior": [
             {
               "name": "Methotrexate",
-              "dose": "20 mg",
-              "route": "PO",
-              "frequency": "weekly"
-            },
-            {
-              "name": "Trimethoprim-Sulfamethoxazole",
-              "dose": "800/160 mg",
-              "route": "PO",
-              "frequency": "BID"
+              "route": "Oral"
             }
           ],
           "physical_exam": {
-            "general": "Jaundiced, fatigued, drowsy; disoriented to time/place",
-            "abdomen": "Soft, non-distended; mild epigastric tenderness",
-            "cns": "Arousable; PERL; slow commands; asterixis present; GCS 13"
-          },
-          "assessment": {
-            "impression": "Acute liver injury likely DILI and/or severe methotrexate toxicity",
-            "differential": [
-              "Severe methotrexate toxicity",
-              "TMP-SMX–induced DILI",
-              "Acute viral hepatitis"
-            ]
+            "general": "Jaundice noted. Patient appears anorectic."
           },
           "plan": {
             "investigations": {
+              "imaging": [
+                "USG Abdomen Complete - STAT (Accession Number: USG-240812-001). Report indicates severe MASH/MASLD, no mechanical obstruction. Impression: Severe hepatocellular DILI superimposed on advanced chronic liver disease (MASH)."
+              ],
               "labs": [
-                "CBC",
-                "CMP",
-                "Methotrexate level (urgent)",
-                "HAV IgM",
-                "HBsAg"
+                "ALT levels elevated",
+                "Bilirubin levels elevated to 110 μmol/L",
+                "INR stable at 1.1"
               ]
             },
             "management": {
-              "medications_started": [],
-              "education": [
-                "Immediate ICU admission",
-                "N-acetylcysteine protocol"
+              "follow_up": "Close follow-up post-hospital discharge to reassess liver function and re-evaluate RA treatment plan, considering contraindication for future Methotrexate use.",
+              "medications_started": [
+                {
+                  "name": "N-acetylcysteine (NAC)",
+                  "route": "IV Infusion (3-bag protocol, 85kg weight)"
+                }
               ]
             }
-          }
+          },
+          "reason_for_visit": "New onset jaundice, dark urine, severe nausea, and anorexia, concerning for acute liver injury."
         },
         "patient": {
           "name": "Sarah Miller",
           "sex": "Female",
-          "age_at_first_encounter": 53
+          "age_at_first_encounter": 43
         },
-        "encounterIndex": 5,
-        "dataSource": "VueExplore"
+        "encounterIndex": 1,
+        "dataSource": "ICE/VueExplore"
       }
     },
     "createdAt": "2025-10-14T16:55:00.004Z",
     "updatedAt": "2025-10-14T16:55:00.004Z"
   },
   {
-    "id": "raw-nervecentre-encounter-1",
+    "id": "dashboard-item-1759906300004-single-encounter-7",
     "type": "component",
-    "x": -2250,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
+    "x": 2800,
+    "y": 800,
+    "width": 500,
+    "height": 600,
+    "componentType": "SingleEncounterDocument",
     "color": "#ffffff",
-    "description": "Raw Nervecentre EPR data for Encounter 1",
+    "description": "",
     "content": {
-      "title": "Nervecentre - Encounter 1",
-      "component": "RawClinicalNote",
+      "title": "Encounter #7 - Inpatient Hepatology Ward B",
+      "component": "SingleEncounterDocument",
       "props": {
-        "encounterNumber": 1,
-        "date": "2015-08-10",
-        "visitType": "Outpatient Rheumatology",
-        "provider": "Dr. Elizabeth Hayes",
-        "specialty": "Rheumatology",
-        "rawText": "– 2015-08-10, Outpatient Rheumatology (Initial Consult)\nPatient: Sarah Miller, 53-year-old female, retired carpenter.\nClinician: Dr. Elizabeth Hayes, Rheumatology.\nChief Complaint: 6-month history of bilateral hand and foot joint pain/swelling.\nHistory of Present Illness: “Progressive, symmetrical pain and swelling in MCPs and PIPs of both hands and 2nd–3rd MTPs of both feet. Severe morning stiffness >1 hour daily and significant fatigue. Tried ibuprofen 200 mg PRN with minimal relief. Symptoms worse in mornings, slightly better with activity. Denies fevers, rash, chest pain, respiratory or GI symptoms, or recent infections.”\nPast Medical History: No liver disease. Appendectomy in childhood. No other chronic illnesses.\nMedication History: Occasional Ibuprofen 200 mg as needed.\nAllergies: None (NKDA).\nFamily History: Father with hypertension and type 2 diabetes; mother with osteoarthritis. No known autoimmune or liver disease in family.\nSocial History: Drinks ~1–2 beers/day (7–14 units/week) routinely; denies bingeing. Smokes ~1 pack/day (35 pack-year history). Retired carpenter (exposure to wood dust/solvents). No IV drug use. Married, monogamous.\nReview of Systems: Negative for weight loss, fever, or rash. Cardiac and respiratory: no chest pain or cough. GI: no nausea/vomiting/diarrhea. Neuro: no headaches or focal deficits. MSK: (as above).\nPhysical Exam: Alert, fatigued but NAD. Vitals WNL. HEENT normal. Neck supple, no lymphadenopathy. Heart: RRR, no murmurs. Lungs clear. Abdomen soft, NTND, no hepatosplenomegaly. Skin: no rash or jaundice. MSK: Hands – visibly swollen, tender MCP joints (2nd–3rd) and PIP joints (2nd–3rd) bilaterally; similar swelling in both 2nd–3rd MTP joints. Palpable synovitis and warmth. Reduced grip strength. Range-of-motion limited by pain. No joint deformities yet. No subcutaneous nodules.\nAssessment: Likely Seropositive Rheumatoid Arthritis, active. Differential: Psoriatic arthritis, SLE, gout/pseudogout.\nPlan:\nInvestigations: Order Rheumatoid Factor, anti-CCP IgG, ESR, CRP, CBC with diff, LFTs (AST, ALT, ALP, bilirubin), creatinine/eGFR, Hep B serologies (HBsAg, anti-HBc total) and Hep C antibody.\nMedications: Start Methotrexate 10 mg PO once weekly + Folic Acid 5 mg PO weekly (to be taken the day after MTX). Discuss MTX side effects.\nPatient Education: Explained RA pathophysiology, chronic nature, and treatment goals. Counseling on MTX: common side effects (malaise, GI upset, mucositis) and serious risks (hepatotoxicity, bone marrow suppression, lung toxicity). Emphasized need for strict alcohol avoidance with MTX. Advised regular blood test monitoring. Reinforced smoking cessation (“greatest modifiable risk”).\nReferrals: Rheumatology nurse to provide MTX information/monitoring. Smoking cessation support provided.\nFollow-Up: Return to Rheumatology clinic in 3 months. GP to check CBC, LFTs, renal, ESR/CRP in 4 weeks. “Red flag” symptoms (fever, severe fatigue, rash, jaundice) to prompt urgent evaluation.\nCoding: ICD-10 M05.9 (Seropositive RA, unspecified); CPT 99204 (New patient, moderate complexity).",
-        "dataSource": "Nervecentre EPR"
+        "encounter": {
+          "encounter_no": 7,
+          "meta": {
+            "visit_type": "Inpatient",
+            "date_time": "2024-08-15T10:00:48",
+            "provider": {
+              "name": "Dr. R. Sharma",
+              "specialty": "Consultant Hepatologist"
+            },
+            "ui_risk_color": "yellow"
+          },
+          "assessment": {
+            "impression": "Severe Drug-Induced Liver Injury (DILI) secondary to Methotrexate, with a RUCAM score of 9/10, indicating a high likelihood of causation. No features of Acute-on-Chronic Liver Failure (ACLF). Underlying Metabolic Associated Steatotic Hepatitis (MASH).",
+            "differential": []
+          },
+          "chief_complaint": "Severe Drug-Induced Liver Injury (DILI)",
+          "hpi": "The patient is reviewed on Day 3 of her hospital admission following severe DILI. Methotrexate was stopped immediately upon recognizing it as the causative agent. Sarah remains significantly jaundiced; however, nausea has shown slight improvement since admission. Vital neurological signs include a stable Glasgow Coma Scale (GCS) score of 15, with no evidence of hepatic encephalopathy (HE); absence of asterixis or cognitive impairment. The ALT level, though elevated at 420 U/L, is beginning to decline, suggesting a positive response to the cessation of Methotrexate. Crucially, the INR remains stable at 1.1, indicating preserved liver synthetic function. These clinical findings collectively confirm a diagnosis of severe, cholestatic DILI in a patient with underlying Metabolic Associated Steatotic Hepatitis (MASH), markedly susceptible to hepatotoxic insults.",
+          "medications_prior": [],
+          "physical_exam": {
+            "general": "Sarah exhibits pronounced jaundice, evidenced by a total bilirubin level of 190 μmol/L. Despite this, she appears alert and reports moderate comfort under current care measures. Vital Signs (ward review): BP 128/82 mmHg, HR 96 bpm, RR 16/min, Temp 37.0°C, SpO₂ 97% on room air. Anthropometrics: Weight 81 kg (BMI 30.1 kg/m²). No significant interval weight change since admission.",
+            "msk": "",
+            "other_systems": "CNS Examination: She is fully oriented, demonstrating no neurological deficits. GCS remains a reassuring 15 with negative neurological signs including asterixis, tremor, and speech abnormalities. Cardio/Pulmonary: Vital signs are stable with no indications of fluid overload, pulmonary distress, or hepatorenal syndrome. Abdominal Examination: The abdomen is soft and non-tender. The liver edge is not easily palpable due to Sarah's body habitus, yet no tenderness is detected upon examination."
+          },
+          "plan": {
+            "investigations": {
+              "imaging": [
+                "Fibroscan in three months"
+              ],
+              "labs": [
+                "Daily INR evaluations until ALT levels fall below 150 U/L",
+                "Neurological assessments every four hours"
+              ]
+            },
+            "management": {
+              "follow_up": "Arrange a Fibroscan (Liver Stiffness Measurement) in three months to assess fibrosis arising from chronic MASH and the acute DILI event. Coordinate with Rheumatology for the initiation of a non-hepatotoxic DMARD alternative, such as Hydroxychloroquine or a biologic, to manage RA without compromising liver health.",
+              "medications_started": [
+                {
+                  "dose": "500mg",
+                  "frequency": "twice daily",
+                  "name": "Ursodeoxycholic Acid (UDCA)",
+                  "route": ""
+                },
+                {
+                  "dose": "",
+                  "frequency": "",
+                  "name": "Folic Acid",
+                  "route": ""
+                }
+              ]
+            }
+          },
+          "reason_for_visit": "Review on Day 3 of hospital admission following severe DILI."
+        },
+        "patient": {
+          "name": "Sarah Miller",
+          "sex": "Female",
+          "age_at_first_encounter": 43
+        },
+        "encounterIndex": 7,
+        "dataSource": "Nervecentre"
       }
     },
-    "createdAt": "2025-10-17T03:32:13.025Z",
-    "updatedAt": "2025-10-17T03:32:13.025Z"
-  },
-  {
-    "id": "raw-nervecentre-encounter-2",
-    "type": "component",
-    "x": -1650,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "Raw Nervecentre EPR data for Encounter 2",
-    "content": {
-      "title": "Nervecentre - Encounter 2",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 2,
-        "date": "2016-02-20",
-        "visitType": "Outpatient GP",
-        "rawText": "– 2016-02-20, Outpatient GP (Methotrexate Monitoring)\nPatient: Same.\nPurpose: Routine RA follow-up and MTX monitoring.\nHistory: Patient reports much better. Joint pain/stiffness mostly resolved on MTX 10 mg weekly. “No mouth sores or nausea. Feels more energetic.” Occasional mild ache, no synovitis. Adherent with MTX and folate. Denies new meds or problems.\nMedications: Methotrexate 10 mg/WK, Folic Acid 5 mg/WK, Paracetamol PRN.\nSocial Update: Drinks only on weekends (~4–8 units/week); counselled to avoid alcohol entirely while on MTX. Still smokes ~15 cigarettes/day; smoking cessation counseling repeated. Offered quit-smoking program referral. No changes in occupation.\nPhysical Exam: Well-appearing, no jaundice. MSK: Hands – no tender or swollen joints; mild previous ulnar deviation. Vitals: BP 132/80, HR 70, afebrile. Lungs & heart normal. Abdomen NT, no edema.\nAssessment: Stable Rheumatoid Arthritis on MTX.\nPlan: Continue Methotrexate 10 mg weekly + Folic Acid 5 mg. Lab orders for today: CBC with diff, LFTs, creatinine (MTX monitoring). Reinforce strict alcohol abstinence and smoking cessation. Next review in 3 months or as needed.\nCoding: SNOMED 69896004 (Rheumatoid arthritis).",
-        "dataSource": "Nervecentre EPR"
-      }
-    },
-    "createdAt": "2025-10-17T03:32:13.025Z",
-    "updatedAt": "2025-10-17T03:32:13.025Z"
-  },
-  {
-    "id": "raw-nervecentre-encounter-3",
-    "type": "component",
-    "x": -1050,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "Raw Nervecentre EPR data for Encounter 3",
-    "content": {
-      "title": "Nervecentre - Encounter 3",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 3,
-        "date": "2018-09-05",
-        "visitType": "Outpatient GP",
-        "rawText": "– 2018-09-05, Outpatient GP (Routine Check – Hypertension Noted)\nPurpose: Routine chronic disease check (RA follow-up) with incidental hypertension noted. Rheum had suggested increasing MTX dose due to mild flares. Patient quit smoking in 2017 (20 PY total). Reports 1–2 beers/day.\nMedications: Methotrexate 10 mg/WK, Folic Acid 5 mg/WK, Paracetamol PRN.\nSocial History: Alcohol ~7–14 units/week. Smoking ceased in 2017.\nExam: Vitals: BP 148/92, HR 72, afebrile. Heart & lungs normal. MSK: no active synovitis. Abdomen soft, NT.\nAssessment: New Essential Hypertension. RA remains quiescent but consider MTX uptitration soon.\nPlan: Start Lisinopril 10 mg PO daily for BP. Increase Methotrexate to 20 mg weekly (adjust prescription accordingly) with continued Folic Acid 5 mg. Repeat CBC/LFTs/renal in 4 weeks. Counsel on Lisinopril potential cough. Continue alcohol moderation advice. Follow up in 4 weeks for hypertension and MTX response.\nCoding: SNOMED 383410000 (Essential hypertension), 69896004 (Rheumatoid arthritis).",
-        "dataSource": "Nervecentre EPR"
-      }
-    },
-    "createdAt": "2025-10-17T03:32:13.025Z",
-    "updatedAt": "2025-10-17T03:32:13.025Z"
-  },
-  {
-    "id": "raw-nervecentre-encounter-4",
-    "type": "component",
-    "x": -450,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "Raw Nervecentre EPR data for Encounter 4",
-    "content": {
-      "title": "Nervecentre - Encounter 4",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 4,
-        "date": "2021-03-15",
-        "visitType": "Outpatient GP",
-        "rawText": "– 2021-03-15, Outpatient GP (Chronic Disease Review)\nPurpose: 3-year rheum/HTN/CKD review. Patient feels well. No RA flares on MTX 20 mg weekly. BP controlled on Lisinopril. Complains of mild chronic low back pain (managed with exercise and Occasional paracetamol). Continues to drink 1–2 beers/day, has felt healthy otherwise.\nMedications: Methotrexate 20 mg/WK, Folic Acid 5 mg/WK, Lisinopril 10 mg daily, Paracetamol PRN.\nSocial History: Alcohol ~7–14 units/week. Smoking quit since 2017.\nExam: Fit appearing. Vitals: BP 130/82, HR 68, afebrile. MSK: No active synovitis; joints stable. Abdomen soft, NT; no edema.\nAssessment: Chronic stable conditions: Rheumatoid arthritis (controlled), Hypertension (controlled), Mild chronic low back pain, Stage 3 CKD (eGFR ~55, stable).\nPlan: Continue all current medications. Routine labs ordered: CBC, LFTs, creatinine, eGFR. Advise hydration (due to CKD/ACEi) and maintain limited alcohol. Discuss low back care (exercise/OTC pain relief). Next review in 6 months unless problems.\nCoding: SNOMED 69896004 (Rheumatoid arthritis), 383410000 (Hypertension), 23643009 (Chronic kidney disease, mild).",
-        "dataSource": "Nervecentre EPR"
-      }
-    },
-    "createdAt": "2025-10-17T03:32:13.025Z",
-    "updatedAt": "2025-10-17T03:32:13.025Z"
-  },
-  {
-    "id": "raw-nervecentre-encounter-5",
-    "type": "component",
-    "x": 150,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "Raw Nervecentre EPR data for Encounter 5",
-    "content": {
-      "title": "Nervecentre - Encounter 5",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 5,
-        "date": "2025-06-15",
-        "visitType": "Outpatient GP",
-        "rawText": "– 2025-06-15, Outpatient GP (Sinusitis Symptoms)\nPurpose: Patient reports 5 days of sinus congestion/headache. Fever absent. He believes “cold” is persistent; requested antibiotics. No new issues otherwise; RA stable.\nMedications: Methotrexate 20 mg/WK (Mon), Folic Acid 5 mg (Tue), Lisinopril 10 mg daily, Paracetamol PRN.\nSocial History: Alcohol 7–14 units/week, no recent changes. Ex-smoker (quit 2017, 20 PY).\nExam: Well. ENT: forehead pain on palpation; nasal mucosa red, green discharge. Oropharynx clear. No sinus tenderness except maxillary. Vitals: BP 135/85, T 37.0°C, SpO₂ 98%.\nAssessment/Plan: Likely Acute Bacterial Sinusitis. Prescribe Trimethoprim/Sulfa DS 800/160 mg PO BID ×10 days. Advise symptomatic care (saline spray, steam, analgesia). Warn to complete ABX and seek care if worsens or new symptoms. Continue RA/HTN meds unchanged. Review if symptoms persist.\nCoding: SNOMED 22285007 (Acute sinusitis).",
-        "dataSource": "Nervecentre EPR"
-      }
-    },
-    "createdAt": "2025-10-17T03:32:13.025Z",
-    "updatedAt": "2025-10-17T03:32:13.025Z"
-  },
-  {
-    "id": "raw-nervecentre-encounter-6",
-    "type": "component",
-    "x": 750,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "Raw Nervecentre EPR data for Encounter 6",
-    "content": {
-      "title": "Nervecentre - Encounter 6",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 6,
-        "date": "2025-06-21",
-        "visitType": "Emergency Dept",
-        "provider": "Dr. Sarah Chen",
-        "specialty": "Emergency Medicine",
-        "rawText": "– 2025-06-21, Emergency Dept (Severe Jaundice & Fatigue)\nPatient: Sarah Miller, 63 y/o. Brought in by wife for acute jaundice, confusion, and epigastric pain.\nClinician: Dr. Sarah Chen, Emergency Medicine.\nPresenting Complaint: 24-hour history of extreme tiredness, yellow eyes/skin, upper abdomen pain, nausea. Recent TMP-SMX for sinusitis (started 6 days ago). Mild mouth ulcers noted 4–6 days ago. No fever or GI bleeding. No other new meds.\nPast History: Rheumatoid arthritis (10 years, on MTX), Hypertension (7 years), chronic back pain, CKD Stage 3 (eGFR ~55). No known liver disease. Appendectomy as a child.\nMedications: MTX 20 mg weekly (Mon), Folic Acid 5 mg weekly (Tue), Lisinopril 10 mg daily, TMP-SMX 800/160 mg BID ×6d, Paracetamol PRN. Allergies: Penicillin (rash).\nReview of Systems: Significant for nausea, anorexia, dark urine. No cough/dyspnea. Altered mental status (mild confusion).\nPhysical Exam: Ill, jaundiced, drowsy (GCS 13). Vitals: BP 142/90, HR 75, RR 18, T 36.9°C. Neuro: Arousable but disoriented; asterixis present. Abd: Soft, mild epigastric tenderness, no HSM or ascites. Skin: Generalized icterus, oral mucosa with small ulcers. No rash or bruises.\nImpression: Acute severe liver injury (likely drug-induced: MTX toxicity ± TMP-SMX). Possible methotrexate overdose or fulminant hepatitis. DDX: acute viral hepatitis, Wilson’s, sepsis.\nPlan: Admit to ICU. STAT labs: CBC (for cytopenias), Comprehensive Metabolic Panel (LFTs, renal), PT/INR, Ammonia, Serum MTX level, viral hepatitis serologies (HAV IgM, HBsAg/IgM, HCV Ab), autoimmune serologies, toxicology. STAT abdominal ultrasound (liver appearance, biliary). Start IV fluids and IV N-acetylcysteine (covering for DILI/acute liver failure). NPO, frequent neuro checks. Notify GI/Hepatology and Hematology. Prepare for possible transfusions or dialysis.\nOrders/Results: (via ICE/EHR) STAT lab draw sent.\nCoding: ICD-10 K71.1 (Toxic liver disease with hepatic necrosis), T45.1X5A (Adverse effect of MTX), T36.0X5A (Adverse effect of sulfonamides). CPT 99285 (ED high complexity).",
-        "dataSource": "Nervecentre EPR"
-      }
-    },
-    "createdAt": "2025-10-17T03:32:13.025Z",
-    "updatedAt": "2025-10-17T03:32:13.025Z"
+    "createdAt": "2025-10-14T16:55:00.004Z",
+    "updatedAt": "2025-10-14T16:55:00.004Z"
   },
   {
     "id": "raw-medilogik-ems-colonoscopy",
     "type": "component",
-    "x": 850,
+    "x": -1150,
     "y": -2600,
-    "width": 480,
+    "width": 600,
     "height": 700,
     "componentType": "RawClinicalNote",
     "color": "#ffffff",
-    "description": "Raw Medilogik EMS endoscopy report",
+    "description": "Medilogik DMARD Safety Monitoring with Highlights",
     "content": {
-      "title": "Medilogik EMS - Colonoscopy",
+      "title": "Medilogik - Outpatient",
       "component": "RawClinicalNote",
       "props": {
-        "encounterNumber": 0,
-        "date": "2023-11-10",
-        "visitType": "Colonoscopy",
-        "provider": "Dr. Alice N. Wong",
-        "specialty": "Endoscopy",
-        "rawText": "Medilogik EMS (Endoscopy Report)\n(Example endoscopy procedure report using Medilogik’s structured format)\nPatient: Sarah Miller (63F), MRN 12345678.\nProcedure: Colonoscopy on 2023-11-10 08:30 (Endoscopy Suite). Endoscopist: Dr. Alice N. Wong.\nIndication: Iron-deficiency anemia (chronic); screening given age and methotrexate use.\nSedation: IV Midazolam and Fentanyl; monitored anesthesia care.\nFindings: Traversed to cecum. Colonic mucosa has scattered diverticula in sigmoid. One 5 mm sessile polyp in sigmoid colon (25 cm from anal verge). No evidence of colitis or masses. Terminal ileum intubated, unremarkable. Visualized upper GI (if dual-scope done): unremarkable esophagus, stomach, duodenum (if applicable).\nInterventions: Polypectomy performed with cold biopsy forceps; specimen sent to pathology. Biopsies of normal-appearing mucosa not taken. Bowel prep good.\nImages: [Endoscopic snapshot of the sigmoid polyp] (attached to report).\nConclusions/Plan: Small adenomatous polyp removed (histology pending). No malignant lesions seen. Diverticulosis noted. Recommend routine surveillance colonoscopy in 10 years per guidelines. Follow-up GI clinic after pathology.\nQuality Metrics: Procedure time, withdrawal time 6 min, sedation doses recorded. Saved diverticulosis and polyp data for audit/compliance to national standards.\n(This report demonstrates Medilogik’s endoscopy workflow fields and structured findings.)\n",
-        "dataSource": "Medilogik EMS"
+        "encounterNumber": 4,
+        "date": "2024-06-03",
+        "visitType": "Outpatient",
+        "provider": "Dr. P. Stevens",
+        "specialty": "MRCGP",
+        "rawText": "\n**Medilogik**\n**Task Group:** DMARD Safety Monitoring & Patient Engagement Workflow\n**Created By:** Dr. P. Stevens, MD, MRCGP\n**Date Created:** 2024-06-03\n**Priority:** **High**\n**Status:** Active\n**Task ID:** **MTX_MONITOR_SM_01_RECUR**\n**Associated Encounter:** Outpatient – Methotrexate Initiation Consultation\n\n---\n\n## **1. Task Description (Expanded)**\n\n“Establish a comprehensive Methotrexate (MTX) monitoring workflow for Sarah Miller following initiation of 7.5 mg weekly MTX therapy for Rheumatoid Arthritis.\nThe objective is to ensure safe continuation of MTX, early detection of hepatotoxicity, cytopenias, or intolerance, and reinforcement of adherence to patient education and safety-netting protocols.”\n\n---\n\n# **2. Monitoring Schedule (Detailed)**\n\n### **Initial Post-Initiation Assessment**\n\n* **Due Date:** **2024-07-15**\n* **Tests Required:**\n\n  * Full Liver Function Panel (ALT, AST, ALP, GGT, Bilirubin, INR)\n  * Full Blood Count (FBC)\n* **Purpose:**\n\n  * Assess early hepatic response to MTX\n  * Detect early cytopenias\n  * Evaluate need for dose adjustment or pause\n\n---\n\n### **Ongoing Routine Monitoring**\n\n* **Frequency:** Every **6 weeks**\n* **Duration:** First 6 months (June–December 2024)\n* **Tests at each interval:**\n\n  * **LFT**\n  * **FBC**\n  * **Renal Profile (U+E)**\n  * **CRP (optional, if RA control uncertain)**\n\n### **Post-6-Month Monitoring**\n\n* If stable → move to **every 8–12 weeks** per DMARD safety protocol.\n\n---\n\n# **3. Medilogik Auto-Alert Configuration**\n\n### **High-Priority Auto-Alerts (Immediate clinician notification)**\n\n* **ALT > 2× ULN (>80 U/L)**\n* **AST > 2× ULN**\n* **Platelets < 150 ×10⁹/L**\n* **Neutrophils <1.5 ×10⁹/L**\n* **WBC <3.0 ×10⁹/L**\n* **Bilirubin rising trend across two tests**\n\n**Action Trigger:**\n→ Display interruptive alert in Medilogik clinician inbox\n→ Flag patient chart with **“DMARD Safety Alert – Review Required”**\n\n---\n\n### **Moderate-Priority Auto-Alerts**\n\n* **Gradual ALT rise but < 2× ULN**\n* **New macrocytosis**\n* **eGFR decline**\n  → Routed to GP monitoring pool for review within 72 hours.\n\n---\n\n# **4. Associated Patient Education Tasks**\n\n### **Patient Education Pack Delivery**\n\n* Includes:\n\n  * MTX Information Leaflet (British Society for Rheumatology standard)\n  * Liver toxicity symptoms sheet\n  * Medication schedule card (MTX + folic acid)\n* Marked as **Completed – Provided in clinic, 2024-06-03**\n\n---\n\n### **Compliance Check Call**\n\n* **Scheduled:** 7 days post initiation (2024-06-10)\n* **Purpose:**\n\n  * Confirm correct dosing (once weekly only)\n  * Verify folic acid timing\n  * Screen for early side effects\n* Responsible Team: GP Support / Clinical Pharmacist\n\n---\n\n### **Alcohol Intake Advisory**\n\n* Task to review patient’s alcohol intake at each monitoring appointment\n* Documented baseline: “Patient consumes 12 units/week”\n* Goal: Reduce to < 6 units/week for MTX safety\n\n---\n\n# **5. Clinical Safety & Governance Notes**\n\n* MTX initiation authorized based on:\n\n  * ALT normalization (ALT 35)\n  * Negative viral hepatitis screen\n  * Negative autoimmune hepatitis screen\n  * Normal synthetic liver profile\n  * Low Fib-4 (0.9)\n\n* MASLD acknowledged as background risk; enhanced vigilance maintained.\n\n* MTX classified as a **high-risk drug**, requiring strict adherence to monitoring timeline.\n\n* Medilogik will:\n\n  * Log missed tests\n  * Auto-generate overdue notices after 48 hours\n  * Escalate persistent failures to GP clinical lead\n\n---\n\n# **6. Follow-Up & Tracking**\n\n### **Next Steps**\n\n* **Next scheduled test:** 2024-07-15\n* **Next clinician review:** Early August appointment already booked\n* **Rheumatology liaison:** If RA control insufficient at 12 weeks, Medilogik flags GP to consider rheumatology review\n\n### **Dashboard Integration**\n\nMedilogik integrates with the practice DMARD dashboard:\n\n* Displays latest LFT/FBC trends\n* Risk colour-coding (Green → Amber → Red)\n* Task completion metrics\n\nSarah is currently classified as:\n**Amber – New MTX Start (requires intensified monitoring)**\n\n---\n",
+        "dataSource": "Medilogik",
+        "highlights": [
+          {
+            "text": "ALT > 2× ULN (>80 U/L)",
+            "color": "red"
+          },
+          {
+            "text": "AST > 2× ULN",
+            "color": "red"
+          },
+          {
+            "text": "Bilirubin rising trend across two tests",
+            "color": "red"
+          },
+          {
+            "text": "Gradual ALT rise but < 2× ULN",
+            "color": "yellow"
+          },
+          {
+            "text": "Patient consumes 12 units/week",
+            "color": "yellow"
+          },
+          {
+            "text": "* MTX initiation authorized based on:\n\n  * ALT normalization (ALT 35)",
+            "color": "green"
+          },
+          {
+            "text": "Negative viral hepatitis screen",
+            "color": "green"
+          },
+          {
+            "text": "Negative autoimmune hepatitis screen",
+            "color": "green"
+          },
+          {
+            "text": "Normal synthetic liver profile",
+            "color": "green"
+          },
+          {
+            "text": "Low Fib-4 (0.9)",
+            "color": "green"
+          },
+          {
+            "text": "MASLD acknowledged as background risk; enhanced vigilance maintained.",
+            "color": "yellow"
+          },
+          {
+            "text": "* MTX classified as a **high-risk drug**, requiring strict adherence to monitoring timeline.",
+            "color": "yellow"
+          }
+        ]
       }
     },
-    "createdAt": "2025-10-17T03:44:32.506Z",
-    "updatedAt": "2025-10-17T03:44:32.507Z"
+    "createdAt": "2025-11-17T15:00:00.000Z",
+    "updatedAt": "2025-11-17T15:00:00.000Z"
   },
   {
     "id": "raw-viper-ultrasound-ivc",
     "type": "component",
-    "x": 160,
+    "x": -1840,
     "y": -2600,
-    "width": 480,
+    "width": 600,
     "height": 700,
     "componentType": "RawClinicalNote",
     "color": "#ffffff",
-    "description": "Raw Viper ultrasound IVC assessment",
+    "description": "Viper MTX Safety Clearance with Highlights",
     "content": {
-      "title": "Viper - IVC Ultrasound",
+      "title": "Viper - Encounter 3",
       "component": "RawClinicalNote",
       "props": {
-        "encounterNumber": 0,
-        "date": "2025-06-21",
-        "visitType": "IVC Ultrasound (Point-of-Care)",
-        "provider": "Dr. Sarah Chen",
-        "specialty": "Emergency Medicine",
-        "rawText": "VIPER Ultrasound (ICU/ED Point-of-Care)\nDate/Time: 2025-06-21 15:30 (ED/ICU).\nOperator: Dr. Sarah Chen (Emergency Medicine).\nProcedure: Ultrasound of Inferior Vena Cava (IVC) – Subxiphoid long-axis.\nFindings (VIPER quantitative analysis):\nIVC diameter on inspiration: 2.0 cm\nIVC diameter on expiration: 2.3 cm\nIVC Collapsibility Index: 13% (insp/exp variation)\nInterpretation: IVC minimally collapsible; suggests normal to increased intravascular volume. No significant hypovolemia.\nClinical Use: Results used to guide fluid management. (In this case, moderate fluids given carefully as patient shows probable volume repletion.)\n(VIPER’s automated analysis provides objective IVC measurements and a quick interpretation to optimize fluid therapy decisions.)\n",
-        "dataSource": "VIPER Ultrasound"
+        "encounterNumber": 3,
+        "date": "2024-05-06",
+        "visitType": "Clinical Review",
+        "provider": "Dr. P. Stevens",
+        "specialty": "MRCGP",
+        "rawText": "\n# **VIPER**\n\n**Module:** Clinical Review & Planning Module\n**Entry Type:** GP MTX Safety Clearance – Structured Review\n**Author:** Dr. P. Stevens, MD, MRCGP\n**Date:** 2024-05-06\n**Linked Encounter:** Outpatient Review – Pre-DMARD Evaluation\n**Source:** VIPER Clinical Decision Support Engine\n\n---\n\n### **V – Verification of Clinical Data**\n\n* Reviewed full laboratory panel from 2024-05-06:\n\n  * **ALT 35 U/L (normal)**\n  * **AST 30 U/L (normal)**\n  * **ALP 102 U/L (normal)**\n  * **Bilirubin normal**\n  * **INR normal**\n* Reviewed all chronic hepatitis screening results:\n\n  * **HBsAg negative, HBcAb negative, HCV Ab negative**\n* Reviewed autoimmune screen:\n\n  * **ANA negative, ASMA negative, LKM-1 negative, IgG normal**\n* Reviewed metabolic panel:\n\n  * **Ferritin normal, transferrin saturation normal, A1AT normal**\n* Reviewed Fib-4 Index: **0.9 (low risk)**\n* Confirmed no hepatotoxic concomitant medications apart from intermittent NSAID use, now minimised.\n\n---\n\n### **I – Interpretation of Risk**\n\n* **All reversible causes of transaminitis previously present have resolved.**\n* Hepatocellular injury noted in Encounter 1 is confirmed as **transient MASLD flare**, not chronic liver disease.\n* Negative viral, autoimmune, and metabolic screen eliminates major contraindications to MTX.\n* Current liver function is **stable and low-risk** for MTX initiation.\n* MASLD remains a background risk factor, but risk is mitigated by:\n\n  * recent weight-loss efforts\n  * improved diet\n  * reduced alcohol use\n* Overall risk classification: **Low–Moderate**, acceptable for MTX with strict monitoring.\n\n---\n\n### **P – Planning**\n\n* Approve **Methotrexate initiation at 7.5 mg once weekly**, start date **2024-06-03**.\n* Prescribe **Folic Acid 5 mg weekly**, 24h post-dose.\n* Implement a **strict 6-weekly LFT + FBC monitoring protocol**:\n\n  * 1st scheduled test: **2024-07-15**\n  * Auto-alerts configured for:\n\n    * ALT > 2× ULN\n    * Platelets < 150 × 10⁹/L\n    * Neutrophils < 1.5 × 10⁹/L\n\n---\n\n### **E – Escalation & Safety Netting**\n\n* Safety-net advice provided:\n\n  * Stop MTX immediately and contact clinic if **jaundice, dark urine, severe fatigue, vomiting**, or RUQ pain develop.\n  * Avoid NSAIDs unless absolutely required; paracetamol preferred.\n  * Abstain from alcohol entirely during first 6 weeks.\n* Discussed MASLD contribution and the need for ongoing lifestyle improvement.\n* No current indication for hepatology referral.\n* Escalation trigger: persistent ALT > 1.5× ULN at any follow-up.\n\n---\n\n### **R – Recommendations (Final VIPER Output)**\n\n“Following full review of all laboratory, clinical, and risk-stratification data, the patient is **safe to commence Methotrexate** under a structured monitoring schedule. No evidence of chronic liver disease or absolute contraindication. Continue MASLD lifestyle management. LFTs must be followed rigorously every 6 weeks. Patient educated on red-flag symptoms and agrees to the plan.”\n\n---\n",
+        "dataSource": "Viper",
+        "highlights": [
+          {
+            "text": "ALT 35 U/L (normal)",
+            "color": "green"
+          },
+          {
+            "text": "AST 30 U/L (normal)",
+            "color": "green"
+          },
+          {
+            "text": "ALP 102 U/L (normal)",
+            "color": "green"
+          },
+          {
+            "text": "Bilirubin normal",
+            "color": "green"
+          },
+          {
+            "text": "INR normal",
+            "color": "green"
+          },
+          {
+            "text": "HBsAg negative, HBcAb negative, HCV Ab negative",
+            "color": "green"
+          },
+          {
+            "text": "ANA negative, ASMA negative, LKM-1 negative, IgG normal",
+            "color": "green"
+          },
+          {
+            "text": "Ferritin normal, transferrin saturation normal, A1AT normal",
+            "color": "green"
+          },
+          {
+            "text": "* Reviewed Fib-4 Index: **0.9 (low risk)**",
+            "color": "green"
+          },
+          {
+            "text": "Confirmed no hepatotoxic concomitant medications apart from intermittent NSAID use, now minimised.",
+            "color": "yellow"
+          },
+          {
+            "text": "All reversible causes of transaminitis previously present have resolved.",
+            "color": "green"
+          },
+          {
+            "text": "* Hepatocellular injury noted in Encounter 1 is confirmed as **transient MASLD flare**, not chronic liver disease.",
+            "color": "green"
+          },
+          {
+            "text": "Negative viral, autoimmune, and metabolic screen eliminates major contraindications to MTX.",
+            "color": "green"
+          },
+          {
+            "text": "* Current liver function is **stable and low-risk** for MTX initiation.",
+            "color": "green"
+          },
+          {
+            "text": "MASLD remains a background risk factor, but risk is mitigated by:",
+            "color": "yellow"
+          },
+          {
+            "text": "recent weight-loss efforts",
+            "color": "yellow"
+          },
+          {
+            "text": "improved diet",
+            "color": "yellow"
+          },
+          {
+            "text": "reduced alcohol use",
+            "color": "yellow"
+          },
+          {
+            "text": "* Overall risk classification: **Low–Moderate**, acceptable for MTX with strict monitoring.",
+            "color": "yellow"
+          },
+          {
+            "text": "* Auto-alerts configured for:\n\n    * ALT > 2× ULN",
+            "color": "red"
+          },
+          {
+            "text": "* Stop MTX immediately and contact clinic if **jaundice, dark urine, severe fatigue, vomiting**, or RUQ pain develop.",
+            "color": "red"
+          },
+          {
+            "text": "Avoid NSAIDs unless absolutely required; paracetamol preferred.",
+            "color": "yellow"
+          },
+          {
+            "text": "Abstain from alcohol entirely during first 6 weeks.",
+            "color": "yellow"
+          },
+          {
+            "text": "No current indication for hepatology referral.",
+            "color": "green"
+          },
+          {
+            "text": "Escalation trigger: persistent ALT > 1.5× ULN at any follow-up.",
+            "color": "yellow"
+          },
+          {
+            "text": "the patient is **safe to commence Methotrexate** under a structured monitoring schedule.",
+            "color": "green"
+          },
+          {
+            "text": "No evidence of chronic liver disease or absolute contraindication.",
+            "color": "green"
+          },
+          {
+            "text": "Continue MASLD lifestyle management.",
+            "color": "yellow"
+          },
+          {
+            "text": "LFTs must be followed rigorously every 6 weeks.",
+            "color": "yellow"
+          },
+          {
+            "text": "Patient educated on red-flag symptoms and agrees to the plan.",
+            "color": "red"
+          }
+        ]
       }
     },
-    "createdAt": "2025-10-17T03:49:53.778Z",
-    "updatedAt": "2025-10-17T03:49:53.779Z"
-  },
-  {
-    "id": "raw-bighand-dictation-hayes-2015",
-    "type": "component",
-    "x": 1600,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "BigHand dictation from Dr. Elizabeth Hayes (Rheumatology)",
-    "content": {
-      "title": "BigHand - Dr. Hayes Dictation",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 1,
-        "date": "2015-08-10",
-        "visitType": "Rheumatology Initial Consult",
-        "provider": "Dr. Elizabeth Hayes",
-        "specialty": "Rheumatology",
-        "rawText": "BigHand Dictation (Transcribed Notes)\nDictation – Dr. Elizabeth Hayes (Rheumatology), 2015-08-10:\n\"Ms. Sarah Miller is a 63-year-old retired carpenter with a six-month history of progressive, symmetrical arthritis. He has pain and swelling in the small joints of his hands and feet, accompanied by morning stiffness over one hour. He reports significant fatigue. He has no fevers, rash, or other systemic symptoms and has only had minimal relief with ibuprofen 200 mg PRN. On exam, there is swelling and tenderness of MCPs and PIPs bilaterally and of the 2nd–3rd MTP joints. Grip strength is reduced. No skin lesions or organomegaly. My impression is active seropositive rheumatoid arthritis. Plan: order Rheumatoid Factor and anti-CCP, ESR, CRP, CBC, LFTs, creatinine, and hepatitis serologies. Start Methotrexate 10 mg weekly with folic acid. Counsel patient on MTX side effects and necessity of regular labs and alcohol avoidance.\"\n(BigHand would queue each dictation for transcription and signature, and track completion of related tasks.)",
-        "dataSource": "BigHand Dictation"
-      }
-    },
-    "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
-  },
-  {
-    "id": "raw-bighand-dictation-green-2021",
-    "type": "component",
-    "x": 2175,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "BigHand dictation from Dr. Emily Green (GP)",
-    "content": {
-      "title": "BigHand - Dr. Green Dictation",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 4,
-        "date": "2021-03-15",
-        "visitType": "General Practice",
-        "provider": "Dr. Emily Green",
-        "specialty": "General Practice",
-        "rawText": "BigHand Dictation (Transcribed Notes)\nDictation – Dr. Emily Green (GP), 2021-03-15:\n\"Mr. McAllister is a 63-year-old female with longstanding rheumatoid arthritis on methotrexate 20 mg weekly and hypertension on lisinopril 10 mg daily. He feels well. Blood pressure and arthritis are well controlled. There are no new complaints except a mild chronic low back ache. Exam today is unremarkable with no synovitis. Plan is to continue all current medications, order routine labs (CBC, LFT, renal) and advise continued moderation of alcohol. Reinforce follow-up in six months. Smoking cessation remains important.\"\n(BigHand would queue each dictation for transcription and signature, and track completion of related tasks.)",
-        "dataSource": "BigHand Dictation"
-      }
-    },
-    "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
-  },
-  {
-    "id": "raw-bighand-dictation-chen-2025",
-    "type": "component",
-    "x": 2750,
-    "y": -4700,
-    "width": 480,
-    "height": 700,
-    "componentType": "RawClinicalNote",
-    "color": "#ffffff",
-    "description": "BigHand dictation from Dr. Sarah Chen (Emergency)",
-    "content": {
-      "title": "BigHand - Dr. Chen Dictation",
-      "component": "RawClinicalNote",
-      "props": {
-        "encounterNumber": 6,
-        "date": "2025-06-21",
-        "visitType": "Emergency Medicine",
-        "provider": "Dr. Sarah Chen",
-        "specialty": "Emergency Medicine",
-        "rawText": "BigHand Dictation (Transcribed Notes)\nDictation – Dr. Sarah Chen (Emergency), 2025-06-21:\n\"Patient is a 63-year-old man with a history of rheumatoid arthritis and hypertension, presenting with one day of jaundice, confusion, and epigastric pain. He started trimethoprim-sulfamethoxazole 6 days ago. Labs show acute liver failure with AST/ALT ~ 1500, INR elevated, and pancytopenia (WBC and platelets very low). Differential includes methotrexate toxicity versus TMP-SMX hepatotoxicity. Admitting to ICU. Orders: admit to ICU, start IV fluids and N-acetylcysteine, urgent labs including CBC, CMP, coags, hepatitis panel, toxicology, and abdominal ultrasound. Consult GI and hematology.\"\n(BigHand would queue each dictation for transcription and signature, and track completion of related tasks.)",
-        "dataSource": "BigHand Dictation"
-      }
-    },
-    "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
+    "createdAt": "2025-11-17T15:00:00.000Z",
+    "updatedAt": "2025-11-17T15:00:00.000Z"
   },
   {
     "id": "raw-ice-lab-data-encounter-1",
     "type": "component",
-    "x": -2300,
+    "x": -4300,
     "y": -2600,
     "width": 400,
     "height": 600,
@@ -1397,122 +1341,150 @@
     "description": "ICE Laboratory System - Encounter 1 Lab Results",
     "content": {
       "title": "ICE Lab - Encounter 1",
-      "component": "ICELabData",
+      "component": "ICE Lab",
       "props": {
         "encounters": [
           {
             "encounter": 1,
             "tests": [
               {
+                "name": "ALT",
+                "result": "78",
+                "unit": "U/L",
+                "reference_range": "4-59",
+                "flag": "H"
+              },
+              {
+                "name": "AST",
+                "result": "55",
+                "unit": "U/L",
+                "reference_range": "10-40",
+                "flag": "H"
+              },
+              {
+                "name": "ALP",
+                "result": "105",
+                "unit": "U/L",
+                "reference_range": "30-120",
+                "flag": ""
+              },
+              {
+                "name": "Bilirubin",
+                "result": "12",
+                "unit": "μmol/L",
+                "reference_range": "3.4-20.5",
+                "flag": ""
+              },
+              {
+                "name": "INR",
+                "result": "1.0",
+                "unit": "",
+                "reference_range": "0.8-1.2",
+                "flag": ""
+              },
+              {
+                "name": "HbA1c",
+                "result": "58",
+                "unit": "mmol/mol",
+                "reference_range": "20-39",
+                "flag": "H"
+              },
+              {
                 "name": "ESR",
-                "result": 45,
+                "result": "25",
                 "unit": "mm/hr",
-                "reference_range": "0 - 20",
+                "reference_range": "0-20",
                 "flag": "H"
               },
               {
                 "name": "CRP",
-                "result": 25,
+                "result": "8.5",
                 "unit": "mg/L",
-                "reference_range": "<5",
+                "reference_range": "0-5",
                 "flag": "H"
               },
               {
                 "name": "Rheumatoid Factor",
-                "result": 120,
-                "unit": "IU/mL",
-                "reference_range": "<14",
+                "result": "Positive",
+                "unit": "",
+                "reference_range": "Negative",
                 "flag": "H"
               },
               {
                 "name": "Anti-CCP",
-                "result": ">200",
+                "result": "150",
                 "unit": "U/mL",
-                "reference_range": "<20",
+                "reference_range": "0-20",
                 "flag": "H"
               },
               {
                 "name": "WBC",
-                "result": 7.5,
-                "unit": "x10^9/L",
-                "reference_range": "4.0 - 10.0",
+                "result": "7.2",
+                "unit": "10^9/L",
+                "reference_range": "3.5-11.0",
                 "flag": ""
               },
               {
-                "name": "Hemoglobin",
-                "result": 14.2,
+                "name": "Hgb",
+                "result": "13.5",
                 "unit": "g/dL",
-                "reference_range": "13.5 - 17.5",
+                "reference_range": "12.0-15.5",
                 "flag": ""
               },
               {
-                "name": "Platelets",
-                "result": 280,
-                "unit": "x10^9/L",
-                "reference_range": "150 - 450",
+                "name": "Plt",
+                "result": "250",
+                "unit": "10^9/L",
+                "reference_range": "150-450",
+                "flag": ""
+              },
+              {
+                "name": "Sodium",
+                "result": "138",
+                "unit": "mmol/L",
+                "reference_range": "135-145",
+                "flag": ""
+              },
+              {
+                "name": "Potassium",
+                "result": "4.1",
+                "unit": "mmol/L",
+                "reference_range": "3.5-5.0",
+                "flag": ""
+              },
+              {
+                "name": "Chloride",
+                "result": "102",
+                "unit": "mmol/L",
+                "reference_range": "98-107",
+                "flag": ""
+              },
+              {
+                "name": "Bicarbonate",
+                "result": "24",
+                "unit": "mmol/L",
+                "reference_range": "22-30",
+                "flag": ""
+              },
+              {
+                "name": "BUN",
+                "result": "15",
+                "unit": "mg/dL",
+                "reference_range": "7-20",
                 "flag": ""
               },
               {
                 "name": "Creatinine",
-                "result": 0.9,
+                "result": "0.8",
                 "unit": "mg/dL",
-                "reference_range": "0.7 - 1.3",
+                "reference_range": "0.6-1.2",
                 "flag": ""
               },
               {
-                "name": "eGFR",
-                "result": 85,
-                "unit": "mL/min/1.73m2",
-                "reference_range": ">60",
-                "flag": ""
-              },
-              {
-                "name": "Total Bilirubin",
-                "result": 0.7,
-                "unit": "mg/dL",
-                "reference_range": "0.2 - 1.2",
-                "flag": ""
-              },
-              {
-                "name": "ALT (SGPT)",
-                "result": 25,
-                "unit": "U/L",
-                "reference_range": "7.0 - 56",
-                "flag": ""
-              },
-              {
-                "name": "AST (SGOT)",
-                "result": 22,
-                "unit": "U/L",
-                "reference_range": "8.0 - 40",
-                "flag": ""
-              },
-              {
-                "name": "Alkaline Phosphatase",
-                "result": 90,
-                "unit": "U/L",
-                "reference_range": "40 - 150",
-                "flag": ""
-              },
-              {
-                "name": "HBsAg",
-                "result": "Negative",
-                "unit": "",
-                "reference_range": "Negative",
-                "flag": ""
-              },
-              {
-                "name": "Anti-HBc Total",
-                "result": "Negative",
-                "unit": "",
-                "reference_range": "Negative",
-                "flag": ""
-              },
-              {
-                "name": "Anti-HCV",
-                "result": "Negative",
-                "unit": "",
-                "reference_range": "Negative",
+                "name": "Glucose",
+                "result": "7.5",
+                "unit": "mmol/L",
+                "reference_range": "3.9-7.8",
                 "flag": ""
               }
             ]
@@ -1521,101 +1493,12 @@
       }
     },
     "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
-  },
-  {
-    "id": "raw-ice-lab-data-encounter-2",
-    "type": "component",
-    "x": -1850,
-    "y": -2600,
-    "width": 400,
-    "height": 600,
-    "componentType": "ICELabData",
-    "color": "#ffffff",
-    "description": "ICE Laboratory System - Encounter 2 Lab Results",
-    "content": {
-      "title": "ICE Lab - Encounter 2",
-      "component": "ICELabData",
-      "props": {
-        "encounters": [
-          {
-            "encounter": 2,
-            "tests": [
-              {
-                "name": "WBC",
-                "result": 6.8,
-                "unit": "x10^9/L",
-                "reference_range": "4.0 - 10.0",
-                "flag": ""
-              },
-              {
-                "name": "Hemoglobin",
-                "result": 13.8,
-                "unit": "g/dL",
-                "reference_range": "13.5 - 17.5",
-                "flag": ""
-              },
-              {
-                "name": "Platelets",
-                "result": 265,
-                "unit": "x10^9/L",
-                "reference_range": "150 - 450",
-                "flag": ""
-              },
-              {
-                "name": "Creatinine",
-                "result": 1,
-                "unit": "mg/dL",
-                "reference_range": "0.7 - 1.3",
-                "flag": ""
-              },
-              {
-                "name": "eGFR",
-                "result": 78,
-                "unit": "mL/min/1.73m2",
-                "reference_range": ">60",
-                "flag": ""
-              },
-              {
-                "name": "Total Bilirubin",
-                "result": 0.8,
-                "unit": "mg/dL",
-                "reference_range": "0.2 - 1.2",
-                "flag": ""
-              },
-              {
-                "name": "ALT (SGPT)",
-                "result": 30,
-                "unit": "U/L",
-                "reference_range": "7.0 - 56",
-                "flag": ""
-              },
-              {
-                "name": "AST (SGOT)",
-                "result": 25,
-                "unit": "U/L",
-                "reference_range": "8.0 - 40",
-                "flag": ""
-              },
-              {
-                "name": "Alkaline Phosphatase",
-                "result": 105,
-                "unit": "U/L",
-                "reference_range": "40 - 150",
-                "flag": ""
-              }
-            ]
-          }
-        ]
-      }
-    },
-    "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
+    "updatedAt": "2025-11-17T16:00:00.000Z"
   },
   {
     "id": "raw-ice-lab-data-encounter-3",
     "type": "component",
-    "x": -1400,
+    "x": -3850,
     "y": -2600,
     "width": 400,
     "height": 600,
@@ -1624,73 +1507,164 @@
     "description": "ICE Laboratory System - Encounter 3 Lab Results",
     "content": {
       "title": "ICE Lab - Encounter 3",
-      "component": "ICELabData",
+      "component": "ICE Lab",
       "props": {
         "encounters": [
           {
             "encounter": 3,
             "tests": [
               {
-                "name": "WBC",
-                "result": 7.2,
-                "unit": "x10^9/L",
-                "reference_range": "4.0 - 10.0",
-                "flag": ""
-              },
-              {
-                "name": "Hemoglobin",
-                "result": 14,
-                "unit": "g/dL",
-                "reference_range": "13.5 - 17.5",
-                "flag": ""
-              },
-              {
-                "name": "Platelets",
-                "result": 270,
-                "unit": "x10^9/L",
-                "reference_range": "150 - 450",
-                "flag": ""
-              },
-              {
-                "name": "Creatinine",
-                "result": 1.1,
-                "unit": "mg/dL",
-                "reference_range": "0.7 - 1.3",
-                "flag": ""
-              },
-              {
-                "name": "eGFR",
-                "result": 65,
-                "unit": "mL/min/1.73m2",
-                "reference_range": ">60",
-                "flag": ""
-              },
-              {
-                "name": "Total Bilirubin",
-                "result": 0.9,
-                "unit": "mg/dL",
-                "reference_range": "0.2 - 1.2",
-                "flag": ""
-              },
-              {
-                "name": "ALT (SGPT)",
-                "result": 35,
+                "name": "ALT",
+                "result": "35",
                 "unit": "U/L",
-                "reference_range": "Jul-56",
+                "reference_range": "5-50 U/L",
                 "flag": ""
               },
               {
-                "name": "AST (SGOT)",
-                "result": 30,
+                "name": "AST",
+                "result": "30",
                 "unit": "U/L",
-                "reference_range": "Oct-40",
+                "reference_range": "5-40 U/L",
                 "flag": ""
               },
               {
                 "name": "Alkaline Phosphatase",
-                "result": 110,
+                "result": "80",
                 "unit": "U/L",
-                "reference_range": "40 - 150",
+                "reference_range": "30-120 U/L",
+                "flag": ""
+              },
+              {
+                "name": "Total Bilirubin",
+                "result": "0.7",
+                "unit": "mg/dL",
+                "reference_range": "0.2-1.2 mg/dL",
+                "flag": ""
+              },
+              {
+                "name": "Albumin",
+                "result": "4.0",
+                "unit": "g/dL",
+                "reference_range": "3.5-5.0 g/dL",
+                "flag": ""
+              },
+              {
+                "name": "Prothrombin Time",
+                "result": "12.5",
+                "unit": "seconds",
+                "reference_range": "9.5-12.5 seconds",
+                "flag": ""
+              },
+              {
+                "name": "INR",
+                "result": "1.0",
+                "unit": "ratio",
+                "reference_range": "0.9-1.1 ratio",
+                "flag": ""
+              },
+              {
+                "name": "Hemoglobin",
+                "result": "13.5",
+                "unit": "g/dL",
+                "reference_range": "12.0-15.5 g/dL",
+                "flag": ""
+              },
+              {
+                "name": "White Blood Cell Count",
+                "result": "7.0",
+                "unit": "x10^3/uL",
+                "reference_range": "4.0-11.0 x10^3/uL",
+                "flag": ""
+              },
+              {
+                "name": "Platelet Count",
+                "result": "250",
+                "unit": "x10^3/uL",
+                "reference_range": "150-450 x10^3/uL",
+                "flag": ""
+              },
+              {
+                "name": "Creatinine",
+                "result": "0.9",
+                "unit": "mg/dL",
+                "reference_range": "0.6-1.2 mg/dL",
+                "flag": ""
+              },
+              {
+                "name": "Blood Urea Nitrogen (BUN)",
+                "result": "15",
+                "unit": "mg/dL",
+                "reference_range": "7-20 mg/dL",
+                "flag": ""
+              },
+              {
+                "name": "Sodium",
+                "result": "140",
+                "unit": "mEq/L",
+                "reference_range": "135-145 mEq/L",
+                "flag": ""
+              },
+              {
+                "name": "Potassium",
+                "result": "4.0",
+                "unit": "mEq/L",
+                "reference_range": "3.5-5.0 mEq/L",
+                "flag": ""
+              },
+              {
+                "name": "Chloride",
+                "result": "100",
+                "unit": "mEq/L",
+                "reference_range": "98-107 mEq/L",
+                "flag": ""
+              },
+              {
+                "name": "CO2",
+                "result": "25",
+                "unit": "mEq/L",
+                "reference_range": "22-30 mEq/L",
+                "flag": ""
+              },
+              {
+                "name": "Hepatitis B Surface Antigen",
+                "result": "Negative",
+                "unit": "index",
+                "reference_range": "Negative",
+                "flag": ""
+              },
+              {
+                "name": "Hepatitis C Antibody",
+                "result": "Negative",
+                "unit": "index",
+                "reference_range": "Negative",
+                "flag": ""
+              },
+              {
+                "name": "Antinuclear Antibody (ANA)",
+                "result": "Negative",
+                "unit": "titer",
+                "reference_range": "Negative",
+                "flag": ""
+              },
+              {
+                "name": "Anti-Smooth Muscle Antibody (ASMA)",
+                "result": "Negative",
+                "unit": "titer",
+                "reference_range": "Negative",
+                "flag": ""
+              },
+              {
+                "name": "Ferritin",
+                "result": "80",
+                "unit": "ng/mL",
+                "reference_range": "20-300 ng/mL",
+                "flag": ""
+              },
+              {
+                "name": "Total Iron Binding Capacity (TIBC)",
+                "result": "300",
+                "unit": "ug/dL",
+                "reference_range": "250-450 ug/dL",
                 "flag": ""
               }
             ]
@@ -1699,12 +1673,12 @@
       }
     },
     "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
+    "updatedAt": "2025-11-17T16:00:00.000Z"
   },
   {
     "id": "raw-ice-lab-data-encounter-5",
     "type": "component",
-    "x": -950,
+    "x": -3400,
     "y": -2600,
     "width": 400,
     "height": 600,
@@ -1713,82 +1687,66 @@
     "description": "ICE Laboratory System - Encounter 5 Lab Results",
     "content": {
       "title": "ICE Lab - Encounter 5",
-      "component": "ICELabData",
+      "component": "ICE Lab",
       "props": {
         "encounters": [
           {
             "encounter": 5,
             "tests": [
               {
-                "panel": "Complete Blood Count",
-                "name": "WBC",
-                "result": 6.5,
-                "unit": "x10^9/L",
-                "reference_range": "4.0 - 10.0",
-                "flag": ""
-              },
-              {
-                "panel": "Complete Blood Count",
-                "name": "Hemoglobin",
-                "result": 13.5,
-                "unit": "g/dL",
-                "reference_range": "13.5 - 17.5",
-                "flag": ""
-              },
-              {
-                "panel": "Complete Blood Count",
-                "name": "Platelets",
-                "result": 250,
-                "unit": "x10^9/L",
-                "reference_range": "150 - 450",
-                "flag": ""
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Creatinine",
-                "result": 1.4,
-                "unit": "mg/dL",
-                "reference_range": "0.7 - 1.3",
+                "name": "ALT",
+                "result": "185",
+                "unit": "U/L",
+                "reference_range": "<40",
                 "flag": "H"
               },
               {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "eGFR",
-                "result": 58,
-                "unit": "mL/min/1.73m2",
-                "reference_range": ">60",
-                "flag": "L"
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Total Bilirubin",
-                "result": 0.9,
-                "unit": "mg/dL",
-                "reference_range": "0.2 - 1.2",
+                "name": "INR",
+                "result": "1.05",
+                "unit": "",
+                "reference_range": "0.9-1.1",
                 "flag": ""
               },
               {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "ALT (SGPT)",
-                "result": 40,
+                "name": "AST",
+                "result": "60",
                 "unit": "U/L",
-                "reference_range": "7.0 - 56",
-                "flag": ""
+                "reference_range": "<40",
+                "flag": "H"
               },
               {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "AST (SGOT)",
-                "result": 35,
-                "unit": "U/L",
-                "reference_range": "8.0 - 40",
-                "flag": ""
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
                 "name": "Alkaline Phosphatase",
-                "result": 120,
+                "result": "110",
                 "unit": "U/L",
-                "reference_range": "40 - 150",
+                "reference_range": "40-120",
+                "flag": ""
+              },
+              {
+                "name": "Total Bilirubin",
+                "result": "0.8",
+                "unit": "mg/dL",
+                "reference_range": "0.2-1.2",
+                "flag": ""
+              },
+              {
+                "name": "Albumin",
+                "result": "4.0",
+                "unit": "g/dL",
+                "reference_range": "3.5-5.5",
+                "flag": ""
+              },
+              {
+                "name": "CBC",
+                "result": "Normal",
+                "unit": "",
+                "reference_range": "",
+                "flag": ""
+              },
+              {
+                "name": "Basic Metabolic Panel",
+                "result": "Normal",
+                "unit": "",
+                "reference_range": "",
                 "flag": ""
               }
             ]
@@ -1797,12 +1755,12 @@
       }
     },
     "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
+    "updatedAt": "2025-11-17T16:00:00.000Z"
   },
   {
     "id": "raw-ice-lab-data-encounter-6",
     "type": "component",
-    "x": -500,
+    "x": -2900,
     "y": -2600,
     "width": 400,
     "height": 600,
@@ -1811,162 +1769,80 @@
     "description": "ICE Laboratory System - Encounter 6 Lab Results",
     "content": {
       "title": "ICE Lab - Encounter 6",
-      "component": "ICELabData",
+      "component": "ICE Lab",
       "props": {
         "encounters": [
           {
             "encounter": 6,
             "tests": [
               {
-                "panel": "Complete Blood Count",
-                "name": "WBC",
-                "result": 5,
-                "unit": "x10^9/L",
-                "reference_range": "4.0 - 10.0",
-                "flag": ""
-              },
-              {
-                "panel": "Complete Blood Count",
-                "name": "Hemoglobin",
-                "result": 14.5,
-                "unit": "g/dL",
-                "reference_range": "13.5 - 17.5",
-                "flag": ""
-              },
-              {
-                "panel": "Complete Blood Count",
-                "name": "Platelets",
-                "result": 165,
-                "unit": "x10^9/L",
-                "reference_range": "150 - 450",
-                "flag": ""
-              },
-              {
-                "panel": "Complete Blood Count",
-                "name": "Neutrophils",
-                "result": 2.2,
-                "unit": "x10^9/L",
-                "reference_range": "2.0 - 7.5",
-                "flag": ""
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Sodium",
-                "result": 138,
-                "unit": "mmol/L",
-                "reference_range": "135 - 145",
-                "flag": ""
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Potassium",
-                "result": 5.1,
-                "unit": "mmol/L",
-                "reference_range": "3.5 - 5.0",
+                "name": "Alanine Aminotransferase (ALT)",
+                "result": "1100",
+                "unit": "U/L",
+                "reference_range": "3-50",
                 "flag": "H"
               },
               {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Creatinine",
-                "result": 1.5,
-                "unit": "mg/dL",
-                "reference_range": "0.7 - 1.3",
+                "name": "Aspartate Aminotransferase (AST)",
+                "result": "950",
+                "unit": "U/L",
+                "reference_range": "5-40",
                 "flag": "H"
               },
               {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "BUN",
-                "result": 19,
-                "unit": "mg/dL",
-                "reference_range": "20 - 25",
-                "flag": ""
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "eGFR",
-                "result": 58,
-                "unit": "mL/min/1.73m2",
-                "reference_range": ">60",
-                "flag": "L"
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
                 "name": "Total Bilirubin",
-                "result": 12.5,
-                "unit": "mg/dL",
-                "reference_range": "0.2 - 1.2",
+                "result": "110",
+                "unit": "μmol/L",
+                "reference_range": "5-20",
                 "flag": "H"
               },
               {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Direct Bilirubin",
-                "result": 8.9,
-                "unit": "mg/dL",
-                "reference_range": "<0.3",
-                "flag": "H"
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "ALT (SGPT)",
-                "result": 1650,
-                "unit": "U/L",
-                "reference_range": "7.0 - 56",
-                "flag": "H"
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "AST (SGOT)",
-                "result": 2100,
-                "unit": "U/L",
-                "reference_range": "8.0 - 40",
-                "flag": "H"
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Alkaline Phosphatase",
-                "result": 350,
-                "unit": "U/L",
-                "reference_range": "40 - 150",
-                "flag": "H"
-              },
-              {
-                "panel": "Comprehensive Metabolic Panel",
-                "name": "Albumin",
-                "result": 3.8,
-                "unit": "g/dL",
-                "reference_range": "3.5 - 5.5",
-                "flag": ""
-              },
-              {
-                "panel": "Coagulation Panel",
-                "name": "PT",
-                "result": 11,
-                "unit": "seconds",
-                "reference_range": "10.0 - 13.0",
-                "flag": ""
-              },
-              {
-                "panel": "Coagulation Panel",
-                "name": "INR",
-                "result": 1,
+                "name": "International Normalized Ratio (INR)",
+                "result": "1.1",
                 "unit": "",
-                "reference_range": "0.8 - 1.2",
+                "reference_range": "0.9-1.3",
                 "flag": ""
               },
               {
-                "panel": "Coagulation Panel",
-                "name": "PTT",
-                "result": 28,
-                "unit": "seconds",
-                "reference_range": "25.0 - 35.0",
+                "name": "Alkaline Phosphatase (ALP)",
+                "result": "200",
+                "unit": "U/L",
+                "reference_range": "40-150",
+                "flag": "H"
+              },
+              {
+                "name": "Gamma-Glutamyl Transferase (GGT)",
+                "result": "250",
+                "unit": "U/L",
+                "reference_range": "5-50",
+                "flag": "H"
+              },
+              {
+                "name": "Albumin",
+                "result": "3.8",
+                "unit": "g/dL",
+                "reference_range": "3.5-5.5",
                 "flag": ""
               },
               {
-                "panel": "Other",
+                "name": "Complete Blood Count (CBC)",
+                "result": "Pending",
+                "unit": "",
+                "reference_range": "",
+                "flag": ""
+              },
+              {
+                "name": "Basic Metabolic Panel (BMP)",
+                "result": "Pending",
+                "unit": "",
+                "reference_range": "",
+                "flag": ""
+              },
+              {
                 "name": "Ammonia",
-                "result": 18,
-                "unit": "umol/L",
-                "reference_range": "11.0 - 32",
+                "result": "Pending",
+                "unit": "",
+                "reference_range": "",
                 "flag": ""
               }
             ]
@@ -1975,7 +1851,308 @@
       }
     },
     "createdAt": "2025-10-17T12:00:00.000Z",
-    "updatedAt": "2025-10-17T12:00:00.000Z"
+    "updatedAt": "2025-11-17T16:00:00.000Z"
+  },
+  {
+    "id": "raw-ice-lab-data-encounter-7",
+    "type": "component",
+    "x": -2420,
+    "y": -2600,
+    "width": 400,
+    "height": 600,
+    "componentType": "ICELabData",
+    "color": "#ffffff",
+    "description": "ICE Laboratory System - Encounter 7 Lab Results",
+    "content": {
+      "title": "ICE Lab - Encounter 7",
+      "component": "ICE Lab",
+      "props": {
+        "encounters": [
+          {
+            "encounter": 7,
+            "tests": [
+              {
+                "name": "ALT",
+                "result": "420",
+                "unit": "U/L",
+                "reference_range": "5-40",
+                "flag": "H"
+              },
+              {
+                "name": "INR",
+                "result": "1.1",
+                "unit": "",
+                "reference_range": "0.9-1.2",
+                "flag": ""
+              },
+              {
+                "name": "Total Bilirubin",
+                "result": "190",
+                "unit": "μmol/L",
+                "reference_range": "3.4-17.1",
+                "flag": "H"
+              },
+              {
+                "name": "AST",
+                "result": "350",
+                "unit": "U/L",
+                "reference_range": "10-35",
+                "flag": "H"
+              },
+              {
+                "name": "Alkaline Phosphatase",
+                "result": "200",
+                "unit": "U/L",
+                "reference_range": "40-120",
+                "flag": "H"
+              },
+              {
+                "name": "Albumin",
+                "result": "3.8",
+                "unit": "g/dL",
+                "reference_range": "3.5-5.5",
+                "flag": ""
+              },
+              {
+                "name": "Platelets",
+                "result": "150",
+                "unit": "x10^9/L",
+                "reference_range": "150-450",
+                "flag": ""
+              },
+              {
+                "name": "White Blood Cell Count",
+                "result": "8.0",
+                "unit": "x10^9/L",
+                "reference_range": "4.0-11.0",
+                "flag": ""
+              },
+              {
+                "name": "Hemoglobin",
+                "result": "12.5",
+                "unit": "g/dL",
+                "reference_range": "12.0-16.0",
+                "flag": ""
+              },
+              {
+                "name": "Creatinine",
+                "result": "0.9",
+                "unit": "mg/dL",
+                "reference_range": "0.6-1.2",
+                "flag": ""
+              },
+              {
+                "name": "Sodium",
+                "result": "138",
+                "unit": "mmol/L",
+                "reference_range": "135-145",
+                "flag": ""
+              },
+              {
+                "name": "Potassium",
+                "result": "4.1",
+                "unit": "mmol/L",
+                "reference_range": "3.5-5.0",
+                "flag": ""
+              },
+              {
+                "name": "Ammonia",
+                "result": "30",
+                "unit": "μmol/L",
+                "reference_range": "11-50",
+                "flag": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T16:00:00.000Z",
+    "updatedAt": "2025-11-17T16:00:00.000Z"
+  },
+  {
+    "id": "raw-nervecentre-encounter-1",
+    "type": "component",
+    "x": -4250,
+    "y": -4700,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "Nervecentre Lab Alert with Highlighted Key Information",
+    "content": {
+      "title": "Nervecentre - Encounter 1",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 1,
+        "date": "2024-03-05",
+        "visitType": "Outpatient",
+        "provider": "Dr. P. Stevens",
+        "specialty": "MRCGP",
+        "rawText": "### Nervecentre\n\n**Module:** Laboratory Alerting & Task Management\n**Event Type:** Automated Laboratory Alert – LFT Derangement \n\n---\n\n#### 1. Alert Event Summary\n\n* **System Alert ID:** NC-LFT-20240305-001\n* **Patient:** Sarah Miller (MRN: SM43850603, DOB: 1981-06-03, Age 43, F) \n* **Linked Encounter:**\n\n  * Visit Type: Outpatient – General Practice\n  * Date & Time: 2024-03-05 @ 10:15:22 (GMT+01:00)\n  * Clinician: Dr. P. Stevens, MD, MRCGP \n* **Ordering Provider:** Dr. P. Stevens\n* **Requesting Location:** GP Clinic – Room 3\n\n---\n\n#### 2. Trigger Details\n\n* **Trigger Rule:** Rule ID 4.2 – *ALT ≥ 1.5 × ULN*\n* **Analyte:** Alanine Aminotransferase (ALT)\n* **Result:** 78 U/L (ULN: 40 U/L; 1.95 × ULN) \n* **Associated LFTs at Time of Alert:** \n\n  * AST: 55 U/L (H, <35)\n  * ALP: 105 U/L (N, 30–130)\n  * Bilirubin (Total): 12 μmol/L (N, <21)\n  * INR: 1.0 (N, 0.8–1.2)\n  * Platelets: 250 × 10⁹/L (N, 150–400)\n* **Pattern of Injury:** Hepatocellular (AST/ALT ratio ≈ 0.7; no cholestasis)\n* **Alert Level:** Level 2 – Non-Critical, Mandatory Acknowledgment within 72 hours\n* **Severity Banding (System):**\n\n  * ALT 1.5–3 × ULN → *Moderate Elevation*\n  * Bilirubin normal, INR normal → *No acute liver failure criteria*\n\n---\n\n#### 3. Distribution & Delivery Log\n\n* **Primary Recipient:**\n\n  * Dr. P. Stevens (Responsible GP / LFT Ordering Clinician)\n* **Secondary Visibility:**\n\n  * GP Practice LFT Review Pool (Monitoring queue, “GP-LFT-MONITOR”)\n* **Delivery Channels:**\n\n  * Nervecentre mobile app push notification to Dr. Stevens\n  * Medilogik Inbox message (flagged ‘LFT abnormal – review required’)\n  * Alert icon added to Sarah Miller’s digital chart (LFT flag)\n\n**Delivery Timeline:**\n\n1. **2024-03-05 10:17:02** – LFT panel verified in LIS; HL7 message received by Nervecentre.\n2. **2024-03-05 10:17:10** – Rule ID 4.2 fired (ALT 78 U/L ≥ 1.5 × ULN).\n3. **2024-03-05 10:17:15** – Level 2 alert created and queued.\n4. **2024-03-05 10:17:20** – Push notification sent to Dr. Stevens’ device and Medilogik Inbox.\n5. **2024-03-05 10:17:25** – Chart flag updated (amber LFT icon).\n\n---\n\n#### 4. Acknowledgment & Escalation Logic\n\n* **Acknowledgment Requirement:**\n\n  * Alert must be electronically acknowledged by the responsible clinician **within 72 hours** of creation.\n\n* **Current Status:**\n\n  * Acknowledgement: **Pending**\n  * Last System Check: 2024-03-05 18:00 – *No user interaction recorded.*\n\n* **Scheduled Reminders:**\n\n  * **+24 hours (2024-03-06 10:17)** – In-app reminder to Dr. Stevens (planned).\n  * **+48 hours (2024-03-07 10:17)** – Second reminder and addition to GP practice “Unacknowledged LFT” dashboard (planned).\n  * **+72 hours (2024-03-08 10:17)** – If still unacknowledged, auto-escalate to:\n\n    * GP Duty Doctor / Clinical Lead inbox\n    * Practice admin queue: “Follow-up abnormal results – contact clinician”.\n\n* **Escalation Rule:**\n\n  * Rule ID 7.1 – *Unacknowledged Level 2 lab alert >72 h → escalate to on-call / clinical lead.*\n\n---\n\n#### 5. Linked Tasks (Automatic)\n\n1. **Task ID:** NC-TASK-20240305-ALT-REVIEW\n\n   * **Title:** Review abnormal LFT (ALT 78 U/L) and document plan.\n   * **Owner:** Dr. P. Stevens\n   * **Priority:** Medium\n   * **Due Date/Time:** 2024-03-08 10:15 (72h from encounter)\n   * **Completion Status:** Open\n   * **Task Notes (Pre-populated):**\n\n     * “ALT 78 U/L (~1.95 × ULN), hepatocellular pattern, no bilirubin or INR derangement. Consider MASLD, NSAID use, and DMARD candidacy (planned MTX). Document clinical correlation, repeat LFT interval, and DMARD decision.”\n\n2. **Task ID:** NC-TASK-20240305-MASLD-COUNSEL\n\n   * **Title:** Confirm lifestyle counselling & weight-loss plan for suspected MASLD.\n   * **Owner:** GP Practice Nurse / Health Coach (Pool: ‘MASLD-COACH’)\n   * **Priority:** Low\n   * **Due Date/Time:** 2024-03-19 09:00\n   * **Status:** Open\n\n---\n\n#### 6. Safety & Governance Notes\n\n* **Protocol Reference:**\n\n  * Local GP LFT Policy v3.1 – “Any ALT ≥ 1.5 × ULN requires documented review and repeat LFT within 3–6 months, sooner if planning hepatotoxic medication (e.g., Methotrexate).”\n* **Clinical Risk Comment (System):**\n\n  * Flag added: “Planned DMARD (MTX) – ensure LFT trend and chronic liver disease screen BEFORE initiation.”\n* **Audit Trail (Extract):**\n\n  * 2024-03-05 10:17 – Alert generated automatically (System).\n  * 2024-03-05 10:17 – Delivery confirmed to device ‘STEVENS_GP_IPHONE’.\n  * 2024-03-05 10:18 – Chart flag updated (System).\n  * *No user acknowledgment recorded yet.*\n\n",
+        "dataSource": "Nervecentre",
+        "highlights": [
+          {
+            "text": "Rule ID 4.2 – *ALT ≥ 1.5 × ULN*",
+            "color": "yellow"
+          },
+          {
+            "text": "**Result:** 78 U/L (ULN: 40 U/L; 1.95 × ULN)",
+            "color": "yellow"
+          },
+          {
+            "text": "AST: 55 U/L (H, <35)",
+            "color": "yellow"
+          },
+          {
+            "text": "Severity Banding (System):",
+            "color": "yellow"
+          },
+          {
+            "text": "ALT 1.5–3 × ULN → *Moderate Elevation*",
+            "color": "yellow"
+          },
+          {
+            "text": "Local GP LFT Policy v3.1 – “Any ALT ≥ 1.5 × ULN requires documented review and repeat LFT within 3–6 months, sooner if planning hepatotoxic medication (e.g., Methotrexate).”",
+            "color": "yellow"
+          },
+          {
+            "text": "Planned DMARD (MTX) – ensure LFT trend and chronic liver disease screen BEFORE initiation.”",
+            "color": "yellow"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T12:00:00.000Z",
+    "updatedAt": "2025-11-17T12:00:00.000Z"
+  },
+  {
+    "id": "raw-nervecentre-encounter-2",
+    "type": "component",
+    "x": -3500,
+    "y": -4700,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "Nervecentre Encounter 2 - Critical MTX Alert with Highlights",
+    "content": {
+      "title": "Nervecentre - Encounter 2",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 5,
+        "date": "2024-08-14",
+        "visitType": "Outpatient",
+        "provider": "Dr. R. Hall",
+        "specialty": "Rheumatology",
+        "rawText": "\n### **Nervecentre**\n\n**Module:** Laboratory Alerting & Medicines Safety\n**Event Type:** *Critical Medicine-Related LFT Alert – Methotrexate Patient*\n\n---\n\n## **1. Alert Event Summary**\n\n* **System Alert ID:** NC-LFT-20240814-003\n* **Patient:** Sarah Miller (MRN: SM43850603, DOB: 1981-06-03, 43F)\n* **Linked Encounter:**\n\n  * Visit Type: Outpatient – Rheumatology Review\n  * Date & Time: **2024-08-14 @ 14:32**\n  * Clinician: **Dr. R. Hall (Rheumatology Registrar)**\n* **Ordering Provider:** Dr. R. Hall\n* **Requesting Location:** Rheumatology Clinic – Room 5\n\n---\n\n## **2. Trigger Details**\n\n* **Trigger Rule:**\n\n  * **Rule 4.5 – ALT ≥ 3 × ULN OR ALT ≥ 2 × ULN in patients on hepatotoxic drugs (MTX).**\n\n* **Analyte Triggering Alert:**\n\n  * **ALT: 158 U/L** (ULN 40 U/L → **3.95 × ULN**)\n\n* **Associated LFTs:**\n\n  * AST: 132 U/L (H)\n  * ALP: 118 U/L (N)\n  * Total Bilirubin: 17 μmol/L (N)\n  * Direct Bilirubin: 4 μmol/L (N)\n  * INR: 1.1 (N)\n  * Platelets: 238 × 10⁹/L (N)\n\n* **Pattern of Injury:**\n\n  * **Hepatocellular**, ALT > AST > 3× ULN, normal bilirubin\n\n* **Alert Level:** **Level 3 – *Critical hepatotoxicity (MTX patient)***\n\n* **Severity Banding:**\n\n  * MTX patient with ALT >3× ULN → **“Immediate clinical review required”**\n\n* **Medication Linkage:**\n\n  * Methotrexate 15mg weekly (started ~12 weeks prior)\n  * Folic acid 5mg weekly\n\n---\n\n## **3. Distribution & Delivery Log**\n\n**Primary Recipients:**\n\n* Dr. R. Hall (Ordering clinician)\n* Rheumatology Consultant On-Call\n* GP (auto-copied for medicine safety review)\n\n**Secondary Recipients:**\n\n* Pharmacy / DMARD Safety Team (Queue: *DMARD-SAFETY-PRIORITY*)\n* Nervecentre Medicines Safety Dashboard\n\n**Delivery Channels:**\n\n* Nervecentre mobile push\n* Desktop inbox message\n* Email notification to Rheumatology duty mailbox (policy-mandated for Level 3 alerts)\n\n**Delivery Timeline:**\n\n1. **2024-08-14 14:33:10** – LFTs verified by lab\n2. **2024-08-14 14:33:16** – Rule 4.5 fired (ALT 158)\n3. **2024-08-14 14:33:20** – High-priority alert created\n4. **2024-08-14 14:33:25** – Push & desktop alerts sent to Rheumatology\n5. **2024-08-14 14:33:28** – Medicines Safety Dashboard updated (red flag)\n\nCurrent status: **Alert acknowledged by Dr. Hall at 14:41**\nEscalation aborted (acknowledged in time)\n\n---\n\n## **4. Acknowledgment & Escalation Logic**\n\n* **Acknowledgement Requirement:**\n\n  * Level 3 alerts require action **within 2 hours**.\n\n* **Acknowledgement Status:**\n\n  * **Acknowledged – Dr. Hall at 14:41**\n  * Comment: “MTX held. Repeat LFTs in 48h. Arrange fibrosis screen & ultrasound.”\n\n* **Escalation Path (not triggered):**\n\n  * Rheumatology Consultant (15 min delay)\n  * Duty Manager (if >2h unacknowledged)\n  * Pharmacy DMARD team (parallel escalation)\n\n---\n\n## **5. Linked Tasks (Automatic)**\n\n### **1. NC-TASK-20240814-MTX-HOLD**\n\n* **Title:** “Suspend Methotrexate pending repeat LFTs”\n* **Owner:** Dr. R. Hall\n* **Due:** Immediate\n* **Status:** **Completed (14:42)**\n* **Notes:** MTX paused; patient notified.\n\n---\n\n### **2. NC-TASK-20240814-LFT-REPEAT48H**\n\n* **Title:** “Repeat LFT panel in 48 hours (MTX hepatotoxicity)”\n* **Owner:** Phlebotomy Hub (*Priority*)\n* **Due:** 2024-08-16 @ 09:00\n* **Status:** Open\n\n---\n\n### **3. NC-TASK-20240814-CLD-SCREEN**\n\n* **Title:** “Non-invasive liver disease screen (MASLD, viral, autoimmune)”\n* **Owner:** GP Practice (Liver Screening Queue)\n* **Due:** 2024-08-21\n* **Status:** Open\n\n---\n\n## **6. Safety & Governance Notes**\n\n* **Policy Applied:**\n\n  * NHS DMARD Safety Monitoring – “Stop MTX if ALT > 3× ULN.”\n  * Local Hepatotoxicity Protocol v5.2\n\n* **System Safety Comments:**\n\n  * “High probability of MTX-related transaminitis; ensure follow-up imaging & screen.”\n  * “No synthetic dysfunction (INR normal). No bilirubin rise. No acute liver failure features.”\n\n* **Audit Trail (Extract):**\n\n  * 14:33 – Alert created\n  * 14:33 – Notifications dispatched\n  * 14:41 – Acknowledged (Hall_R)\n  * 14:42 – Action documented: MTX held\n\n---\n\n## **7. Impact on Medicines Dashboard**\n\n* MTX moved to “**Withheld – Abnormal LFT**”\n* Next review set: **2024-08-16 (await repeat LFTs)**\n* Risk Score updated → **High**\n",
+        "dataSource": "Nervecentre",
+        "highlights": [
+          {
+            "text": "Rule 4.5 – ALT ≥ 3 × ULN OR ALT ≥ 2 × ULN in patients on hepatotoxic drugs (MTX).",
+            "color": "red"
+          },
+          {
+            "text": "**ALT: 158 U/L** (ULN 40 U/L → **3.95 × ULN**)",
+            "color": "red"
+          },
+          {
+            "text": "AST: 132 U/L (H)",
+            "color": "red"
+          },
+          {
+            "text": "* **Alert Level:** **Level 3 – *Critical hepatotoxicity (MTX patient)***",
+            "color": "red"
+          },
+          {
+            "text": "MTX patient with ALT >3× ULN → “Immediate clinical review required”",
+            "color": "red"
+          },
+          {
+            "text": "Methotrexate 15mg weekly (started ~12 weeks prior)",
+            "color": "yellow"
+          },
+          {
+            "text": "“High probability of MTX-related transaminitis; ensure follow-up imaging & screen.”",
+            "color": "red"
+          },
+          {
+            "text": "“No synthetic dysfunction (INR normal). No bilirubin rise. No acute liver failure features.”",
+            "color": "green"
+          },
+          {
+            "text": "MTX moved to “Withheld – Abnormal LFT”",
+            "color": "red"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T14:00:00.000Z",
+    "updatedAt": "2025-11-17T14:00:00.000Z"
+  },
+  {
+    "id": "raw-nervecentre-encounter-3",
+    "type": "component",
+    "x": -2800,
+    "y": -4700,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "Nervecentre Encounter 3 - Critical Inpatient Alert with Highlights",
+    "content": {
+      "title": "Nervecentre - Encounter 3",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 7,
+        "date": "2024-09-02",
+        "visitType": "Outpatient",
+        "provider": "Dr. K. Hussain",
+        "specialty": "AMU SHO",
+        "rawText": "\n### **Nervecentre**\n\n**Module:** Laboratory Alerting, Inpatient Monitoring & Early Warning Scores\n**Event Type:** *Critical LFT Alert + AMU Deterioration Observation Trigger*\n**Location:** Acute Medical Unit (AMU) – Bed 12\n\n---\n\n## **1. Alert Event Summary**\n\n* **System Alert ID:** NC-LFT-20240902-009\n\n* **Patient:** **Sarah Miller** (MRN: SM43850603, 43F)\n\n* **Linked Encounter:**\n\n  * Admission Type: **Emergency – Medical**\n  * Date & Time: **2024-09-02 @ 18:22**\n  * Admitting Clinician: **Dr. K. Hussain (AMU SHO)**\n  * Responsible Consultant: **Dr. A. Bennett (Gastroenterology)**\n\n* **Clinical Presentation:**\n\n  * Nausea, reduced appetite, right upper quadrant discomfort\n  * Recent MTX cessation after abnormal LFTs\n  * Query **Methotrexate-related DILI vs MASLD flare**\n\n---\n\n## **2. Trigger Details – Critical LFT Alarm**\n\n### **Primary Trigger Rule:**\n\n* **Rule 4.7 – ALT ≥ 5 × ULN OR significant rise since last test.**\n* **ALT: 242 U/L** (ULN 40 → **6.05 × ULN**)\n* **AST: 198 U/L (H)**\n* **ALP: 130 U/L (upper-normal)**\n* **GGT: 165 U/L (H)**\n* **Total Bilirubin: 26 μmol/L (mild elevation)**\n* **Direct Bilirubin: 8 μmol/L**\n* **INR: 1.2 (upper-normal, no synthetic failure)**\n* **Albumin: 39 g/L (normal)**\n* **Platelets: 212 × 10⁹/L**\n\n### **Pattern of Injury:**\n\n* **Marked hepatocellular injury**\n* Mild bilirubin elevation (not cholestatic)\n* No acute liver failure criteria\n\n### **Severity Level:**\n\n* **Level 4 – Critical Alert (Inpatient)**\n* Requires **review within 30 minutes**\n\n### **Medication Linkage:**\n\n* MTX stopped 2 weeks ago\n* Patient on **prednisolone 10 mg** for RA flare\n* PRN paracetamol (flagged for dosing review)\n\n---\n\n## **3. Early Warning Score (NEWS2) Trigger**\n\n* **NEWS2 Score:** **4** (Yellow)\n\n  * HR 108\n  * RR 20\n  * Temp 37.8°C\n  * SpO₂ 98% RA\n  * BP 122/78\n* Trigger: “**Physiological change + abnormal blood tests → senior review required**”\n\n### **Observation Alert ID:** NC-OBS-20240902-04\n\nDelivered simultaneously with the LFT alert.\n\n---\n\n## **4. Distribution & Delivery Log**\n\n**Primary Recipients:**\n\n* Dr. Hussain (Admitting SHO)\n* AMU Registrar (Dr. Maxwell)\n* Gastroenterology On-Call Team\n* Medicines Safety Team (due to previous MTX exposure)\n\n**Secondary Recipients:**\n\n* AMU Nurse in Charge\n* EWS (NEWS2) Monitoring Dashboard\n* Liver Pathway Tracker\n\n### **Delivery Timeline**\n\n1. **18:24:50** – LFTs verified\n2. **18:24:55** – Rule 4.7 fired (ALT 242)\n3. **18:25:00** – Critical alert sent (Level 4)\n4. **18:25:05** – NEWS2 trigger elevated to “Urgent Review”\n5. **18:25:10** – On-call Gastroenterology bleeped automatically\n6. **18:27:14** – Acknowledged by **Dr. Hussain (AMU SHO)**\n7. **18:33:22** – Registrar review documented (Maxwell_J)\n\n---\n\n## **5. Acknowledgment & Escalation Logic**\n\n* **Required Acknowledgement:** Within **30 min**\n* **Status:**\n\n  * **Acknowledged – On time (Dr. Hussain @ 18:27)**\n\n### **Escalation process (auto-triggered but closed):**\n\n* **Stage 1 – SHO (5 min)** → Completed\n* **Stage 2 – Registrar (15 min)** → Completed\n* **Stage 3 – Gastro Consultant (manual if worsening)** → Not required\n\n### **Registrar Safety Note:**\n\n“Likely MTX-related hepatocellular injury, improving bilirubin. Keep NBM for abdominal US, order hepatitis serologies, and trend LFTs q12h.”\n\n---\n\n## **6. Linked Inpatient Tasks (Automatic)**\n\n### **1. NC-TASK-20240902-LFTQ12**\n\n* **Title:** “Repeat LFT + INR every 12 hours”\n* **Owner:** AMU Nursing & Phlebotomy\n* **Due:** First repeat at **06:00 (03-Sept)**\n* **Status:** Open\n\n---\n\n### **2. NC-TASK-20240902-US-LIVER**\n\n* **Title:** “Arrange urgent liver ultrasound”\n* **Owner:** Radiology – Priority Queue\n* **Due:** Within 24h\n* **Status:** Open\n* **Notes:** NBM from midnight.\n\n---\n\n### **3. NC-TASK-20240902-VIRAL-AUTOIMMUNE-SCREEN**\n\n* **Title:** “Complete full non-invasive liver screen (viral, autoimmune, metabolic)”\n* **Owner:** AMU SHO\n* **Due:** 2024-09-03 @ 14:00\n* **Status:** Open\n* **Pre-populated Notes:**\n\n  * HBV surface antigen\n  * HCV Ab\n  * ANA, ASMA, AMA\n  * Ferritin, transferrin saturation\n  * Coeliac serology\n\n---\n\n### **4. NC-TASK-20240902-DILI-REVIEW**\n\n* **Title:** “Consultant Gastro review for suspected DILI”\n* **Owner:** Dr. Bennett\n* **Due:** Same day (post-ward round)\n* **Status:** Pending Consultant signature\n\n---\n\n## **7. Safety & Governance Notes**\n\n* **Policies Applied:**\n\n  * Acute Liver Injury Protocol v4.0\n  * DMARD Monitoring (MTX section)\n  * NEWS2 Escalation Framework\n  * Risk of DILI – high if ALT > 5× ULN\n\n* **System Warnings:**\n\n  * “Recent MTX exposure – evaluate for DILI.”\n  * “Trend LFTs closely; risk of progression without synthetic failure yet.”\n  * “Investigate MASLD overlap given BMI and T2DM.”\n\n* **Audit Trail (Extract):**\n\n  * 18:25 – Alert created\n  * 18:25 – Gastro team notified\n  * 18:27 – SHO acknowledgment\n  * 18:33 – Registrar review documented\n  * 18:34 – LFT-trend monitoring scheduled\n\n---\n\n## **8. Inpatient Liver Monitoring Dashboard Update**\n\n* **Status:** HIGH RISK – Hepatocellular injury\n* **Next data refresh:** 12-hourly\n* **Outstanding items:**\n\n  * Ultrasound\n  * Viral/autoimmune screen\n  * Consultant review\n  * LFT trend check\n",
+        "dataSource": "Nervecentre",
+        "highlights": [
+          {
+            "text": "* **ALT: 242 U/L** (ULN 40 → **6.05 × ULN**)",
+            "color": "red"
+          },
+          {
+            "text": "AST: 198 U/L (H)",
+            "color": "red"
+          },
+          {
+            "text": "GGT: 165 U/L (H)",
+            "color": "red"
+          },
+          {
+            "text": "Total Bilirubin: 26 μmol/L (mild elevation)",
+            "color": "yellow"
+          },
+          {
+            "text": "Marked hepatocellular injury",
+            "color": "red"
+          },
+          {
+            "text": "Level 4 – Critical Alert (Inpatient)",
+            "color": "red"
+          },
+          {
+            "text": "Risk of DILI – high if ALT > 5× ULN",
+            "color": "red"
+          },
+          {
+            "text": "Recent MTX exposure – evaluate for DILI.",
+            "color": "red"
+          },
+          {
+            "text": "Trend LFTs closely; risk of progression without synthetic failure yet.",
+            "color": "red"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T14:00:00.000Z",
+    "updatedAt": "2025-11-17T14:00:00.000Z"
   },
   {
     "id": "iframe-item-easl-interface",
@@ -1995,7 +2172,7 @@
   {
     "id": "ehr-hub-nervecentre",
     "type": "ehrHub",
-    "x": -700,
+    "x": -2700,
     "y": -5400,
     "width": 350,
     "height": 250,
@@ -2011,7 +2188,7 @@
   {
     "id": "ehr-hub-medilogik",
     "type": "ehrHub",
-    "x": 920,
+    "x": -1080,
     "y": -3350,
     "width": 350,
     "height": 250,
@@ -2027,7 +2204,7 @@
   {
     "id": "ehr-hub-viper",
     "type": "ehrHub",
-    "x": 200,
+    "x": -1800,
     "y": -3350,
     "width": 350,
     "height": 250,
@@ -2043,7 +2220,7 @@
   {
     "id": "ehr-hub-ice",
     "type": "ehrHub",
-    "x": -1380,
+    "x": -3380,
     "y": -3350,
     "width": 350,
     "height": 250,
@@ -2059,23 +2236,407 @@
   {
     "id": "ehr-hub-bighand",
     "type": "ehrHub",
-    "x": 2200,
+    "x": 200,
     "y": -5400,
     "width": 350,
     "height": 250,
     "data": {
       "label": "BigHand Dictation",
-      "count": 3,
+      "count": 1,
       "description": "Clinical dictation and transcription",
       "color": "#4caf50"
     },
     "createdAt": "2025-11-06T12:00:00.000Z",
-    "updatedAt": "2025-11-06T12:00:00.000Z"
+    "updatedAt": "2025-11-17T16:30:00.000Z"
+  },
+  {
+    "id": "ehr-hub-vueexplore",
+    "type": "ehrHub",
+    "x": -410,
+    "y": -3350,
+    "width": 350,
+    "height": 250,
+    "data": {
+      "label": "VueExplore Imaging",
+      "count": 1,
+      "description": "Radiology imaging and reporting",
+      "color": "#FF9800"
+    },
+    "createdAt": "2025-11-17T16:00:00.000Z",
+    "updatedAt": "2025-11-17T16:00:00.000Z"
+  },
+  {
+    "id": "ehr-hub-ice-orders",
+    "type": "ehrHub",
+    "x": 300,
+    "y": -3350,
+    "width": 350,
+    "height": 250,
+    "data": {
+      "label": "ICE Orders",
+      "count": 2,
+      "description": "Laboratory order management system",
+      "color": "#9C27B0"
+    },
+    "createdAt": "2025-11-17T17:00:00.000Z",
+    "updatedAt": "2025-11-17T17:00:00.000Z"
+  },
+  {
+    "id": "subzone-ice-orders",
+    "type": "zone",
+    "x": 200,
+    "y": -2700,
+    "width": 1600,
+    "height": 900,
+    "data": {
+      "label": "ICE Order Sets",
+      "color": "#3b82f6",
+      "handlePosition": "top"
+    },
+    "style": {
+      "background": "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%)",
+      "border": "2px solid #3b82f6",
+      "borderRadius": "12px",
+      "pointerEvents": "none"
+    },
+    "draggable": false,
+    "selectable": false,
+    "zIndex": -2,
+    "createdAt": "2025-11-17T17:00:00.000Z",
+    "updatedAt": "2025-11-17T17:00:00.000Z"
+  },
+  {
+    "id": "raw-ice-orders-encounter-2",
+    "type": "component",
+    "x": 250,
+    "y": -2600,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "ICE Pre-DMARD Screening Orders with Highlights",
+    "content": {
+      "title": "ICE - Dr. P. Stevens",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 2,
+        "date": "2024-04-01",
+        "visitType": "Routine",
+        "provider": "Dr. P. Stevens",
+        "specialty": "Unknown",
+        "rawText": "\n**ICE**\n**Order Set:** *Comprehensive Chronic Hepatitis & Hepatic Fitness Screening (Pre-DMARD Initiation)*\n**Ordering Clinician:** Dr. P. Stevens, MD, MRCGP\n**Date:** 2024-04-01\n**Location:** GP Outpatient Clinic\n**Indication:** *Abnormal ALT (78 U/L) and pre-Methotrexate screening*\n**Urgency:** Routine (Non-urgent, but required before treatment)\n**Associated Diagnosis Code:** SNOMED CT – *Rheumatoid arthritis (69896004)* + *Transaminitis (197315008)*\n\n---\n\n## **1. Viral Hepatitis Serology Panel**\n\n**Tests Ordered:**\n\n* HBsAg – Hepatitis B Surface Antigen\n* Anti-HBc Total – Hepatitis B Core Antibody\n* Anti-HCV – Hepatitis C Antibody\n* HEV IgG – Hepatitis E Antibody (IgG)\n\n**Priority:** Routine\n**Turnaround:** 48–72 hours\n**Specimen:** Serum (Gold top)\n\n**Extended Laboratory Note for Technologists:**\n“Pre-DMARD safety testing. Patient requires clearance prior to potential MTX initiation.\nPlease ensure reflex testing for HBV DNA if:\n\n* HBsAg positive OR\n* Isolated anti-HBc positivity.\n  This result determines antiviral prophylaxis requirements before DMARDs.”\n\n**Clinical Rationale:**\n“Full viral exclusion is mandatory. Even occult HBV could lead to reactivation under MTX. HCV/HEV exclusion required to avoid missed chronic inflammation.”\n\n---\n\n## **2. Autoimmune Hepatitis Screening Panel**\n\n**Tests Ordered:**\n\n* ANA with reflex titre\n* ASMA (Anti-Smooth Muscle Antibody)\n* LKM-1 (Liver-Kidney Microsomal Antibody)\n* Total IgG\n\n**Priority:** Routine\n**Turnaround:** 5–7 days\n**Specimen:** Serum\n\n**Extended Note:**\n“If ANA positive, perform reflex titre and pattern ID.\nIf IgG > upper limit, flag result for consultant pathologist review.”\n\n**Clinical Rationale:**\n“Rule out autoimmune hepatitis. Active AIH is an absolute contraindication to starting MTX. MTX may worsen hepatic autoimmune inflammation.”\n\n---\n\n## **3. Metabolic Liver Screen**\n\n**Tests Ordered:**\n\n* Serum Ferritin\n* TIBC (Total Iron-Binding Capacity)\n* Transferrin Saturation (%)\n* Alpha-1 Antitrypsin Level\n\n**Priority:** Routine\n**Turnaround:** 48 hours\n**Specimen:** Serum\n\n**Extended Note:**\n“Ferritin >300 or transferrin saturation >45% should reflex to HFE genetic typing.\nLow A1AT level should reflex to phenotype typing if available.”\n\n**Clinical Rationale:**\n“Exclude haemochromatosis and A1AT deficiency—both amplify DILI risk and are critical to identify before MTX.”\n\n---\n\n## **4. Repeat Liver Function Panel (Scheduled)**\n\n**Tests Ordered:**\n\n* ALT\n* AST\n* ALP\n* GGT\n* Bilirubin (Total & Direct)\n* INR\n* Albumin\n* Platelets (FBC add-on)\n* R-Factor auto-calculation\n\n**Priority:** Deferred / Scheduled for 4 weeks\n**Target Date:** 2024-05-01\n**Turnaround:** Same day\n**Specimen:** Serum + Coag tube\n\n**Extended Note:**\n“Trend assessment required. If ALT remains above 1.5× ULN, do not proceed with MTX.\nIf ALT normalizes, clear for low-dose MTX initiation.\nICE to generate automatic reminder 3 days before due date.”\n\n**Clinical Rationale:**\n“To confirm normalization of hepatic inflammation and determine hepatic fitness prior to hepatotoxic DMARD therapy.”\n\n---\n\n## **ICE System Flags Applied**\n\n* **Safety Flag:** “MTX Pre-Check Required – Do Not Initiate Until Results Reviewed.”\n* **Auto-Alert:** Notify ordering clinician if results show:\n\n  * HBsAg positive\n  * ALT > 2× ULN\n  * IgG significantly elevated\n  * Positive autoimmune markers\n* **Patient Status Flag:** “Recurrent MASLD flare – monitor trends.”\n\n---\n\n## **Specimen Collection Instructions**\n\n* Fasting NOT required\n* Advise patient to avoid NSAIDs 48h prior to blood draw\n* Document alcohol intake in the last 72 hours\n* Ensure same-day processing for INR\n\n---\n",
+        "dataSource": "ICE",
+        "highlights": [
+          {
+            "text": "Abnormal ALT (78 U/L) and pre-Methotrexate screening",
+            "color": "yellow"
+          },
+          {
+            "text": "HBsAg – Hepatitis B Surface Antigen",
+            "color": "green"
+          },
+          {
+            "text": "Anti-HBc Total – Hepatitis B Core Antibody",
+            "color": "green"
+          },
+          {
+            "text": "Anti-HCV – Hepatitis C Antibody",
+            "color": "green"
+          },
+          {
+            "text": "HEV IgG – Hepatitis E Antibody (IgG)",
+            "color": "green"
+          },
+          {
+            "text": "HBV DNA if:\n\n* HBsAg positive OR\n* Isolated anti-HBc positivity.",
+            "color": "red"
+          },
+          {
+            "text": "Even occult HBV could lead to reactivation under MTX.",
+            "color": "red"
+          },
+          {
+            "text": "Rule out autoimmune hepatitis.",
+            "color": "red"
+          },
+          {
+            "text": "Active AIH is an absolute contraindication to starting MTX.",
+            "color": "red"
+          },
+          {
+            "text": "MTX may worsen hepatic autoimmune inflammation.",
+            "color": "red"
+          },
+          {
+            "text": "Exclude haemochromatosis and A1AT deficiency—both amplify DILI risk and are critical to identify before MTX.",
+            "color": "yellow"
+          },
+          {
+            "text": "If ALT remains above 1.5× ULN, do not proceed with MTX.",
+            "color": "yellow"
+          },
+          {
+            "text": "To confirm normalization of hepatic inflammation and determine hepatic fitness prior to hepatotoxic DMARD therapy.",
+            "color": "yellow"
+          },
+          {
+            "text": "HBsAg positive",
+            "color": "red"
+          },
+          {
+            "text": "ALT > 2× ULN",
+            "color": "red"
+          },
+          {
+            "text": "Positive autoimmune markers",
+            "color": "red"
+          },
+          {
+            "text": "Recurrent MASLD flare – monitor trends.",
+            "color": "yellow"
+          },
+          {
+            "text": "Advise patient to avoid NSAIDs 48h prior to blood draw",
+            "color": "yellow"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T17:00:00.000Z",
+    "updatedAt": "2025-11-17T17:00:00.000Z"
+  },
+  {
+    "id": "raw-ice-orders-encounter-6",
+    "type": "component",
+    "x": 1000,
+    "y": -2600,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "ICE Acute DILI Emergency Orders with Highlights",
+    "content": {
+      "title": "ICE - Dr. P. Stevens",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 6,
+        "date": "2024-08-12",
+        "visitType": "Routine",
+        "provider": "Dr. P. Stevens",
+        "specialty": "Unknown",
+        "rawText": "\n**ICE**\n**Order Set:** *Acute Liver Injury Diagnostic & Management Pathway (ED Rapid Evaluation Protocol)*\n**Ordering Clinician:** Dr. P. Stevens\n**Date:** 2024-08-12\n**Location:** ED – Rapid Assessment Bay\n**Indication:** *Severe Acute Hepatocellular DILI with bilirubin >100 μmol/L, ALT 490 U/L*\n**Priority:** **STAT / Emergency**\n**Linked Diagnosis Codes:**\n\n* *Drug-Induced Liver Injury (DILI) — SNOMED CT: 240517000*\n* *Acute Jaundice — 43959009*\n* *Cholestasis — 14140009*\n\n---\n\n# **1. Acute Liver Function & Synthetic Function Panel (STAT)**\n\n**Tests Ordered:**\n\n* ALT\n* AST\n* ALP\n* GGT\n* Total Bilirubin\n* Direct (Conjugated) Bilirubin\n* INR / PT\n* APTT\n* Albumin\n* Platelet count (FBC)\n* R-Factor auto-calculation\n* MELD components\n\n**Specimen:** Serum (Gold top) + Coagulation tube (Blue top)\n**Turnaround:** **1 hour**\n**Laboratory Notes:**\n“Prioritize processing—patient meets criteria for severe DILI.\nIf INR ≥ 1.5, notify Hepatology Consultant immediately and escalate to level II care.”\n\n**Clinical Rationale:**\n“To quantify severity of hepatocellular injury, identify synthetic dysfunction early, and determine risk of progression to acute liver failure.”\n\n---\n\n# **2. Complete ED Acute Hepatitis Panel (STAT)**\n\n**Tests Ordered:**\n\n* HBsAg\n* Anti-HBc IgM\n* HBV DNA (reflex if HBsAg positive OR if IgM equivocal)\n* HAV IgM\n* HCV Ab with reflex PCR\n* HEV IgM & IgG\n\n**Specimen:** Serum\n**Turnaround:** 24–48h for serology, PCR reflex automatically flagged\n\n**Extended Notes to Laboratory:**\n“Patient presents with DILI picture but high bilirubin requires exclusion of superimposed acute viral hepatitis.\nReflex HBV DNA and HCV RNA without waiting for GP approval.”\n\n**Clinical Rationale:**\n“To rule out acute viral hepatitis coexisting with drug-induced hepatocellular injury.”\n\n---\n\n# **3. Autoimmune Hepatitis Acute Panel (Urgent)**\n\n**Tests Ordered:**\n\n* ANA\n* ASMA\n* LKM-1\n* IgG\n* AMA (Anti-Mitochondrial Antibody)\n\n**Priority:** Urgent\n**Specimen:** Serum\n**Turnaround:** 48–72 hours\n\n**Extended Notes:**\n“If IgG > ULN or ANA positive, flag as ‘Potential AIH’ and notify Hepatology.”\n\n---\n\n# **4. Metabolic Liver Injury Screen (Urgent)**\n\n**Tests Ordered:**\n\n* Ferritin\n* Transferrin saturation\n* TIBC\n* Alpha-1-antitrypsin\n* Ceruloplasmin (to exclude Wilson’s disease in <45 y/o)\n\n**Specimen:** Serum\n\n**Clinical Rationale:**\n“To identify possible metabolic or genetic cofactors worsening acute DILI.”\n\n---\n\n# **5. Abdominal Ultrasound (USG Abdomen Upper) – STAT (1 hour)**\n\n**Order:** USG Abdomen Complete\n**Target time:** 1 hour\n**Indication:** *Bilirubin 110 μmol/L — exclude obstruction, gallstones, duct dilation, hepatic lesions, biliary obstruction.*\n\n**Radiology Notes:**\n“High suspicion for hepatocellular injury, but bilirubin >100 requires urgent exclusion of obstructive pathology.\nIf bile duct dilation >8 mm → escalate to MRCP.”\n\n---\n\n# **6. MRCP (Conditional Reflex Order)**\n\n**Criteria to trigger reflex:**\n\n* Ultrasound suggests ductal dilation OR\n* Suspicion of choledocholithiasis OR\n* Cholestasis disproportionate to transaminases\n\n**Priority:** Urgent\n**Clinical Rationale:**\n“To confirm or exclude mechanical obstruction as cause of intense jaundice.”\n\n---\n\n# **7. NAC IV Infusion — Emergency Order**\n\n**Order:** N-acetylcysteine 3-bag infusion protocol\n**Dose:** Weight: 85 kg\n**Bag 1:** 150 mg/kg over 1 hour\n**Bag 2:** 50 mg/kg over 4 hours\n**Bag 3:** 100 mg/kg over 16 hours\n\n**Pharmacy Notes:**\n“This is *non-paracetamol DILI*, but NAC indicated due to ALT >1000/12× ULN risk category.\nStart immediately—do not delay for lab confirmation.”\n\n**Clinical Rationale:**\n“NAC improves outcomes in non-paracetamol DILI by reducing oxidative stress.”\n\n---\n\n# **8. Hepatology Consult – STAT**\n\n**Consult level:** Consultant Hepatologist\n**Criteria:**\n\n* Bilirubin >100\n* ALT >10× ULN\n* AST >350\n* Jaundice + severe nausea\n* MASLD background\n\n**Clinical Rationale:**\n“Requires specialist oversight and risk stratification for acute liver failure.”\n\n---\n\n# **9. Inpatient Admission Order – Hepatology Ward**\n\n**Level:** Urgent\n**Destination:** Hepatology Ward (High Monitoring Pathway)\n**Reason:**\n\n* Severe DILI\n* Need for neuro status monitoring q4h\n* INR monitoring daily\n* Ongoing NAC therapy\n\n---\n\n# **10. ICE System Safety Flags Applied**\n\n* **Red Flag:** “ACUTE SEVERE DILI — DO NOT DISCHARGE FROM ED.”\n* **Auto-alert:**\n\n  * If INR ≥ 1.5 → escalate to Consultant + Critical Care\n  * If bilirubin rises by >25% in 12 hours → notify Hepatology\n* **Medication Stop Order:**\n\n  * “Methotrexate marked as PERMANENTLY CONTRAINDICATED”\n* **Trend Reminder:**\n\n  * New LFT panel automatically scheduled at **+12 hours**\n\n---\n\n# **11. Specimen Collection Instructions**\n\n* Collect **two sets** of serum tubes due to high probability of add-on testing\n* Coagulation tube must be processed within 30 minutes\n* Mark all specimens “STAT — ACUTE LIVER INJURY”\n* Ensure patient receives IV access prior to NAC initiation\n\n---\n",
+        "dataSource": "ICE",
+        "highlights": [
+          {
+            "text": "Severe Acute Hepatocellular DILI with bilirubin >100 μmol/L, ALT 490 U/L",
+            "color": "red"
+          },
+          {
+            "text": "Drug-Induced Liver Injury (DILI) — SNOMED CT: 240517000",
+            "color": "red"
+          },
+          {
+            "text": "Acute Jaundice — 43959009",
+            "color": "red"
+          },
+          {
+            "text": "Cholestasis — 14140009",
+            "color": "red"
+          },
+          {
+            "text": "“Prioritize processing—patient meets criteria for severe DILI.",
+            "color": "red"
+          },
+          {
+            "text": "“To quantify severity of hepatocellular injury, identify synthetic dysfunction early, and determine risk of progression to acute liver failure.”",
+            "color": "red"
+          },
+          {
+            "text": "“Patient presents with DILI picture but high bilirubin requires exclusion of superimposed acute viral hepatitis.",
+            "color": "red"
+          },
+          {
+            "text": "“To rule out acute viral hepatitis coexisting with drug-induced hepatocellular injury.”",
+            "color": "red"
+          },
+          {
+            "text": "“If IgG > ULN or ANA positive, flag as ‘Potential AIH’ and notify Hepatology.”",
+            "color": "yellow"
+          },
+          {
+            "text": "“To identify possible metabolic or genetic cofactors worsening acute DILI.”",
+            "color": "yellow"
+          },
+          {
+            "text": "Bilirubin 110 μmol/L — exclude obstruction, gallstones, duct dilation, hepatic lesions, biliary obstruction.",
+            "color": "red"
+          },
+          {
+            "text": "“High suspicion for hepatocellular injury, but bilirubin >100 requires urgent exclusion of obstructive pathology.",
+            "color": "red"
+          },
+          {
+            "text": "“To confirm or exclude mechanical obstruction as cause of intense jaundice.”",
+            "color": "red"
+          },
+          {
+            "text": "This is *non-paracetamol DILI*, but NAC indicated due to ALT >1000/12× ULN risk category.",
+            "color": "red"
+          },
+          {
+            "text": "NAC improves outcomes in non-paracetamol DILI by reducing oxidative stress.”",
+            "color": "yellow"
+          },
+          {
+            "text": "Bilirubin >100",
+            "color": "red"
+          },
+          {
+            "text": "ALT >10× ULN",
+            "color": "red"
+          },
+          {
+            "text": "Jaundice + severe nausea",
+            "color": "red"
+          },
+          {
+            "text": "“Requires specialist oversight and risk stratification for acute liver failure.”",
+            "color": "red"
+          },
+          {
+            "text": "Severe DILI",
+            "color": "red"
+          },
+          {
+            "text": "Need for neuro status monitoring q4h",
+            "color": "red"
+          },
+          {
+            "text": "* **Auto-alert:**",
+            "color": "red"
+          },
+          {
+            "text": "Auto-alert:",
+            "color": "red"
+          },
+          {
+            "text": "If INR ≥ 1.5 → escalate to Consultant + Critical Care",
+            "color": "red"
+          },
+          {
+            "text": "If bilirubin rises by >25% in 12 hours → notify Hepatology",
+            "color": "red"
+          },
+          {
+            "text": "Methotrexate marked as PERMANENTLY CONTRAINDICATED",
+            "color": "red"
+          },
+          {
+            "text": "* **Trend Reminder:**\n\n  * New LFT panel automatically scheduled at **+12 hours**",
+            "color": "yellow"
+          },
+          {
+            "text": "Mark all specimens “STAT — ACUTE LIVER INJURY”",
+            "color": "red"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T17:00:00.000Z",
+    "updatedAt": "2025-11-17T17:00:00.000Z"
+  },
+  {
+    "id": "subzone-vueexplore",
+    "type": "zone",
+    "x": -500,
+    "y": -2700,
+    "width": 600,
+    "height": 900,
+    "data": {
+      "label": "VueExplore Imaging Data",
+      "color": "#3b82f6",
+      "handlePosition": "top"
+    },
+    "style": {
+      "background": "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.12) 100%)",
+      "border": "2px solid #3b82f6",
+      "borderRadius": "12px",
+      "pointerEvents": "none"
+    },
+    "draggable": false,
+    "selectable": false,
+    "zIndex": -2,
+    "createdAt": "2025-11-17T16:00:00.000Z",
+    "updatedAt": "2025-11-17T16:00:00.000Z"
+  },
+  {
+    "id": "raw-vueexplore-ultrasound-6",
+    "type": "component",
+    "x": -450,
+    "y": -2600,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "VueExplore Ultrasound - Encounter 6 with Highlights",
+    "content": {
+      "title": "VueExplore - Ultrasound 6",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 6,
+        "date": "2024-08-12",
+        "visitType": "Radiology",
+        "provider": "Dr. P. Stevens",
+        "specialty": "MRCGP",
+        "rawText": "**VueExplore**\n**Study Type:** *Ultrasound Abdomen – Emergency / STAT*\n**Accession Number:** **USG-240812-001**\n**Exam Date & Time:** **2024-08-12 @ 15:02**\n**Referring Clinician:** Dr. P. Stevens\n**Location:** Emergency Department → Radiology Acute Imaging Bay\n**Clinical Indication:**\n\n* Severe acute jaundice\n* ALT 490 U/L, AST 350 U/L\n* Bilirubin 110 μmol/L\n* Suspected **Acute Drug-Induced Liver Injury**\n* Need to rule out **obstructive cholestasis** or **biliary obstruction**\n\n---\n\n# **1. Acquisition Details**\n\n* **Modality:** Ultrasound (US) – B-mode + Colour Doppler\n* **Scanner:** Philips EPIQ Elite\n* **Operator:** Senior Sonographer – S. Patel\n* **Views Obtained:**\n\n  * Longitudinal and transverse liver views\n  * CBD (common bile duct) measurement\n  * Gallbladder (multiple planes)\n  * Right kidney\n  * Pancreatic head region\n  * Portal vein Doppler waveform\n* **Exam Quality:** Good; patient tolerated exam despite nausea.\n\n---\n\n# **2. Detailed Radiology Report**\n\n### **Liver**\n\n* Liver size: Normal range\n* Parenchymal echotexture: Mildly increased, consistent with **steatosis / MASLD**\n* No focal hepatic lesions\n* No intrahepatic biliary ductal dilatation\n* No free fluid\n* No signs of hepatic congestion\n\n### **Gallbladder**\n\n* Normal wall thickness\n* No gallstones seen\n* No pericholecystic fluid\n* Sonographic Murphy’s sign: **Negative**\n\n### **Biliary Tree**\n\n* **Common bile duct (CBD): 5.1 mm (normal)**\n* No evidence of obstruction\n* No choledocholithiasis\n* Normal tapering at the pancreatic head\n\n### **Pancreas**\n\n* Head and proximal body visualised; no mass or dilation of pancreatic duct\n* No evidence of obstructive tumour causing cholestasis\n\n### **Portal Vein (Doppler)**\n\n* Normal hepatopetal flow\n* Velocity within normal physiological range\n* No portal vein thrombosis or flow abnormality\n\n### **Spleen**\n\n* Normal size, no splenomegaly (supports absence of portal hypertension)\n\n### **Kidneys**\n\n* Right kidney normal, no hydronephrosis\n* Left kidney partially visualised; normal contour\n\n---\n\n# **3. Radiologist Impression (Final Report)**\n\n**Reported by:** Dr. L. Andrews, Consultant Radiologist\n**Report Time:** 2024-08-12 @ 15:25\n\n**Impression:**\n\n1. **No sonographic evidence of biliary obstruction** – CBD normal, no stones, and no intrahepatic duct dilation.\n2. Liver shows **mild steatosis**, compatible with known MASLD.\n3. No structural cause identified for the acute rise in bilirubin.\n4. Findings support a **hepatocellular process**, consistent with **Drug-Induced Liver Injury (DILI)** rather than obstructive jaundice.\n5. No free fluid, no focal liver lesions, and no signs of acute cholecystitis.\n\n---\n\n# **4. VueExplore System Flags**\n\n* **Flag Applied:** *“No mechanical obstruction detected – hepatocellular injury pathway confirmed.”*\n* **Auto-Trigger:**\n\n  * “MRCP not indicated unless bilirubin rises beyond 150 μmol/L OR clinical suspicion changes.”\n  * Notify Hepatology Consultant of completed imaging.\n* **Priority Update:** Imaging urgency downgraded from “STAT” to “Routine Monitoring” after non-obstructive findings.\n\n---\n\n# **5. Recommendations (Auto-generated VueExplore decision block)**\n\n* Continue with **NAC protocol** for severe hepatocellular injury.\n* Maintain **Hepatology admission** for close monitoring.\n* Repeat ultrasound only if:\n\n  * bilirubin increases\n  * cholestasis worsens\n  * new abdominal pain develops\n* Consider MR elastography or Fibroscan post-recovery (3–6 months).\n\n---\n\n# **6. Audit & Workflow Log**\n\n* 14:58 — ED order placed\n* 15:02 — Patient arrived in ultrasound bay\n* 15:03 — First image acquired\n* 15:25 — Report finalized by Consultant Radiologist\n* 15:27 — Report auto-delivered to:\n\n  * ED Clinician Inbox\n  * Hepatology On-Call Team\n  * Nervecentre alert module\n* 15:28 — Care plan updated to: “Proceed with hepatocellular DILI pathway”\n",
+        "dataSource": "Viper",
+        "highlights": [
+          {
+            "text": "Severe acute jaundice",
+            "color": "red"
+          },
+          {
+            "text": "ALT 490 U/L, AST 350 U/L",
+            "color": "red"
+          },
+          {
+            "text": "Bilirubin 110 μmol/L",
+            "color": "red"
+          },
+          {
+            "text": "Suspected **Acute Drug-Induced Liver Injury**",
+            "color": "red"
+          },
+          {
+            "text": "Liver shows **mild steatosis**, compatible with known MASLD.",
+            "color": "yellow"
+          },
+          {
+            "text": "Findings support a **hepatocellular process**, consistent with **Drug-Induced Liver Injury (DILI)** rather than obstructive jaundice.",
+            "color": "red"
+          },
+          {
+            "text": "Continue with **NAC protocol** for severe hepatocellular injury.",
+            "color": "red"
+          },
+          {
+            "text": "Maintain **Hepatology admission** for close monitoring.",
+            "color": "red"
+          },
+          {
+            "text": "Care plan updated to: “Proceed with hepatocellular DILI pathway”",
+            "color": "red"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T16:00:00.000Z",
+    "updatedAt": "2025-11-17T16:00:00.000Z"
   },
   {
     "id": "subzone-nervecentre",
     "type": "zone",
-    "x": -2350,
+    "x": -4350,
     "y": -4800,
     "width": 3700,
     "height": 1100,
@@ -2099,7 +2660,7 @@
   {
     "id": "subzone-ice",
     "type": "zone",
-    "x": -2400,
+    "x": -4400,
     "y": -2700,
     "width": 2400,
     "height": 900,
@@ -2123,7 +2684,7 @@
   {
     "id": "subzone-bighand",
     "type": "zone",
-    "x": 1500,
+    "x": -500,
     "y": -4800,
     "width": 1800,
     "height": 900,
@@ -2145,9 +2706,117 @@
     "updatedAt": "2025-11-06T14:00:00.000Z"
   },
   {
+    "id": "raw-bighand-dictation-stevens-2024",
+    "type": "component",
+    "x": -400,
+    "y": -4700,
+    "width": 600,
+    "height": 700,
+    "componentType": "RawClinicalNote",
+    "color": "#ffffff",
+    "description": "BigHand Dictation - Dr. Stevens Detailed Clinical Commentary with Highlights",
+    "content": {
+      "title": "BigHand - Dr. P. Stevens",
+      "component": "RawClinicalNote",
+      "props": {
+        "encounterNumber": 2,
+        "date": "2024-04-01",
+        "visitType": "Outpatient",
+        "provider": "Dr. P. Stevens",
+        "specialty": "Unknown",
+        "rawText": "\n# **Expanded BigHand Dictation **\n\n**Transcript ID:** GP_SM_0401_WorkupAndCaution_Full (Expanded Version)\n**Dictated by:** Dr. P. Stevens, MD, MRCGP\n**Length:** ~4 minutes, 45 seconds\n\n---\n\n### **Text (Full Dictation and Clinical Commentary)**\n\n\"Dictation for Sarah Miller, date of birth 3rd June 1981, reviewed today in clinic for follow-up of her abnormal liver function tests and to discuss suitability for commencing Methotrexate for rheumatoid arthritis.\n\nThis was a longer consultation than standard, as the focus today was not only on reviewing numbers but explaining the meaning behind them and ensuring the patient understands the implications for future treatment choices. Sarah presented well, in no acute distress, but her blood tests from last month remain concerning, specifically an ALT of 78 U/L, which is nearly twice the upper limit of normal. The pattern continues to suggest a hepatocellular injury, consistent with the background suspicion of metabolic dysfunction-associated steatotic liver disease MASLD and the long-standing metabolic risk factors we documented previously, including type 2 diabetes, suboptimal glycaemic control, and moderate alcohol intake.\n\nI spent a large portion of this appointment clarifying what this raised ALT means in the context of planning Methotrexate therapy. Methotrexate is a highly effective DMARD, but one with well-established hepatotoxic potential. Its safe use depends entirely on starting it in a liver that is already stable, ideally with completely normal aminotransferases. Even mild instability in LFTs increases risk, but when the baseline ALT is already elevated, as in Sarahâ€™s case, the risk of clinically meaningful injury potentially even severe DILI rises significantly.\n\nI explained in detail the concept of **synergistic hepatotoxicity**   that is, the combined effect of two stressors on the liver producing significantly more damage than either would alone. In her scenario, the â€˜first hitâ€™ is MASLD, which causes chronic low-grade hepatic inflammation. Adding Methotrexate, which itself generates oxidative stress and can create hepatic stellate activation, easily tips the balance into injury. The risk is not theoretical: the evidence base clearly shows that patients with MASLD are more vulnerable to Methotrexate-induced hepatic fibrosis and steatohepatitis.\n\nBecause of this, I emphasised to Sarah that we cannot safely proceed with Methotrexate until we definitively exclude other possible chronic liver diseases that would compound the risk further. I explained that viral hepatitis particularly hepatitis B core antibody positivity would fundamentally change monitoring requirements and contraindications. Autoimmune hepatitis must also be excluded because Methotrexate is strongly contraindicated in active AIH, as it can both exacerbate hepatic inflammation and mask clinical symptoms until severe injury has occurred. We therefore agreed to perform the most comprehensive first-line hepatitis and autoimmune screening panel.\n\nI walked Sarah through each test ordered today:\nâ€¢ Viral serology   HBsAg, hepatitis B core total antibody, hepatitis C antibody, and HEV IgG. I explained that even if surface antigen is negative, a positive core antibody would require modification of future DMARD regimens, and possible prophylaxis, depending on risk.\nâ€¢ Autoimmune screen   ANA, ASMA, LKM-1 and total IgG, which allow us to reliably detect autoimmune hepatitis patterns.\nâ€¢ Metabolic screen   ferritin, transferrin saturation and alpha-1-antitrypsin levels, to exclude haemochromatosis and AAT deficiency. Both of these conditions increase susceptibility to DILI and accelerate fibrosis if Methotrexate is used.\nâ€¢ And a repeat full LFT panel in four weeks, which will help differentiate between a stable chronic mild MASLD pattern versus a dynamic or inflammatory process.\n\nI made it clear to Sarah that if this workup shows viral or autoimmune pathology, Methotrexate would be absolutely contraindicated and we would need to pursue alternative RA management, likely hydroxychloroquine or a biologic agent depending on rheumatology input. If the panel is negative, but ALT remains raised, we will still need to be extremely cautious, as underlying steatohepatitis, even if non-viral and non-autoimmune, carries higher risk.\n\nSarah was understandably disappointed as she has been hoping for Methotrexate to improve her arthritis symptoms. However, by the end of the discussion she demonstrated good insight into the reasons for delaying treatment. She agreed that patient safety must take precedence, and she verbalised understanding that rushing into therapy could expose her to serious complications.\n\nI also advised Sarah strongly to avoid all NSAID use for now particularly ibuprofen which she normally takes up to five times a week. NSAIDs do carry their own hepatotoxic potential, and we must avoid any additional hepatic irritants until her LFTs settle and the screening is complete.\n\nFinally, I confirmed that she should contact the surgery promptly if she develops any new symptoms such as nausea, jaundice, upper abdominal pain, or dark urine. I documented that a follow-up appointment is scheduled in four weeks to review the full panel and decide on suitability for DMARD initiation.\n\nEnd of dictation.\"\n",
+        "dataSource": "BigHand",
+        "highlights": [
+          {
+            "text": "specifically an ALT of 78 U/L, which is nearly twice the upper limit of normal.",
+            "color": "yellow"
+          },
+          {
+            "text": "The pattern continues to suggest a hepatocellular injury, consistent with the background suspicion of metabolic dysfunction-associated steatotic liver disease MASLD and the long-standing metabolic risk factors we documented previously, including type 2 diabetes, suboptimal glycaemic control, and moderate alcohol intake.",
+            "color": "yellow"
+          },
+          {
+            "text": "Methotrexate is a highly effective DMARD, but one with well-established hepatotoxic potential.",
+            "color": "yellow"
+          },
+          {
+            "text": "Even mild instability in LFTs increases risk, but when the baseline ALT is already elevated, as in Sarahâ€™s case, the risk of clinically meaningful injury potentially even severe DILI rises significantly.",
+            "color": "red"
+          },
+          {
+            "text": "In her scenario, the first hit is MASLD, which causes chronic low-grade hepatic inflammation.",
+            "color": "yellow"
+          },
+          {
+            "text": "Adding Methotrexate, which itself generates oxidative stress and can create hepatic stellate activation, easily tips the balance into injury.",
+            "color": "red"
+          },
+          {
+            "text": "The risk is not theoretical: the evidence base clearly shows that patients with MASLD are more vulnerable to Methotrexate-induced hepatic fibrosis and steatohepatitis.",
+            "color": "red"
+          },
+          {
+            "text": "I explained that viral hepatitis particularly hepatitis B core antibody positivity would fundamentally change monitoring requirements and contraindications.",
+            "color": "red"
+          },
+          {
+            "text": "Autoimmune hepatitis must also be excluded because Methotrexate is strongly contraindicated in active AIH, as it can both exacerbate hepatic inflammation and mask clinical symptoms until severe injury has occurred.",
+            "color": "red"
+          },
+          {
+            "text": "â€¢ Viral serology HBsAg, hepatitis B core total antibody, hepatitis C antibody, and HEV IgG.",
+            "color": "yellow"
+          },
+          {
+            "text": "I explained that even if surface antigen is negative, a positive core antibody would require modification of future DMARD regimens, and possible prophylaxis, depending on risk.",
+            "color": "yellow"
+          },
+          {
+            "text": " Autoimmune screen ANA, ASMA, LKM-1 and total IgG, which allow us to reliably detect autoimmune hepatitis patterns.",
+            "color": "yellow"
+          },
+          {
+            "text": " Metabolic screen ferritin, transferrin saturation and alpha-1-antitrypsin levels, to exclude haemochromatosis and AAT deficiency.",
+            "color": "yellow"
+          },
+          {
+            "text": "Both of these conditions increase susceptibility to DILI and accelerate fibrosis if Methotrexate is used.",
+            "color": "red"
+          },
+          {
+            "text": " And a repeat full LFT panel in four weeks, which will help differentiate between a stable chronic mild MASLD pattern versus a dynamic or inflammatory process.",
+            "color": "yellow"
+          },
+          {
+            "text": "I made it clear to Sarah that if this workup shows viral or autoimmune pathology, Methotrexate would be absolutely contraindicated and we would need to pursue alternative RA management, likely hydroxychloroquine or a biologic agent depending on rheumatology input.",
+            "color": "red"
+          },
+          {
+            "text": "If the panel is negative, but ALT remains raised, we will still need to be extremely cautious, as underlying steatohepatitis, even if non-viral and non-autoimmune, carries higher risk.",
+            "color": "red"
+          },
+          {
+            "text": "I also advised Sarah strongly to avoid all NSAID use for now particularly ibuprofen which she normally takes up to five times a week.",
+            "color": "yellow"
+          },
+          {
+            "text": "NSAIDs do carry their own hepatotoxic potential, and we must avoid any additional hepatic irritants until her LFTs settle and the screening is complete.",
+            "color": "yellow"
+          },
+          {
+            "text": "Finally, I confirmed that she should contact the surgery promptly if she develops any new symptoms such as nausea, jaundice, upper abdominal pain, or dark urine.",
+            "color": "red"
+          }
+        ]
+      }
+    },
+    "createdAt": "2025-11-17T16:30:00.000Z",
+    "updatedAt": "2025-11-17T16:30:00.000Z"
+  },
+  {
     "id": "subzone-medilogik",
     "type": "zone",
-    "x": 800,
+    "x": -1200,
     "y": -2700,
     "width": 600,
     "height": 900,
@@ -2171,7 +2840,7 @@
   {
     "id": "subzone-viper",
     "type": "zone",
-    "x": 100,
+    "x": -1900,
     "y": -2700,
     "width": 600,
     "height": 900,
