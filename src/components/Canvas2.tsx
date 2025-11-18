@@ -995,7 +995,7 @@ function Canvas2() {
         const dataConsolidatorNode: Node = {
           id: 'data-consolidator',
           type: 'custom',
-          position: { x: 360, y: -700 },
+          position: { x: -1390, y: -700 },
           data: {
             label: 'Clinical Data Integrator',
             content: 'The whole EHR data from all the patient visits are integrated and significant findings are visually represented.',
@@ -1016,7 +1016,7 @@ function Canvas2() {
         const adverseEventConsolidatorNode: Node = {
           id: 'adverse-event-consolidator',
           type: 'custom',
-          position: { x: 360, y: 2500 },
+          position: { x: -1390, y: 2500 },
           data: {
             label: 'Adverse Event Tracker',
             content: 'Tracks and analyses possible adverse events or complications over time.',
@@ -1037,7 +1037,7 @@ function Canvas2() {
         const diliConsolidatorNode: Node = {
           id: 'dili-consolidator',
           type: 'custom',
-          position: { x: 360, y: 6150 },
+          position: { x: -1390, y: 6150 },
           data: {
             label: 'DILI Assessment Agent',
             content: 'Reviews reported hepatic events to support structured DILI evaluation.',
@@ -1054,7 +1054,7 @@ function Canvas2() {
         const reportConsolidatorNode: Node = {
           id: 'report-consolidator',
           type: 'custom',
-          position: { x: 360, y: 11400 },
+          position: { x: -1390, y: 11400 },
           data: {
             label: 'Hepatology Expert Agent',
             content: 'Clinical decision point for hepatology referral and patient report generation.',
@@ -1246,7 +1246,7 @@ function Canvas2() {
           {
             id: 'edge-report-consolidator-to-patient-report',
             source: 'report-consolidator',
-            target: 'zone-patient-report-zone',
+            target: 'zone-report-zone',
             targetHandle: 'top',
             type: 'default',
             animated: true,
@@ -1307,7 +1307,7 @@ function Canvas2() {
           {
             id: 'edge-share-button-to-patient-report',
             source: 'dashboard-item-share-to-hepato-button',
-            target: 'zone-patient-report-zone',
+            target: 'zone-report-zone',
             targetHandle: 'top',
             type: 'default',
             animated: true,

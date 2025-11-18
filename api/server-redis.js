@@ -1246,16 +1246,19 @@ app.post("/api/agents", async (req, res) => {
     }
 
     // Zone configuration mapping (matches src/data/zone-config.json)
-    const zoneConfig = {
-      "adv-event-zone": { x: -1250, y: 3500, width: 4000, height: 2300 },
-      "dili-analysis-zone": { x: -450, y: 7000, width: 2750, height: 2800 },
-      "patient-report-zone": { x: -450, y: 10700, width: 2750, height: 2800 },
-      "raw-ehr-data-zone": { x: 1500, y: -3800, width: 2500, height: 2400 },
-      "data-zone": { x: -1500, y: 500, width: 4500, height: 1500 },
+     const zoneConfig = {
+      "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
+      "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
+      "patient-report-zone": { x: -675, y: 12600, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -4150, y: 12600, width: 2750, height: 3800 },
+      "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
+      "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
+      "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
+      
       "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
-      "doctors-note-zone": { x: 5800, y: 0, width: 2000, height: 2100 },
+      "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
       "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
-      "easl-chatbot-zone": { x: 5800, y: 2300, width: 2000, height: 1400 },
+      "easl-chatbot-zone": { x: 1000, y: 7000, width: 2000, height: 1400 },
     };
 
     // Calculate dynamic height based on content
@@ -2626,106 +2629,6 @@ app.get("/api", (req, res) => {
   });
 });
 
-// POST /api/dili-diagnostic - Create a new DILI Diagnostic Panel
-app.post("/api/dili-diagnostic", async (req, res) => {
-  try {
-    console.log("🔬 POST /api/dili-diagnostic - Creating DILI Diagnostic Panel");
-
-    const { pattern, causality, severity, management, zone, x, y, width, height } = req.body || {};
-
-    // Validate required fields
-    if (!pattern || !causality || !severity || !management) {
-      return res.status(400).json({
-        error: "pattern, causality, severity, and management objects are required",
-      });
-    }
-
-    // Zone configuration mapping (matches src/data/zone-config.json)
-    const zoneConfig = {
-      "adv-event-zone": { x: -1250, y: 3500, width: 4000, height: 2300 },
-      "dili-analysis-zone": { x: -450, y: 7000, width: 2750, height: 3800 },
-      "patient-report-zone": { x: -450, y: 12400, width: 2750, height: 3800 },
-      "raw-ehr-data-zone": { x: 1500, y: -3800, width: 2500, height: 2400 },
-      "data-zone": { x: -1500, y: 500, width: 4500, height: 1500 },
-      "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
-      "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
-      "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
-      "easl-chatbot-zone": { x: 2600, y: 7000, width: 2000, height: 1400 },
-    };
-
-    // Build item
-    const id = `item-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
-    const itemWidth = width || 1600; // Wider for two-column layout
-    const itemHeight = height || 700;
-
-    // Load existing items for positioning
-    const existingItems = await loadBoardItems();
-    console.log(`🔍 Loaded ${existingItems.length} existing items for positioning`);
-
-    // Determine position based on zone parameter
-    let itemX, itemY;
-    if (x !== undefined && y !== undefined) {
-      itemX = x;
-      itemY = y;
-      console.log(`📍 Using provided coordinates for DILI Diagnostic at (${itemX}, ${itemY})`);
-    } else if (zone && zoneConfig[zone]) {
-      const targetZone = zoneConfig[zone];
-      const tempItem = { type: "dili-diagnostic", width: itemWidth, height: itemHeight };
-      const zonePosition = findPositionInZone(tempItem, existingItems, targetZone);
-      itemX = zonePosition.x;
-      itemY = zonePosition.y;
-      console.log(`📍 Auto-positioned DILI Diagnostic in ${zone} at (${itemX}, ${itemY})`);
-    } else {
-      const tempItem = { type: "dili-diagnostic", width: itemWidth, height: itemHeight };
-      const taskPosition = findTaskZonePosition(tempItem, existingItems);
-      itemX = taskPosition.x;
-      itemY = taskPosition.y;
-      console.log(`📍 Auto-positioned DILI Diagnostic in Task Management Zone at (${itemX}, ${itemY})`);
-    }
-
-    const newItem = {
-      id,
-      type: "dili-diagnostic",
-      x: itemX,
-      y: itemY,
-      width: itemWidth,
-      height: itemHeight,
-      content: "DILI Diagnostic Panel",
-      color: "#ffffff",
-      rotation: 0,
-      diliData: {
-        pattern,
-        causality,
-        severity,
-        management,
-      },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    // Persist
-    const items = [...existingItems, newItem];
-    await saveBoardItems(items);
-
-    // Notify live clients via SSE
-    const payload = {
-      event: "new-item",
-      item: newItem,
-      timestamp: new Date().toISOString(),
-      action: "created",
-      zone: zone || "dili-analysis-zone",
-    };
-    broadcastSSE(payload);
-
-    console.log(`✅ Created DILI Diagnostic ${id} in ${zone || "task-management-zone"} at (${itemX}, ${itemY})`);
-
-    res.status(201).json(newItem);
-  } catch (error) {
-    console.error("Error creating DILI Diagnostic:", error);
-    res.status(500).json({ error: "Failed to create DILI Diagnostic" });
-  }
-});
-
 // POST /api/patient-report - Create a new Patient Report
 app.post("/api/patient-report", async (req, res) => {
   try {
@@ -2746,16 +2649,19 @@ app.post("/api/patient-report", async (req, res) => {
     }
 
     // Zone configuration mapping (matches src/data/zone-config.json)
-    const zoneConfig = {
-      "adv-event-zone": { x: -1250, y: 3500, width: 4000, height: 2300 },
-      "dili-analysis-zone": { x: -450, y: 7000, width: 2750, height: 3800 },
-      "patient-report-zone": { x: -450, y: 12400, width: 2750, height: 3800 },
-      "raw-ehr-data-zone": { x: 1500, y: -3800, width: 2500, height: 2400 },
-      "data-zone": { x: -1500, y: 500, width: 4500, height: 1500 },
+     const zoneConfig = {
+      "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
+      "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
+      "patient-report-zone": { x: -425, y: 12600, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -4150, y: 12600, width: 2750, height: 3800 },
+      "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
+      "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
+      "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
+      
       "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
       "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
       "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
-      "easl-chatbot-zone": { x: 2600, y: 7000, width: 2000, height: 1400 },
+      "easl-chatbot-zone": { x: 1000, y: 7000, width: 2000, height: 1400 },
     };
 
     // Build item
@@ -2850,18 +2756,19 @@ app.post("/api/diagnostic-report", async (req, res) => {
     }
 
     // Zone configuration mapping (matches src/data/zone-config.json)
-    const zoneConfig = {
-      "adv-event-zone": { x: -1250, y: 3500, width: 4000, height: 2300 },
-      "dili-analysis-zone": { x: -450, y: 7000, width: 2750, height: 3800 },
-      "patient-report-zone": { x: -450, y: 12400, width: 2750, height: 3800 },
-      "raw-ehr-data-zone": { x: 1500, y: -3800, width: 2500, height: 2400 },
-      "data-zone": { x: -1500, y: 500, width: 4500, height: 1500 },
+     const zoneConfig = {
+      "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
+      "dili-analysis-zone": { x: -2250, y: 7000, width: 2750, height: 3800 },
+      "patient-report-zone": { x: -675, y: 12600, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -4150, y: 12600, width: 2750, height: 3800 },
+      "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
+      "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
+      "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
       "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
       "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
       "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
-      "easl-chatbot-zone": { x: 2600, y: 7000, width: 2000, height: 1400 },
+      "easl-chatbot-zone": { x: 1000, y: 7000, width: 2000, height: 1400 },
     };
-
     // Build item
     const id = `item-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const itemWidth = width || 2400; // Much wider for two-column layout with more content

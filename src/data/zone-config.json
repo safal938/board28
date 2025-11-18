@@ -3,7 +3,7 @@
     {
       "name": "adv-event-zone",
       "label": "Adverse Events Zone",
-      "x": -1250,
+      "x": -3000,
       "y": 3500,
       "width": 4000,
       "height": 2300,
@@ -13,10 +13,10 @@
       "description": "System-level components and monitoring",
       "handlePosition": "both"
     },
-  {
+    {
       "name": "dili-analysis-zone",
       "label": "DILI Analysis Zone",
-      "x": -625,
+      "x": -2375,
       "y": 7000,
       "width": 2750,
       "height": 3800,
@@ -27,16 +27,42 @@
       "handlePosition": "both"
     },
     {
+      "name": "report-zone",
+      "label": " Report Zone",
+      "x": -4375,
+      "y": 12400,
+      "width": 6750,
+      "height": 4400,
+      "color": "#1E88E5",
+      "gradient": "linear-gradient(135deg, rgba(227, 242, 253, 0.6) 0%, rgba(225, 245, 254, 0.6) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": "Patient report generation and documentation",
+      "handlePosition": "both"
+    },
+    {
       "name": "patient-report-zone",
       "label": "Patient Report Zone",
-      "x": -625,
-      "y": 12400,
+      "x": -675,
+      "y": 12600,
       "width": 2750,
       "height": 3800,
       "color": "#1E88E5",
       "gradient": "linear-gradient(135deg, rgba(227, 242, 253, 0.6) 0%, rgba(225, 245, 254, 0.6) 100%)",
       "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
       "description": "Patient report generation and documentation",
+      "handlePosition": "both"
+    },
+    {
+      "name": "medico-legal-report-zone",
+      "label": "Medico-Legal Zone",
+      "x": -4150,
+      "y": 12600,
+      "width": 2750,
+      "height": 3800,
+      "color": "#1E88E5",
+      "gradient": "linear-gradient(135deg, rgba(227, 242, 253, 0.6) 0%, rgba(225, 245, 254, 0.6) 100%)",
+      "borderGradient": "linear-gradient(135deg, #1E88E5 0%, #2196F3 100%)",
+      "description": " Medical Liability-Safe Report Generator",
       "handlePosition": "both"
     },
     {
@@ -55,7 +81,7 @@
     {
       "name": "data-zone",
       "label": "Data Zone- Encounter Wise Processed Data",
-      "x": -2000,
+      "x": -3500,
       "y": 500,
       "width": 5000,
       "height": 1500,
@@ -65,7 +91,6 @@
       "description": "Data visualization and analytics",
       "handlePosition": "both"
     },
-
     {
       "name": "retrieved-data-zone",
       "label": "Raw Data Zone - On Request Retrieved Data",
@@ -107,7 +132,7 @@
     {
       "name": "easl-chatbot-zone",
       "label": "Guideline Assistant Zone",
-      "x": 2600,
+      "x": 1000,
       "y": 7000,
       "width": 2000,
       "height": 1400,
