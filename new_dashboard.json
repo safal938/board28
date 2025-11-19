@@ -1,0 +1,738 @@
+[
+    {
+    "id": "dashboard-item-1759853783245-patient-context",
+    "type": "component",
+    "x": -2900,
+    "y": 3600,
+    "width": 1600,
+    "height": "auto",
+    "componentType": "PatientContext",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+        "title": "Patient Context",
+        "component": "PatientContext",
+        "props": {
+            "patientData": {
+            "patient": {
+                "name": "Sarah Miller",
+                "date_of_birth": "1981-06-03",
+                "age": 43,
+                "sex": "Female",
+                "age_at_first_encounter": 43,
+                "identifiers": {
+                "mrn": "SM43850603"
+                }
+            },
+            "riskLevel": "high",
+            "primaryDiagnosis": "Severe Drug-Induced Liver Injury (Methotrexate-related)",
+            "problem_list": [
+                {"name": "Type 2 Diabetes Mellitus", "status": "active"},
+                {"name": "Essential Hypertension", "status": "active"},
+                {"name": "Rheumatoid Arthritis", "status": "active"},
+                {"name": "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD/MASH)", "status": "active"},
+                {"name": "Severe Methotrexate-induced Drug-Induced Liver Injury (DILI)", "status": "active"},
+                {"name": "Acute jaundice episode (2024-08)", "status": "resolved/improving"}
+            ],
+            "medication_timeline": [
+                {
+                "name": "Metformin",
+                "dose": "1000 mg",
+                "route": "PO",
+                "frequency": "BD",
+                "start": "2019-01-01"
+                },
+                {
+                "name": "Ramipril",
+                "dose": "5 mg",
+                "route": "PO",
+                "frequency": "daily",
+                "start": "2020-01-01"
+                },
+                {
+                "name": "Ibuprofen",
+                "dose": "variable",
+                "route": "PO",
+                "frequency": "PRN",
+                "start": "2022-01-01"
+                },
+                {
+                "name": "Simethicone",
+                "dose": "standard",
+                "route": "PO",
+                "frequency": "PRN",
+                "start": "2024-03-05"
+                },
+                {
+                "name": "Methotrexate",
+                "dose": "7.5 mg",
+                "route": "PO",
+                "frequency": "weekly",
+                "start": "2024-06-03",
+                "end": "2024-08-12"
+                },
+                {
+                "name": "Folic Acid",
+                "dose": "5 mg",
+                "route": "PO",
+                "frequency": "weekly",
+                "start": "2024-06-03"
+                },
+                {
+                "name": "Methotrexate (dose reduced)",
+                "dose": "5 mg",
+                "route": "PO",
+                "frequency": "weekly",
+                "start": "2024-07-15",
+                "end": "2024-08-12"
+                },
+                {
+                "name": "N-Acetylcysteine (NAC IV)",
+                "dose": "3-bag protocol",
+                "route": "IV",
+                "frequency": "one-time protocol",
+                "start": "2024-08-12",
+                "end": "2024-08-17"
+                },
+                {
+                "name": "Ursodeoxycholic Acid (UDCA)",
+                "dose": "500 mg",
+                "route": "PO",
+                "frequency": "BID",
+                "start": "2024-08-15"
+                }
+            ],
+            "allergies": [
+                "Methotrexate (severe DILI – permanent contraindication)"
+            ]
+            }
+        }
+        }
+    ,
+    "createdAt": "2025-10-14T16:16:23.245Z",
+    "updatedAt": "2025-10-14T16:16:23.245Z"
+    },
+    {
+    "id": "dashboard-item-1759906076097-medication-timeline",
+    "type": "component",
+    "x": -1250,
+    "y": 3600,
+    "width": 1600,
+    "height": "auto",
+    "componentType": "MedicationTimeline",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+        "title": "Medication Timeline",
+        "component": "MedicationTimeline",
+        "props": {
+            "encounters": [
+            {
+                "encounter_no": 1,
+                "date": "2024-03-05",
+                "type": "General Practice",
+                "provider": "Dr. P. Stevens",
+                "diagnosis": "Fatigue; Suboptimally controlled T2DM/HTN; RA stable",
+                "medications": [
+                "Metformin 1000mg BD",
+                "Ramipril 5mg daily",
+                "Ibuprofen PRN",
+                "Simethicone PRN"
+                ],
+                "notes": "Initial evaluation; abnormal ALT 78 U/L; lifestyle counselling; HbA1c 58 mmol/mol."
+            },
+            {
+                "encounter_no": 2,
+                "date": "2024-04-01",
+                "type": "General Practice",
+                "provider": "Dr. P. Stevens",
+                "diagnosis": "Review of elevated ALT; suspected MASLD; RA requiring MTX evaluation",
+                "medications": [
+                "Metformin 1000mg BD",
+                "Ramipril 5mg daily",
+                "Ibuprofen PRN",
+                "Simethicone PRN"
+                ],
+                "notes": "Deferred Methotrexate; ordered hepatitis/autoimmune/metabolic workup."
+            },
+            {
+                "encounter_no": 3,
+                "date": "2024-05-06",
+                "type": "General Practice",
+                "provider": "Dr. P. Stevens",
+                "diagnosis": "LFT normalization; RA requiring DMARD; MASLD flare resolved",
+                "medications": [
+                "Methotrexate 7.5mg weekly (planned start 2024-06-03)",
+                "Folic Acid 5mg weekly",
+                "Metformin 1000mg BD",
+                "Ramipril 5mg daily",
+                "Ibuprofen PRN",
+                "Simethicone PRN"
+                ],
+                "notes": "Cleared for MTX; full hepatitis, autoimmune, metabolic workup negative."
+            },
+            {
+                "encounter_no": 4,
+                "date": "2024-06-03",
+                "type": "General Practice",
+                "provider": "Dr. P. Stevens",
+                "diagnosis": "Initiation of Methotrexate therapy for RA",
+                "medications": [
+                "Methotrexate 7.5mg weekly (started today)",
+                "Folic Acid 5mg weekly",
+                "Metformin 1000mg BD",
+                "Ramipril 5mg daily"
+                ],
+                "notes": "MTX started; monitoring schedule established (LFT/FBC q6 weeks)."
+            },
+            {
+                "encounter_no": 5,
+                "date": "2024-07-15",
+                "type": "General Practice",
+                "provider": "Dr. P. Stevens",
+                "diagnosis": "Severe hepatocellular DILI from Methotrexate; RA symptoms improving",
+                "medications": [
+                "Methotrexate reduced to 5mg weekly",
+                "Folic Acid 5mg weekly",
+                "Metformin 1000mg BD",
+                "Ramipril 5mg daily"
+                ],
+                "notes": "ALT 185 U/L (~4.6× ULN); MTX dose reduced (though standard is to stop); hepatology referral placed."
+            },
+            {
+                "encounter_no": 6,
+                "date": "2024-08-12",
+                "type": "Emergency Department",
+                "provider": "ED team + handover from Dr. Stevens",
+                "diagnosis": "Severe acute DILI with cholestasis; jaundice; bilirubin 110 μmol/L",
+                "medications": [
+                "Methotrexate stopped",
+                "N-Acetylcysteine (NAC) IV protocol initiated"
+                ],
+                "notes": "Urgent hospitalization; ALT 490 U/L (12× ULN); NAC started; admitted to hepatology ward."
+            },
+            {
+                "encounter_no": 7,
+                "date": "2024-08-15",
+                "type": "Inpatient Hepatology",
+                "provider": "Dr. R. Sharma (Consultant Hepatologist)",
+                "diagnosis": "Severe MTX-induced DILI with MASH; improving ALT; worsening jaundice",
+                "medications": [
+                "NAC protocol (continuing until 2024-08-17)",
+                "Ursodeoxycholic Acid (UDCA) 500mg BID",
+                "Folic Acid (continued)"
+                ],
+                "notes": "Methotrexate added to permanent contraindication list; ALT decreasing to 420; bilirubin rising to 190."
+            }
+            ],
+            "medicationTimeline": [
+            {
+                "name": "Metformin",
+                "startDate": "2019-01-01",
+                "dose": "1000mg BD",
+                "indication": "Type 2 Diabetes Mellitus"
+            },
+            {
+                "name": "Ramipril",
+                "startDate": "2020-01-01",
+                "dose": "5mg daily",
+                "indication": "Hypertension"
+            },
+            {
+                "name": "Ibuprofen",
+                "startDate": "2022-01-01",
+                "dose": "PRN",
+                "indication": "Rheumatoid arthritis pain"
+            },
+            {
+                "name": "Simethicone",
+                "startDate": "2024-03-05",
+                "dose": "PRN",
+                "indication": "Bloating/gas symptoms"
+            },
+            {
+                "name": "Methotrexate",
+                "startDate": "2024-06-03",
+                "endDate": "2024-07-15",
+                "dose": "7.5mg weekly",
+                "indication": "Rheumatoid Arthritis"
+            },
+            {
+                "name": "Methotrexate",
+                "startDate": "2024-07-15",
+                "endDate": "2024-08-12",
+                "dose": "5mg weekly",
+                "indication": "Rheumatoid Arthritis (dose reduction due to hepatotoxicity)"
+            },
+            {
+                "name": "Folic Acid",
+                "startDate": "2024-06-03",
+                "dose": "5mg weekly",
+                "indication": "MTX toxicity prophylaxis"
+            },
+            {
+                "name": "N-Acetylcysteine (IV)",
+                "startDate": "2024-08-12",
+                "endDate": "2024-08-17",
+                "dose": "3-bag IV protocol",
+                "indication": "Acute severe DILI"
+            },
+            {
+                "name": "Ursodeoxycholic Acid (UDCA)",
+                "startDate": "2024-08-15",
+                "dose": "500mg BID",
+                "indication": "Cholestasis/jaundice"
+            }
+            ]
+        }
+        },
+    "createdAt": "2025-10-14T16:47:56.098Z",
+    "updatedAt": "2025-11-18T09:15:31.732Z"
+    },
+    {
+    "id": "dashboard-item-1759906219477-adverse-event-analytics",
+    "type": "component",
+    "x": -2900,
+    "y": 4200,
+    "width": 1600,
+    "height": "auto",
+    "componentType": "AdverseEventAnalytics",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+    "title": "Adverse Event Analytics",
+    "component": "AdverseEventAnalytics",
+    "props": {
+        "patientData": {
+        "adverseEvents": [
+            {
+            "event": "Drug-Induced Liver Injury (DILI)",
+            "severity": "Severe",
+            "description": "Severe hepatocellular DILI caused by Methotrexate, presenting with ALT 490 U/L (12× ULN), AST 350 U/L, and progressive jaundice."
+            },
+            {
+            "event": "Cholestatic Jaundice",
+            "severity": "Severe",
+            "description": "Bilirubin elevation from 110 to 190 μmol/L with marked jaundice; consistent with cholestatic component of acute DILI."
+            },
+            {
+            "event": "Methotrexate Toxicity",
+            "severity": "Severe",
+            "description": "Progressive hepatotoxicity after MTX initiation; ALT 185 U/L within 6 weeks; continued exposure led to severe acute DILI requiring hospitalization."
+            },
+            {
+            "event": "Acute-on-Chronic Liver Injury",
+            "severity": "Moderate–Severe",
+            "description": "Acute hepatocellular necrosis superimposed on underlying MASLD/MASH, demonstrated by coarse echogenic liver on ultrasound."
+            }
+        ],
+        "rucam_ctcae_analysis": {
+            "rucam": {
+            "title": "RUCAM Scoring (Hepatocellular Pattern)",
+            "columns": [
+                "#",
+                "Parameter",
+                "Key findings from this case",
+                "Score",
+                "Explanation"
+            ],
+            "rows": [
+                [
+                "1",
+                "Time to onset (from drug start to injury)",
+                "MTX started 2024-06-03 → ALT rise noted by 2024-07-15 (~6 weeks)",
+                "+2",
+                "Typical 5–90 day window for idiosyncratic hepatocellular DILI."
+                ],
+                [
+                "2",
+                "Course after stopping the drug",
+                "ALT decreased from 490 → 420 U/L by 2024-08-15 post-MTX cessation",
+                "+3",
+                "Fall ≥50% within 8 days supports drug causality."
+                ],
+                [
+                "3",
+                "Risk factors",
+                "Female (+0), Age 43 (+0), underlying MASLD",
+                "0",
+                "Neither age nor sex adds RUCAM points; MASLD is a cofactor but not scored."
+                ],
+                [
+                "4",
+                "Concomitant drugs",
+                "Metformin, Ramipril, Ibuprofen (non-hepatotoxic at recorded doses)",
+                "0",
+                "No confounding hepatotoxic co-medication recorded."
+                ],
+                [
+                "5",
+                "Exclusion of non-drug causes",
+                "Negative viral serology, negative ANA/ASMA, no biliary obstruction on ultrasound",
+                "+2",
+                "Competing etiologies reasonably excluded."
+                ],
+                [
+                "6",
+                "Previous information on hepatotoxicity",
+                "Methotrexate well-recognized hepatotoxin with documented DILI cases",
+                "+2",
+                "Established hepatotoxic risk."
+                ],
+                [
+                "7",
+                "Response to re-exposure",
+                "Not applicable (no re-challenge)",
+                "0",
+                "---"
+                ]
+            ],
+            "total_score": 9,
+            "causality_category": "Highly Probable"
+            },
+            "ctcae": {
+            "title": "CTCAE Hepatic Toxicity Scoring",
+            "columns": [
+                "Criterion",
+                "Observed / Inferred",
+                "CTCAE Grade",
+                "Explanation"
+            ],
+            "rows": [
+                [
+                "ALT/AST",
+                "ALT 490 U/L (≈12× ULN), AST 350 U/L",
+                "Grade 3",
+                "ALT 5–20× ULN = Grade 3 severity."
+                ],
+                [
+                "Total Bilirubin",
+                "Bilirubin peaked at 190 μmol/L (≈11 mg/dL)",
+                "Grade 3",
+                ">3× ULN and clinical jaundice."
+                ],
+                [
+                "INR / Coagulopathy",
+                "INR remained 1.05–1.1 (normal)",
+                "Grade 1",
+                "No synthetic dysfunction; cannot qualify as Grade 4."
+                ],
+                [
+                "Clinical Presentation",
+                "Severe nausea, anorexia, jaundice; no hepatic encephalopathy",
+                "Grade 2–3",
+                "Significant symptoms without CNS involvement."
+                ]
+            ],
+            "overall_grade": "CTCAE Grade 3 — Severe but not life-threatening (no ALF or encephalopathy)"
+            },
+            "reasoning": "The patient developed acute severe hepatocellular DILI approximately 6 weeks after initiating Methotrexate. The trajectory shows progressive rise in ALT from 35 to 185 to 490 U/L, accompanied by marked jaundice and cholestasis. Viral, autoimmune, and biliary causes were excluded. INR remained stable and GCS remained 15 throughout hospitalization, confirming absence of acute liver failure. Ultrasound demonstrated severe MASLD, indicating chronic vulnerability. RUCAM score is 9 (highly probable). CTCAE grading corresponds to Grade 3 hepatic injury due to elevated bilirubin and transaminases without synthetic failure. Management appropriately included immediate MTX cessation, IV NAC protocol, hepatology admission, and initiation of UDCA."
+        }
+        }
+    }
+    },
+    "createdAt": "2025-10-14T16:50:19.477Z",
+    "updatedAt": "2025-10-14T16:50:19.477Z"
+    },
+    {
+    "id": "dashboard-item-1759906246155-lab-table",
+    "type": "component",
+    "x": -1250,
+    "y": 4400,
+    "width": 520,
+    "height": 500,
+    "componentType": "LabTable",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+        "title": "Lab Findings",
+        "component": "LabTable",
+        "props": {
+            "encounters": [
+            {
+                "encounter_no": 1,
+                "date": "2024-03-05",
+                "meta": {
+                "ui_risk_color": "amber",
+                "event_tags": [
+                    "Mild ALT elevation",
+                    "Possible MASLD flare"
+                ]
+                }
+            },
+            {
+                "encounter_no": 2,
+                "date": "2024-04-01",
+                "meta": {
+                "ui_risk_color": "amber",
+                "event_tags": [
+                    "Prior abnormal LFTs",
+                    "Chronic liver disease risk"
+                ]
+                }
+            },
+            {
+                "encounter_no": 3,
+                "date": "2024-05-06",
+                "meta": {
+                "ui_risk_color": "green",
+                "event_tags": [
+                    "LFT normalization",
+                    "Viral/autoimmune/metabolic workup negative"
+                ]
+                }
+            },
+            {
+                "encounter_no": 4,
+                "date": "2024-06-03",
+                "meta": {
+                "ui_risk_color": "green",
+                "event_tags": [
+                    "Stable labs",
+                    "Safe to initiate MTX"
+                ]
+                }
+            },
+            {
+                "encounter_no": 5,
+                "date": "2024-07-15",
+                "meta": {
+                "ui_risk_color": "red",
+                "event_tags": [
+                    "ALT 185 U/L (4.6× ULN)",
+                    "Severe DILI warning",
+                    "MTX toxicity suspected"
+                ]
+                }
+            },
+            {
+                "encounter_no": 6,
+                "date": "2024-08-12",
+                "meta": {
+                "ui_risk_color": "red",
+                "event_tags": [
+                    "ALT 490 U/L (12× ULN)",
+                    "Bilirubin 110 μmol/L",
+                    "Severe acute DILI",
+                    "Emergency admission"
+                ]
+                }
+            },
+            {
+                "encounter_no": 7,
+                "date": "2024-08-15",
+                "meta": {
+                "ui_risk_color": "red",
+                "event_tags": [
+                    "Bilirubin 190 μmol/L (peak cholestasis)",
+                    "Ongoing severe DILI",
+                    "Inpatient hepatology"
+                ]
+                }
+            }
+            ]
+        }
+        },
+    "createdAt": "2025-10-14T16:50:46.155Z",
+    "updatedAt": "2025-10-14T16:50:46.155Z"
+    },
+    {
+    "id": "dashboard-item-1759906246156-lab-chart",
+    "type": "component",
+    "x": -700,
+    "y": 4400,
+    "width": 520,
+    "height": 500,
+    "componentType": "LabChart",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+        "title": "Lab Trends",
+        "component": "LabChart",
+        "props": {
+            "encounters": [
+            {
+                "encounter_no": 1,
+                "date": "2024-03-05",
+                "meta": {
+                "ui_risk_color": "amber",
+                "event_tags": [
+                    "ALT 78 U/L",
+                    "Mild hepatocellular elevation"
+                ]
+                }
+            },
+            {
+                "encounter_no": 2,
+                "date": "2024-04-01",
+                "meta": {
+                "ui_risk_color": "amber",
+                "event_tags": [
+                    "Persistently abnormal LFTs",
+                    "MASLD risk"
+                ]
+                }
+            },
+            {
+                "encounter_no": 3,
+                "date": "2024-05-06",
+                "meta": {
+                "ui_risk_color": "green",
+                "event_tags": [
+                    "ALT normalized (35 U/L)",
+                    "Workup negative"
+                ]
+                }
+            },
+            {
+                "encounter_no": 4,
+                "date": "2024-06-03",
+                "meta": {
+                "ui_risk_color": "green",
+                "event_tags": [
+                    "Stable labs",
+                    "MTX initiation"
+                ]
+                }
+            },
+            {
+                "encounter_no": 5,
+                "date": "2024-07-15",
+                "meta": {
+                "ui_risk_color": "red",
+                "event_tags": [
+                    "ALT 185 U/L (4.6× ULN)",
+                    "Severe MTX toxicity warning"
+                ]
+                }
+            },
+            {
+                "encounter_no": 6,
+                "date": "2024-08-12",
+                "meta": {
+                "ui_risk_color": "red",
+                "event_tags": [
+                    "ALT 490 U/L (12× ULN)",
+                    "Bilirubin 110 μmol/L",
+                    "Severe DILI"
+                ]
+                }
+            },
+            {
+                "encounter_no": 7,
+                "date": "2024-08-15",
+                "meta": {
+                "ui_risk_color": "red",
+                "event_tags": [
+                    "Bilirubin 190 μmol/L (peak)",
+                    "Ongoing severe DILI"
+                ]
+                }
+            }
+            ],
+            "medicationTimeline": [
+            {
+                "name": "Metformin",
+                "start": "2019-01-01",
+                "dose": "1000mg BD"
+            },
+            {
+                "name": "Ramipril",
+                "start": "2020-01-01",
+                "dose": "5mg daily"
+            },
+            {
+                "name": "Methotrexate",
+                "start": "2024-06-03",
+                "end": "2024-08-12",
+                "dose": "7.5mg weekly initially; reduced to 5mg weekly on 2024-07-15"
+            },
+            {
+                "name": "Folic Acid",
+                "start": "2024-06-03",
+                "dose": "5mg weekly"
+            },
+            {
+                "name": "N-Acetylcysteine (IV)",
+                "start": "2024-08-12",
+                "end": "2024-08-17",
+                "dose": "3-bag protocol"
+            },
+            {
+                "name": "Ursodeoxycholic Acid",
+                "start": "2024-08-15",
+                "dose": "500mg BID"
+            }
+            ]
+        }
+        },
+    "createdAt": "2025-10-14T16:50:46.156Z",
+    "updatedAt": "2025-10-14T16:50:46.156Z"
+    },
+    {
+    "id": "dashboard-item-1759906246157-differential-diagnosis",
+    "type": "component",
+    "x": -150,
+    "y": 4400,
+    "width": 520,
+    "height": 500,
+    "componentType": "DifferentialDiagnosis",
+    "color": "#ffffff",
+    "description": "",
+    "content": {
+        "title": "Differential Diagnosis",
+        "component": "DifferentialDiagnosis",
+        "props": {
+            "patientData": {
+            "encounters": [
+                {
+                "encounter_no": 6,
+                "assessment": {
+                    "impression": "Severe acute Drug-Induced Liver Injury (DILI) secondary to Methotrexate with developing cholestasis",
+                    "differential": [
+                    "Methotrexate-induced hepatocellular DILI (most likely)",
+                    "Acute-on-chronic liver injury due to underlying MASLD/MASH",
+                    "Acute viral hepatitis (HBV/HCV unlikely but part of workup)",
+                    "Autoimmune hepatitis (screen previously negative)",
+                    "Mechanical biliary obstruction (excluded by ultrasound)",
+                    "Ischemic hepatitis (no shock, normal hemodynamics)",
+                    "Sepsis-associated liver injury (no fever or hemodynamic instability)"
+                    ]
+                },
+                "rucam_ctcae_analysis": {
+                    "rucam": {
+                    "rows": [
+                        [
+                        "1",
+                        "Time to onset from drug start",
+                        "MTX started 2024-06-03 → severe DILI by 2024-08-12 (≈10 weeks)",
+                        "+2",
+                        "Typical 5–90 day window for idiosyncratic hepatocellular DILI."
+                        ],
+                        [
+                        "2",
+                        "Course after stopping drug",
+                        "ALT decreased from 490 → 420 within 3 days of cessation",
+                        "+3",
+                        "Supports drug causality (fall ≥50% in <8 days expected)."
+                        ],
+                        [
+                        "5",
+                        "Exclusion of non-drug causes",
+                        "Viral hepatitis panel negative; autoimmune markers negative; ultrasound showed no obstruction",
+                        "+2",
+                        "Alternative causes convincingly excluded."
+                        ]
+                    ]
+                    },
+                    "reasoning": "The clinical pattern demonstrates severe hepatocellular injury with ALT 490 U/L, AST 350 U/L, and bilirubin >100 μmol/L. MTX exposure timeline fits perfectly for idiosyncratic hepatocellular DILI. Viral, autoimmune, and biliary causes were excluded through negative serology and normal biliary imaging. Hemodynamics remained stable, making ischemic hepatitis unlikely. No signs of infection to suggest sepsis-related liver injury. MASLD/MASH acted as a susceptibility factor but not the primary cause. Therefore, MTX toxicity remains the leading diagnosis."
+                }
+                }
+            ]
+            }
+        }
+        },
+    "createdAt": "2025-10-14T16:50:46.157Z",
+    "updatedAt": "2025-10-14T16:50:46.157Z"
+    }
+]

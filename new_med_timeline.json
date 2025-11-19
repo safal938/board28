@@ -122,27 +122,6 @@
             
             "labTimeline": [
                     {
-                    "biomarker": "ESR",
-                    "unit": "mm/hr",
-                    "values": [
-                        { "t": "2015-08-10T11:00:00", "value": 45 }
-                    ]
-                    },
-                    {
-                    "biomarker": "CRP",
-                    "unit": "mg/L",
-                    "values": [
-                        { "t": "2015-08-10T11:00:00", "value": 25 }
-                    ]
-                    },
-                    {
-                    "biomarker": "Rheumatoid Factor",
-                    "unit": "IU/mL",
-                    "values": [
-                        { "t": "2015-08-10T11:00:00", "value": 120 }
-                    ]
-                    },
-                    {
                     "biomarker": "WBC",
                     "unit": "x10^9/L",
                     "values": [
@@ -151,20 +130,6 @@
                         { "t": "2018-09-05T10:00:00", "value": 7.2 },
                         { "t": "2025-06-15T10:30:00", "value": 6.5 },
                         { "t": "2025-06-21T14:00:00", "value": 5.0 }
-                    ]
-                    },
-                    {
-                    "biomarker": "Neutrophils",
-                    "unit": "%",
-                    "values": [
-                        { "t": "2015-08-10T11:00:00", "value": 65 }
-                    ]
-                    },
-                    {
-                    "biomarker": "Lymphocytes",
-                    "unit": "%",
-                    "values": [
-                        { "t": "2015-08-10T11:00:00", "value": 23 }
                     ]
                     },
                     {
@@ -187,7 +152,7 @@
                     "biomarker": "ALT",
                     "unit": "U/L",
                     "values": [
-                        { "t": "2018-09-05T10:00:00", "value": 35 },
+                        { "t": "2015-09-05T10:00:00", "value": 35 },
                         { "t": "2025-06-15T10:30:00", "value": 1520 },
                         { "t": "2025-06-21T14:00:00", "value": 1380 }
                     ]
@@ -215,27 +180,6 @@
                     "values": [
                         { "t": "2018-09-05T10:00:00", "value": 0.9 },
                         { "t": "2025-06-15T10:30:00", "value": 8.4 }
-                    ]
-                    },
-                    {
-                    "biomarker": "INR",
-                    "unit": "",
-                    "values": [
-                        { "t": "2025-06-15T10:30:00", "value": 1.8 }
-                    ]
-                    },
-                    {
-                    "biomarker": "Creatinine",
-                    "unit": "mg/dL",
-                    "values": [
-                        { "t": "2018-09-05T10:00:00", "value": 1.1 }
-                    ]
-                    },
-                    {
-                    "biomarker": "eGFR",
-                    "unit": "mL/min/1.73m2",
-                    "values": [
-                        { "t": "2018-09-05T10:00:00", "value": 65 }
                     ]
                     }
                 ],

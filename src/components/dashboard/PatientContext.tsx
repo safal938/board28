@@ -236,7 +236,7 @@ const PatientContext: React.FC<PatientContextProps> = ({ patientData }) => {
         <PatientInfo>
           <PatientName>{patient.name || 'Unknown Patient'}</PatientName>
           <PatientDetails>
-            {currentAge} years old • {patient.sex} • MRN: {patient.mrn || patient.identifiers?.mrn || 'N/A'}
+            43 years old • {patient.sex} • MRN: {patient.mrn || patient.identifiers?.mrn || 'N/A'}
           </PatientDetails>
         </PatientInfo>
         {riskLevel && riskLevel !== 'unknown' && (

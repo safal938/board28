@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import styled from "styled-components";
 import Canvas2 from "./components/Canvas2";
 import Canvas3 from "./components/Canvas3";
+import Canvas4 from "./components/Canvas4";
 import MeetSidePanel from "./components/MeetSidePanel";
 import MeetMainStage from "./components/MeetMainStage";
 import boardItemsData from "./data/boardItems.json";
@@ -23,6 +24,7 @@ function App() {
         <Route path="/meet/Mainstage" element={<MeetMainStage />} />
         <Route path="/meet/mainstage" element={<MeetMainStage />} />
         <Route path="/canvas3" element={<Canvas3 />} />
+        <Route path="/canvas4" element={<Canvas4 />} />
         <Route path="/" element={<BoardApp />} />
       </Routes>
     </Router>

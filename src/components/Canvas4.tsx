@@ -1,0 +1,421 @@
+import React, { useCallback, useMemo, useEffect, useState } from 'react';
+import ReactFlow, {
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Connection,
+  Edge,
+  BackgroundVariant,
+  Node,
+  NodeProps,
+  Handle,
+  Position,
+} from 'reactflow';
+import styled from 'styled-components';
+import 'reactflow/dist/style.css';
+import { FileText, Database, Settings, Users } from 'lucide-react';
+import MedicationTimeline2 from './dashboard/MedicationTimeline2';
+import LabTimeline from './dashboard/LabTimeline';
+
+const ReactFlowWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  
+  .react-flow__node.selected {
+    .react-flow__node-default,
+    & > div {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+    }
+  }
+`;
+
+const NodeContainer = styled.div<{ color?: string }>`
+  padding: 20px;
+  border-radius: 8px;
+  background: white;
+  border: 2px solid ${props => props.color || '#e5e7eb'};
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+`;
+
+const NodeTitle = styled.div`
+  font-weight: 600;
+  font-size: 14px;
+  color: #1f2937;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const NodeContent = styled.div`
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+`;
+
+const IconWrapper = styled.div<{ color?: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: ${props => props.color || '#f3f4f6'};
+`;
+
+// Custom node component with handles for connections
+function CustomNode({ data }: NodeProps) {
+  const getIcon = () => {
+    switch (data.icon) {
+      case 'file':
+        return <FileText size={16} />;
+      case 'database':
+        return <Database size={16} />;
+      case 'settings':
+        return <Settings size={16} />;
+      case 'users':
+        return <Users size={16} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <NodeContainer color={data.color}>
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Bottom} />
+      
+      <NodeTitle>
+        {data.icon && (
+          <IconWrapper color={data.color}>
+            {getIcon()}
+          </IconWrapper>
+        )}
+        {data.label}
+      </NodeTitle>
+      {data.content && <NodeContent>{data.content}</NodeContent>}
+    </NodeContainer>
+  );
+}
+
+const WelcomeContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1000;
+  pointer-events: none;
+`;
+
+const WelcomeTitle = styled.h1`
+  font-size: 48px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+const WelcomeSubtitle = styled.p`
+  font-size: 18px;
+  color: #6b7280;
+  margin-bottom: 32px;
+`;
+
+const WelcomeHint = styled.div`
+  font-size: 14px;
+  color: #9ca3af;
+  font-style: italic;
+`;
+
+// Timeline Node Component
+const TimelineNodeContainer = styled.div`
+  width: 1600px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+`;
+
+function TimelineNode({ data }: NodeProps) {
+  return (
+    <TimelineNodeContainer>
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Bottom} />
+      <MedicationTimeline2 
+        encounters={data.encounters} 
+        MedicationTimeLine1={data.medicationTimeline} 
+      />
+      {data.labTimeline && (
+        <LabTimeline 
+          labTimeline={data.labTimeline}
+          encounters={data.encounters}
+        />
+      )}
+    </TimelineNodeContainer>
+  );
+}
+
+function Canvas4() {
+  // Sample data for MedicationTimeline2
+  const sampleEncounters = [
+    {
+      encounter_no: 1,
+      date: "2015-08-10",
+      type: "Rheumatology Initial Consult",
+      provider: "Dr. Elizabeth Hayes",
+      diagnosis: "Seropositive Rheumatoid Arthritis (active)",
+      medications: [
+        "Methotrexate 10mg weekly",
+        "Folic Acid 5mg weekly",
+        "Ibuprofen 200mg Occasional previously"
+      ],
+      notes: "Started MTX therapy with folic acid supplementation"
+    },
+    {
+      encounter_no: 2,
+      date: "2016-02-20",
+      type: "General Practice",
+      provider: "GP",
+      diagnosis: "Stable RA on MTX",
+      medications: [
+        "Methotrexate 10mg weekly",
+        "Folic Acid 5mg weekly"
+      ],
+      notes: "Good RA control on MTX 10 mg weekly; no MTX side effects"
+    },
+    {
+      encounter_no: 3,
+      date: "2018-09-05",
+      type: "General Practice",
+      provider: "GP",
+      diagnosis: "New essential hypertension; RA stable; plan MTX dose increase",
+      medications: [
+        "Methotrexate 20mg weekly",
+        "Folic Acid 5mg weekly",
+        "Lisinopril 10mg daily"
+      ],
+      notes: "Elevated BP readings 145–155/90–95; MTX increased to 20mg"
+    },
+    {
+      encounter_no: 4,
+      date: "2021-03-15",
+      type: "General Practice",
+      provider: "GP",
+      diagnosis: "Stable RA; controlled HTN; mild CKD (stable)",
+      medications: [
+        "Methotrexate 20mg weekly",
+        "Folic Acid 5mg weekly",
+        "Lisinopril 10mg daily"
+      ],
+      notes: "Overall well; RA controlled on MTX 20 mg; BP controlled"
+    },
+    {
+      encounter_no: 5,
+      date: "2025-06-15",
+      type: "General Practice",
+      provider: "GP",
+      diagnosis: "Acute bacterial sinusitis; RA/HTN/CKD stable",
+      medications: [
+        "Trimethoprim-Sulfamethoxazole 800/160mg BID"
+      ],
+      notes: "5 days nasal congestion, facial pain, headache, green discharge"
+    },
+    {
+      encounter_no: 6,
+      date: "2025-06-21",
+      type: "Emergency Medicine",
+      provider: "Dr. Sarah Chen",
+      diagnosis: "Acute liver injury likely DILI and/or severe methotrexate toxicity",
+      medications: [],
+      notes: "Severe fatigue, jaundice, epigastric pain, confusion"
+    }
+  ];
+
+  const sampleMedicationTimeline = [
+    {
+      name: "Methotrexate",
+      startDate: "2015-08-10",
+      endDate: "2018-09-05",
+      dose: "10mg weekly",
+      indication: "RA"
+    },
+    {
+      name: "Methotrexate",
+      startDate: "2018-09-05",
+      dose: "20mg weekly",
+      indication: "RA"
+    },
+    {
+      name: "Folic Acid",
+      startDate: "2015-08-10",
+      dose: "5mg weekly",
+      indication: "MTX supplementation"
+    },
+    {
+      name: "Lisinopril",
+      startDate: "2018-09-05",
+      dose: "10mg daily",
+      indication: "Hypertension"
+    },
+    {
+      name: "Trimethoprim-Sulfamethoxazole",
+      startDate: "2025-06-15",
+      endDate: "2025-06-25",
+      dose: "800/160mg BID",
+      indication: "Acute bacterial sinusitis"
+    }
+  ];
+
+  const sampleLabTimeline = [
+    {
+      biomarker: "WBC",
+      unit: "x10^9/L",
+      values: [
+        { t: "2015-08-10T11:00:00", value: 7.5 },
+        { t: "2016-02-20T09:30:00", value: 6.8 },
+        { t: "2018-09-05T10:00:00", value: 7.2 },
+        { t: "2025-06-15T10:30:00", value: 6.5 },
+        { t: "2025-06-21T14:00:00", value: 5.0 }
+      ]
+    },
+    {
+      biomarker: "Hemoglobin",
+      unit: "g/dL",
+      values: [
+        { t: "2015-08-10T11:00:00", value: 14.5 },
+        { t: "2018-09-05T10:00:00", value: 14.0 }
+      ]
+    },
+    {
+      biomarker: "Platelets",
+      unit: "x10^9/L",
+      values: [
+        { t: "2015-08-10T11:00:00", value: 270 },
+        { t: "2018-09-05T10:00:00", value: 250 }
+      ]
+    },
+    {
+      biomarker: "ALT",
+      unit: "U/L",
+      values: [
+        { t: "2018-09-05T10:00:00", value: 35 },
+        { t: "2025-06-15T10:30:00", value: 1520 },
+        { t: "2025-06-21T14:00:00", value: 1380 }
+      ]
+    },
+    {
+      biomarker: "AST",
+      unit: "U/L",
+      values: [
+        { t: "2015-09-05T10:00:00", value: 32 },
+        { t: "2018-06-15T10:30:00", value: 1380 },
+        { t: "2025-06-21T14:00:00", value: 1200 }
+      ]
+    },
+    {
+      biomarker: "Alkaline Phosphatase",
+      unit: "U/L",
+      values: [
+        { t: "2018-09-05T10:00:00", value: 110 },
+        { t: "2025-06-15T10:30:00", value: 130 }
+      ]
+    },
+    {
+      biomarker: "Total Bilirubin",
+      unit: "mg/dL",
+      values: [
+        { t: "2018-09-05T10:00:00", value: 0.9 },
+        { t: "2025-06-15T10:30:00", value: 8.4 }
+      ]
+    }
+  ];
+
+  const initialNodes: Node[] = [
+    {
+      id: 'timeline-1',
+      type: 'timeline',
+      position: { x: 100, y: 100 },
+      data: {
+        encounters: sampleEncounters,
+        medicationTimeline: sampleMedicationTimeline,
+        labTimeline: sampleLabTimeline
+      }
+    }
+  ];
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const onConnect = useCallback(
+    (params: Connection | Edge) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges],
+  );
+
+  const nodeTypes = useMemo(() => ({
+    custom: CustomNode,
+    timeline: TimelineNode,
+  }), []);
+
+  return (
+    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+      <ReactFlowWrapper>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+          fitView
+          minZoom={0.1}
+          maxZoom={4}
+          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+          proOptions={{ hideAttribution: true }}
+        >
+          <Controls />
+          <Background 
+            variant={BackgroundVariant.Dots} 
+            gap={20} 
+            size={1} 
+            color="#e5e7eb"
+          />
+        </ReactFlow>
+      </ReactFlowWrapper>
+      
+
+      
+      {/* Info Overlay */}
+      <div style={{
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        background: 'white',
+        padding: '12px 20px',
+        borderRadius: '12px',
+        boxShadow: '0 4px 16px rgba(103, 126, 234, 0.15)',
+        border: '2px solid rgba(103, 126, 234, 0.2)',
+        zIndex: 1000,
+        fontSize: '14px',
+        fontWeight: 600,
+        color: '#667eea'
+      }}>
+        💊 Canvas 4 - Medication Timeline View
+      </div>
+    </div>
+  );
+}
+
+export default Canvas4;
