@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Pill } from "lucide-react";
 
 const TimelineContainer = styled.div`
   width: 100%;
@@ -16,6 +17,7 @@ const TimelineContainer = styled.div`
   }
   overflow-y: visible;
   padding: 20px;
+  margin-right:100px;
 `;
 
 const TimelineWrapper = styled.div`
@@ -23,15 +25,16 @@ const TimelineWrapper = styled.div`
   min-width: max-content;
   height: auto;
   display: flex;
+  left:75px;
   flex-direction: column;
   align-items: stretch;
 `;
 
 const TimelineUpper = styled.div`
-  display: flex;
-  align-items: flex-end;
+  position: relative;
+  width: 100%;
   margin-bottom: 20px;
-  min-height: 120px;
+  min-height: 280px;
 `;
 
 const TimelineMiddle = styled.div`
@@ -99,19 +102,16 @@ const MedicationLine = styled.div<{
 
 const MedicationLegend = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
   gap: 16px;
-  margin: 0 auto 16px;
-  width: fit-content;
+  align-items: center;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
-  padding: 12px 24px;
+  padding: 12px 16px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  z-index: 10;
+  margin-bottom: 16px;
 `;
 
 const LegendItem = styled.div<{ color: string }>`
@@ -130,20 +130,12 @@ const LegendItem = styled.div<{ color: string }>`
   }
 `;
 
-const TimelineLower = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-top: 20px;
-  min-height: 120px;
-`;
-
 const TimelineSlot = styled.div<{ isEmpty?: boolean }>`
-  width: 180px;
+  width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin-right: 20px;
 `;
 
 const EncounterCard = styled.div`
@@ -154,7 +146,7 @@ const EncounterCard = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-size: 10px;
   line-height: 1.3;
-  width: 180px;
+  width: 200px;
   position: relative;
 `;
 
@@ -165,7 +157,7 @@ const EncounterDot = styled.div`
   background: #333;
   position: absolute;
   top: -4px;
-  left: 50%;
+  left: 0;
   transform: translateX(-50%);
   z-index: 2;
 `;
@@ -174,7 +166,10 @@ const ConnectorLine = styled.div<{ isAbove: boolean }>`
   width: 1px;
   height: 10px;
   background: #333;
-  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
 `;
 
 const EncounterDate = styled.div`
@@ -241,14 +236,14 @@ const ConfidenceScore = styled.div`
   border: 1px solid #e0e0e0;
 `;
 
-interface MedicationTimelineProps {
+interface MedicationTimeLine1Props {
   encounters: any[];
-  medicationTimeline: any[];
+  MedicationTimeLine1: any[];
 }
 
-const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
+const MedicationTimeLine1: React.FC<MedicationTimeLine1Props> = ({
   encounters,
-  medicationTimeline,
+  MedicationTimeLine1,
 }) => {
   const getConfidenceScore = (encounter: any): number => {
     // Calculate AE risk based on encounter data
@@ -312,7 +307,7 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
     const changes: any[] = [];
 
     // Check for new medications started
-    medicationTimeline.forEach((med) => {
+    MedicationTimeLine1.forEach((med) => {
       const startDate = new Date(med.startDate || med.start);
       const timeDiff = Math.abs(encounterDate.getTime() - startDate.getTime());
       const daysDiff = timeDiff / (1000 * 3600 * 24);
@@ -451,21 +446,7 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
       Lisinopril: "#2563eb", // Blue
       "Trimethoprim-Sulfamethoxazole": "#7c3aed", // Purple
       "TMP-SMX": "#7c3aed", // Purple
-      Ibuprofen: "#0891b2", // Cyan
-      Metformin: "#f59e0b", // Amber
-      Ramipril: "#8b5cf6", // Violet
-      Simethicone: "#ec4899", // Pink
-      "N-Acetylcysteine (IV)": "#14b8a6", // Teal
-      "Ursodeoxycholic Acid (UDCA)": "#f97316", // Orange
-      Prednisone: "#ea580c", // Deep Orange
-      Hydroxychloroquine: "#d946ef", // Fuchsia
-      Sulfasalazine: "#84cc16", // Lime
-      Leflunomide: "#06b6d4", // Cyan Bright
-      Adalimumab: "#a855f7", // Purple Bright
-      Etanercept: "#10b981", // Emerald
-      Infliximab: "#f43f5e", // Rose
-      Rituximab: "#3b82f6", // Blue Bright
-      Tocilizumab: "#eab308", // Yellow
+      Ibuprofen: "#0891b2", // Cyan (instead of orange)
     };
 
     const medicationLines: any[] = [];
@@ -476,10 +457,11 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
     const encounterDates = encounters.map(
       (enc) => new Date(enc.date || enc.meta?.date_time)
     );
-    const slotSpacing = 200; // Same as timeline layout
-    const dotOffset = 90; // Same as timeline layout
+    const cardWidth = 200;
+    const slotSpacing = 220; // Match the new spacing (220px between encounters)
+    const dotOffset = cardWidth / 2; // Center of the card (100px)
 
-    medicationTimeline.forEach((med) => {
+    MedicationTimeLine1.forEach((med) => {
       const medName = med.medication || med.name;
       const startDate = new Date(med.startDate || med.start);
       const endDate =
@@ -536,22 +518,8 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
         endPosition = (encounterDates.length - 1) * slotSpacing + dotOffset;
       }
 
-      // Try to find color by exact match or partial match
-      let color = medicationColors[medName as keyof typeof medicationColors];
-      
-      if (!color) {
-        // Try partial matching for medication names
-        const medNameLower = medName.toLowerCase();
-        for (const [key, value] of Object.entries(medicationColors)) {
-          if (medNameLower.includes(key.toLowerCase()) || key.toLowerCase().includes(medNameLower)) {
-            color = value;
-            break;
-          }
-        }
-      }
-      
-      // Fallback to gray if no match found
-      color = color || "#888888";
+      const color =
+        medicationColors[medName as keyof typeof medicationColors] || "#888888";
 
       medicationLines.push({
         id: `med-${med.name}-${med.start}`,
@@ -568,122 +536,77 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
       }
     });
 
-    const legend = Array.from(usedMedications).map((medName: string) => ({
-      name: medName,
-      color:
-        medicationColors[medName as keyof typeof medicationColors] || "#888888",
+    // Create legend with all medication entries including dose changes
+    const legend = medicationLines.map((line) => ({
+      name: line.name,
+      dose: line.dose,
+      color: line.color,
     }));
 
     return { lines: medicationLines, legend };
   };
 
-  // Create timeline layout: A-[empty]-C-[empty]-E / [empty]-B-[empty]-D-[empty]-F
+  // Create timeline layout: All encounters in a single row above the line
   const createTimelineLayout = () => {
-    const totalSlots = Math.max(encounters.length, 6); // Ensure we have enough slots
     const upperSlots = [];
-    const lowerSlots = [];
     const dots = [];
 
-    for (let slotIndex = 0; slotIndex < totalSlots; slotIndex++) {
-      const encounterIndex = slotIndex;
-      const hasEncounter = encounterIndex < encounters.length;
+    const cardWidth = 200;
+    const spacing = 220;
 
-      // Calculate dot position
-      const dotPosition = slotIndex * 200 + 90; // 200px spacing between slots
+    for (let encounterIndex = 0; encounterIndex < encounters.length; encounterIndex++) {
+      const encounter = encounters[encounterIndex];
+      
+      // Calculate positions
+      // Card starts at: encounterIndex * spacing
+      // Card center (where dot should be): cardStart + (cardWidth / 2)
+      const cardLeft = encounterIndex * spacing;
+      const dotPosition = cardLeft + (cardWidth / 2); // Center of the card
 
-      if (hasEncounter) {
-        const encounter = encounters[encounterIndex];
-        const isUpperRow = encounterIndex % 2 === 0; // Even indices go to upper row
+      // Add dot for this encounter
+      dots.push(
+        <EncounterDot
+          key={`dot-${encounterIndex}`}
+          style={{
+            left: `${dotPosition}px`,
+          }}
+        />
+      );
 
-        // Add dot for this encounter
-        dots.push(
-          <EncounterDot
-            key={`dot-${encounterIndex}`}
-            style={{
-              position: "absolute",
-              left: `${dotPosition}px`,
-            }}
-          />
-        );
-
-        if (isUpperRow) {
-          // Add encounter to upper row
-          upperSlots.push(
-            <TimelineSlot key={`upper-${slotIndex}`}>
-              {renderEncounterCard(encounter, encounterIndex)}
-              <ConnectorLine isAbove={true} />
-            </TimelineSlot>
-          );
-          // Add empty to lower row
-          lowerSlots.push(
-            <TimelineSlot key={`lower-${slotIndex}`} isEmpty={true}>
-              <div style={{ height: "120px" }} />
-            </TimelineSlot>
-          );
-        } else {
-          // Add empty to upper row
-          upperSlots.push(
-            <TimelineSlot key={`upper-${slotIndex}`} isEmpty={true}>
-              <div style={{ height: "120px" }} />
-            </TimelineSlot>
-          );
-          // Add encounter to lower row
-          lowerSlots.push(
-            <TimelineSlot key={`lower-${slotIndex}`}>
-              <ConnectorLine isAbove={false} />
-              {renderEncounterCard(encounter, encounterIndex)}
-            </TimelineSlot>
-          );
-        }
-      } else {
-        // No more encounters, add empty slots
-        dots.push(
-          <EncounterDot
-            key={`dot-${slotIndex}`}
-            style={{
-              position: "absolute",
-              left: `${dotPosition}px`,
-            }}
-          />
-        );
-
-        upperSlots.push(
-          <TimelineSlot key={`upper-${slotIndex}`} isEmpty={true}>
-            <div style={{ height: "120px" }} />
-          </TimelineSlot>
-        );
-        lowerSlots.push(
-          <TimelineSlot key={`lower-${slotIndex}`} isEmpty={true}>
-            <div style={{ height: "120px" }} />
-          </TimelineSlot>
-        );
-      }
+      // Add encounter to upper row with absolute positioning
+      upperSlots.push(
+        <TimelineSlot 
+          key={`upper-${encounterIndex}`}
+          style={{ 
+            position: 'absolute',
+            left: `${cardLeft}px`
+          }}
+        >
+          {renderEncounterCard(encounter, encounterIndex)}
+          <ConnectorLine isAbove={true} />
+        </TimelineSlot>
+      );
     }
 
-    return { upperSlots, lowerSlots, dots };
+    return { upperSlots, dots };
   };
 
-  const { upperSlots, lowerSlots, dots } = createTimelineLayout();
+  const { upperSlots, dots } = createTimelineLayout();
   const { lines: medicationLines, legend } = createMedicationLines();
 
   return (
-    <TimelineContainer id="encounter-timeline-zone">
-      {/* Medication Legend - Centered Horizontal */}
+    <>
       {legend.length > 0 && (
         <MedicationLegend>
           <strong
-            style={{
-              fontSize: "12px",
-              color: "#374151",
-              fontWeight: "600",
-              marginRight: "8px",
-            }}
+            style={{ fontSize: "13px", color: "#374151", fontWeight: "600", display: "flex", alignItems: "center", gap: "6px" }}
           >
+            <Pill size={16} />
             Medications:
           </strong>
-          {legend.map((item) => (
+          {legend.map((item, index) => (
             <div
-              key={item.name}
+              key={`${item.name}-${item.dose}-${index}`}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -700,14 +623,17 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
                   borderRadius: "1.5px",
                 }}
               />
-              {item.name}
+              <span>
+                {item.name} <strong style={{ color: "#374151" }}>{item.dose}</strong>
+              </span>
             </div>
           ))}
         </MedicationLegend>
       )}
 
+      <TimelineContainer id="encounter-timeline-zone">     
       <TimelineWrapper>
-        {/* Upper row: A-[empty]-C-[empty]-E-[empty] */}
+        {/* Upper row: All encounters in a single line */}
         <TimelineUpper>{upperSlots}</TimelineUpper>
 
         {/* Middle line with dashed line, dots, and medication lines */}
@@ -721,7 +647,7 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
               key={medLine.id}
               style={{
                 position: "absolute",
-                top: `${60 + medLine.offset * 10}%`,
+                top: `${50 + medLine.offset * 10}%`,
                 left: `${medLine.startPosition}px`,
                 width: `${medLine.endPosition - medLine.startPosition}px`,
                 height: "3px",
@@ -761,12 +687,10 @@ const MedicationTimeline: React.FC<MedicationTimelineProps> = ({
             </div>
           ))}
         </TimelineMiddle>
-
-        {/* Lower row: [empty]-B-[empty]-D-[empty]-F */}
-        <TimelineLower>{lowerSlots}</TimelineLower>
       </TimelineWrapper>
     </TimelineContainer>
+    </>
   );
 };
 
-export default MedicationTimeline;
+export default MedicationTimeLine1;
