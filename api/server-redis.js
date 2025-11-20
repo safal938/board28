@@ -2749,6 +2749,112 @@ app.post("/api/diagnostic-report", async (req, res) => {
   }
 });
 
+// POST /api/legal-compliance - Create a new Legal Compliance Report
+app.post("/api/legal-compliance", async (req, res) => {
+  try {
+    console.log("⚖️ POST /api/legal-compliance - Creating Legal Compliance Report");
+
+    let { legalData, zone, x, y, width, height } = req.body || {};
+
+    // If legalData is not provided but identification_verification exists at root, use the whole body as legalData
+    if (!legalData && req.body.identification_verification) {
+      legalData = req.body;
+    }
+
+    // Validate required fields
+    if (!legalData || !legalData.identification_verification) {
+      return res.status(400).json({
+        error: "legalData object with identification_verification is required",
+      });
+    }
+
+    // Zone configuration mapping (matches src/data/zone-config.json)
+    const zoneConfig = {
+      "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
+      "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
+      "patient-report-zone": { x: -425, y: 12600, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -3930, y: 12864, width: 2750, height: 3800 },
+      "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
+      "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
+      "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
+      "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
+      "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
+      "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
+      "easl-chatbot-zone": { x: 1000, y: 7000, width: 2000, height: 1400 },
+    };
+
+    // Build item
+    const id = `item-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    const itemWidth = width || 2200; // Wide two-column layout
+    const itemHeight = height || 850;
+
+    // Load existing items for positioning
+    const existingItems = await loadBoardItems();
+    console.log(`🔍 Loaded ${existingItems.length} existing items for positioning`);
+
+    // Determine position based on zone parameter
+    let itemX, itemY;
+    if (x !== undefined && y !== undefined) {
+      itemX = x;
+      itemY = y;
+      console.log(`📍 Using provided coordinates for Legal Compliance at (${itemX}, ${itemY})`);
+    } else if (zone && zoneConfig[zone]) {
+      const targetZone = zoneConfig[zone];
+      const tempItem = { type: "legal-compliance", width: itemWidth, height: itemHeight };
+      const zonePosition = findPositionInZone(tempItem, existingItems, targetZone);
+      itemX = zonePosition.x;
+      itemY = zonePosition.y;
+      console.log(`📍 Auto-positioned Legal Compliance in ${zone} at (${itemX}, ${itemY})`);
+    } else {
+      // Default to Medico-Legal Report Zone
+      const targetZone = zoneConfig["medico-legal-report-zone"];
+      const tempItem = { type: "legal-compliance", width: itemWidth, height: itemHeight };
+      const zonePosition = findPositionInZone(tempItem, existingItems, targetZone);
+      itemX = zonePosition.x;
+      itemY = zonePosition.y;
+      console.log(`📍 Auto-positioned Legal Compliance in Medico-Legal Report Zone (default) at (${itemX}, ${itemY})`);
+    }
+
+    const newItem = {
+      id,
+      type: "legal-compliance",
+      x: itemX,
+      y: itemY,
+      width: itemWidth,
+      height: itemHeight,
+      content: "Legal Compliance Report",
+      color: "#ffffff",
+      rotation: 0,
+      legalData: {
+        ...legalData,
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Persist
+    const items = [...existingItems, newItem];
+    await saveBoardItems(items);
+
+    // Notify live clients via SSE
+    const payload = {
+      event: "new-item",
+      item: newItem,
+      timestamp: new Date().toISOString(),
+      action: "created",
+      zone: zone || "medico-legal-report-zone",
+    };
+    broadcastSSE(payload);
+
+    console.log(`✅ Created Legal Compliance ${id} in ${zone || "medico-legal-report-zone"} at (${itemX}, ${itemY})`);
+
+    res.status(201).json(newItem);
+  } catch (error) {
+    console.error("Error creating Legal Compliance:", error);
+    res.status(500).json({ error: "Failed to create Legal Compliance" });
+  }
+});
+
 // Health check endpoint
 app.get("/api/health", async (req, res) => {
   let redisStatus = "disconnected";

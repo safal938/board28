@@ -11,6 +11,7 @@ import LabChart from "./dashboard/LabChart";
 import DifferentialDiagnosis from "./dashboard/DifferentialDiagnosis";
 import DILIDiagnostic from "./dashboard/DILIDiagnostic";
 import PatientReport from "./dashboard/PatientReport";
+import LegalCompliance from "./LegalCompliance";
 import DiagnosticReport from "./dashboard/DiagnosticReport";
 import SchedulingPanel from "./dashboard/SchedulingPanel";
 import EHRSystemComponent from "./encounters/EHRSystemComponent";
@@ -999,6 +1000,21 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
           </div>
         );
 
+      case "legal-compliance":
+        return (
+          <div style={{
+            width: "100%",
+            minHeight: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "flex-start"
+          }}>
+            <LegalCompliance
+              data={item.legalData || {}}
+            />
+          </div>
+        );
+
       case "diagnostic-report":
         return (
           <div style={{
@@ -1170,6 +1186,52 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                     setAlertModal({
                       isOpen: true,
                       message: 'Failed to generate report. Please try again.',
+                      type: 'error'
+                    });
+                  }
+                } else if (item.buttonAction === "generateLegal") {
+                  try {
+                    console.log('⚖️ Generating Legal Compliance Report...');
+                    setIsProcessing(true);
+                    
+                    // Show loading modal
+                    setAlertModal({
+                      isOpen: true,
+                      message: 'Generating Legal Compliance Report... Please wait.',
+                      type: 'loading'
+                    });
+                    
+                    // Get API base URL from environment or default
+                    const API_BASE_URL = 'https://api3.medforce-ai.com';
+                    
+                    const response = await fetch(`${API_BASE_URL}/generate_legal`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        zone: 'medico-legal-report-zone'
+                      })
+                    });
+                    
+                    if (!response.ok) {
+                      throw new Error('Failed to generate legal compliance report');
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Legal compliance report generated:', data);
+                    
+                    // Close loading modal - the SSE will handle navigation
+                    setAlertModal({
+                      isOpen: false,
+                      message: '',
+                      type: 'success'
+                    });
+                    setIsProcessing(false);
+                  } catch (error) {
+                    console.error('❌ Error generating legal compliance report:', error);
+                    setIsProcessing(false);
+                    setAlertModal({
+                      isOpen: true,
+                      message: 'Failed to generate legal compliance report. Please try again.',
                       type: 'error'
                     });
                   }
@@ -1412,7 +1474,8 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
           item.type === "component" ||
           item.type === "ehr-data" ||
           item.type === "dili-diagnostic" ||
-          item.type === "patient-report"
+          item.type === "patient-report" ||
+          item.type === "legal-compliance"
             ? "auto"
             : item.height,
         minHeight:
@@ -1423,6 +1486,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
           item.type === "ehr-data" ||
           item.type === "dili-diagnostic" ||
           item.type === "patient-report" ||
+          item.type === "legal-compliance" ||
           item.type === "image"
             ? item.height === "auto"
               ? "200px"
