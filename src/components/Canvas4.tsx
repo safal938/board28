@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import ReactFlow, {
   Controls,
   Background,
@@ -18,6 +18,7 @@ import 'reactflow/dist/style.css';
 import { FileText, Database, Settings, Users } from 'lucide-react';
 import MedicationTimeline2 from './dashboard/MedicationTimeline2';
 import LabTimeline from './dashboard/LabTimeline';
+import { Dashboard as ChronomedDashboard } from './chronomed/Dashboard';
 
 const ReactFlowWrapper = styled.div`
   width: 100%;
@@ -28,6 +29,15 @@ const ReactFlowWrapper = styled.div`
     & > div {
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5), 0 8px 24px rgba(0, 0, 0, 0.2) !important;
     }
+  }
+  
+  /* Make all edges appear above nodes */
+  .react-flow__edges {
+    z-index: 9999 !important;
+  }
+  
+  .react-flow__edge {
+    z-index: 9999 !important;
   }
 `;
 
@@ -43,6 +53,74 @@ const NodeContainer = styled.div<{ color?: string }>`
   &:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
+  }
+`;
+
+// Invisible node component
+const InvisibleNodeContainer = styled.div`
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  
+  &.highlighted {
+    background: rgba(59, 130, 246, 0.2);
+    border: 2px solid #3b82f6;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 1;
+    }
+  }
+`;
+
+function InvisibleNode({ data }: NodeProps) {
+  return (
+    <InvisibleNodeContainer className={data.highlighted ? 'highlighted' : ''}>
+      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
+      <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
+      <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
+    </InvisibleNodeContainer>
+  );
+}
+
+const ConnectorButton = styled.button<{ isActive?: boolean }>`
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  background: ${props => props.isActive ? '#ef4444' : '#3b82f6'};
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: ${props => props.isActive 
+    ? '0 4px 12px rgba(239, 68, 68, 0.4), 0 0 20px rgba(239, 68, 68, 0.3)' 
+    : '0 4px 12px rgba(59, 130, 246, 0.3)'};
+  z-index: 10001;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: ${props => props.isActive ? '#dc2626' : '#2563eb'};
+    transform: translateY(-1px);
+    box-shadow: ${props => props.isActive 
+      ? '0 6px 16px rgba(239, 68, 68, 0.5), 0 0 24px rgba(239, 68, 68, 0.4)' 
+      : '0 6px 16px rgba(59, 130, 246, 0.4)'};
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -147,6 +225,8 @@ const TimelineNodeContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 `;
 
 function TimelineNode({ data }: NodeProps) {
@@ -156,19 +236,49 @@ function TimelineNode({ data }: NodeProps) {
       <Handle type="source" position={Position.Bottom} />
       <MedicationTimeline2 
         encounters={data.encounters} 
-        MedicationTimeLine1={data.medicationTimeline} 
+        MedicationTimeLine1={data.medicationTimeline}
+        showingConnection={data.showingConnection}
+        highlightEncounterNo={data.highlightEncounterNo}
       />
       {data.labTimeline && (
         <LabTimeline 
           labTimeline={data.labTimeline}
           encounters={data.encounters}
+          showingConnection={data.showingConnection}
+          highlightBiomarker={data.highlightBiomarker}
         />
       )}
     </TimelineNodeContainer>
   );
 }
 
+// Chronomed Timeline Node Component
+const ChronomedNodeContainer = styled.div`
+  width: 1600px;
+  min-height: 1200px;
+  height: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+`;
+
+function ChronomedNode({ data }: NodeProps) {
+  return (
+    <ChronomedNodeContainer>
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Bottom} />
+      <ChronomedDashboard className="w-full h-full" />
+    </ChronomedNodeContainer>
+  );
+}
+
 function Canvas4() {
+  const [showInvisibleConnections, setShowInvisibleConnections] = useState(false);
+  const [showingConnection, setShowingConnection] = useState(false);
+  
   // Sample data for MedicationTimeline2
   const sampleEncounters = [
     {
@@ -353,7 +463,42 @@ function Canvas4() {
         medicationTimeline: sampleMedicationTimeline,
         labTimeline: sampleLabTimeline
       }
-    }
+    },
+    // Invisible connector nodes - fixed positions, non-draggable
+    {
+      id: 'invisible-connector-1',
+      type: 'invisible',
+      position: { x: 512, y: 473 },
+      data: { 
+        highlighted: showInvisibleConnections,
+        componentType: 'encounter',
+        encounterDate: '2016-02-20',
+        encounterNo: 2,
+        description: 'Feb 20, 2016 Encounter Connection Point'
+      },
+      draggable: false,
+      selectable: false,
+    },
+    {
+      id: 'invisible-connector-2',
+      type: 'invisible',
+      position: { x: 1185, y: 1128 },
+      data: { 
+        highlighted: showInvisibleConnections,
+        componentType: 'labTimeline',
+        biomarker: 'ALT',
+        description: 'ALT Lab Timeline Connection Point'
+      },
+      draggable: false,
+      selectable: false,
+    },
+    // New Chronomed Timeline Node
+    {
+      id: 'chronomed-1',
+      type: 'chronomed',
+      position: { x: 100, y: 1400 }, // Placed below the first timeline
+      data: { label: 'Chronomed Timeline' }
+    },
   ];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -367,7 +512,65 @@ function Canvas4() {
   const nodeTypes = useMemo(() => ({
     custom: CustomNode,
     timeline: TimelineNode,
+    invisible: InvisibleNode,
+    chronomed: ChronomedNode,
   }), []);
+
+  // Toggle invisible connections
+  const toggleInvisibleConnections = useCallback(() => {
+    const newShowInvisible = !showInvisibleConnections;
+    const newShowingConnection = !showingConnection;
+    
+    setShowInvisibleConnections(newShowInvisible);
+    setShowingConnection(newShowingConnection);
+    
+    // Update invisible nodes to show highlight
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.type === 'invisible') {
+          return {
+            ...node,
+            data: { ...node.data, highlighted: newShowInvisible },
+          };
+        }
+        if (node.type === 'timeline') {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              showingConnection: newShowingConnection,
+              highlightEncounterNo: newShowingConnection ? 2 : undefined,
+              highlightBiomarker: newShowingConnection ? 'ALT' : undefined,
+            },
+          };
+        }
+        return node;
+      })
+    );
+
+    // Add or remove invisible connection edges
+    if (newShowInvisible) {
+      const invisibleEdges: Edge[] = [
+        {
+          id: 'e-invisible-1-2',
+          source: 'invisible-connector-1',
+          target: 'invisible-connector-2',
+          animated: true,
+          style: {
+            stroke: '#ef4444',
+            strokeWidth: 4,
+            filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))',
+          },
+          zIndex: 9999,
+        },
+      ];
+      setEdges((eds) => [...eds, ...invisibleEdges]);
+    } else {
+      setEdges((eds) =>
+        eds.filter((edge) => !edge.id.includes('invisible'))
+      );
+    }
+  }, [showInvisibleConnections, showingConnection, setNodes, setEdges]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -414,6 +617,14 @@ function Canvas4() {
       }}>
         💊 Canvas 4 - Medication Timeline View
       </div>
+
+      {/* Invisible Connector Button */}
+      <ConnectorButton 
+        onClick={toggleInvisibleConnections}
+        isActive={showingConnection}
+      >
+        {showingConnection ? '✕ Exit Focus Mode' : '🔗 Show Connection'}
+      </ConnectorButton>
     </div>
   );
 }
