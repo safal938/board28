@@ -454,49 +454,49 @@ function Canvas4() {
   ];
 
   const initialNodes: Node[] = [
-    // {
-    //   id: 'timeline-1',
-    //   type: 'timeline',
-    //   position: { x: 100, y: 100 },
-    //   data: {
-    //     encounters: sampleEncounters,
-    //     medicationTimeline: sampleMedicationTimeline,
-    //     labTimeline: sampleLabTimeline
-    //   }
-    // },
-    // // Invisible connector nodes - fixed positions, non-draggable
-    // {
-    //   id: 'invisible-connector-1',
-    //   type: 'invisible',
-    //   position: { x: 512, y: 473 },
-    //   data: { 
-    //     highlighted: showInvisibleConnections,
-    //     componentType: 'encounter',
-    //     encounterDate: '2016-02-20',
-    //     encounterNo: 2,
-    //     description: 'Feb 20, 2016 Encounter Connection Point'
-    //   },
-    //   draggable: false,
-    //   selectable: false,
-    // },
-    // {
-    //   id: 'invisible-connector-2',
-    //   type: 'invisible',
-    //   position: { x: 1185, y: 1128 },
-    //   data: { 
-    //     highlighted: showInvisibleConnections,
-    //     componentType: 'labTimeline',
-    //     biomarker: 'ALT',
-    //     description: 'ALT Lab Timeline Connection Point'
-    //   },
-    //   draggable: false,
-    //   selectable: false,
-    // },
-    // Chronomed Timeline Node
+    {
+      id: 'timeline-1',
+      type: 'timeline',
+      position: { x: 100, y: 100 },
+      data: {
+        encounters: sampleEncounters,
+        medicationTimeline: sampleMedicationTimeline,
+        labTimeline: sampleLabTimeline
+      }
+    },
+    // Invisible connector nodes - fixed positions, non-draggable
+    {
+      id: 'invisible-connector-1',
+      type: 'invisible',
+      position: { x: 512, y: 473 },
+      data: { 
+        highlighted: showInvisibleConnections,
+        componentType: 'encounter',
+        encounterDate: '2016-02-20',
+        encounterNo: 2,
+        description: 'Feb 20, 2016 Encounter Connection Point'
+      },
+      draggable: false,
+      selectable: false,
+    },
+    {
+      id: 'invisible-connector-2',
+      type: 'invisible',
+      position: { x: 1185, y: 1128 },
+      data: { 
+        highlighted: showInvisibleConnections,
+        componentType: 'labTimeline',
+        biomarker: 'ALT',
+        description: 'ALT Lab Timeline Connection Point'
+      },
+      draggable: false,
+      selectable: false,
+    },
+    // New Chronomed Timeline Node
     {
       id: 'chronomed-1',
       type: 'chronomed',
-      position: { x: 100, y: 100 },
+      position: { x: 100, y: 1000 }, // Placed below the first timeline
       data: { label: 'Chronomed Timeline' }
     },
   ];
@@ -516,61 +516,61 @@ function Canvas4() {
     chronomed: ChronomedNode,
   }), []);
 
-  // Toggle invisible connections (commented out - not used with Chronomed only)
-  // const toggleInvisibleConnections = useCallback(() => {
-  //   const newShowInvisible = !showInvisibleConnections;
-  //   const newShowingConnection = !showingConnection;
-  //   
-  //   setShowInvisibleConnections(newShowInvisible);
-  //   setShowingConnection(newShowingConnection);
-  //   
-  //   // Update invisible nodes to show highlight
-  //   setNodes((nds) =>
-  //     nds.map((node) => {
-  //       if (node.type === 'invisible') {
-  //         return {
-  //           ...node,
-  //           data: { ...node.data, highlighted: newShowInvisible },
-  //         };
-  //       }
-  //       if (node.type === 'timeline') {
-  //         return {
-  //           ...node,
-  //           data: {
-  //             ...node.data,
-  //             showingConnection: newShowingConnection,
-  //             highlightEncounterNo: newShowingConnection ? 2 : undefined,
-  //             highlightBiomarker: newShowingConnection ? 'ALT' : undefined,
-  //           },
-  //         };
-  //       }
-  //       return node;
-  //     })
-  //   );
-  //
-  //   // Add or remove invisible connection edges
-  //   if (newShowInvisible) {
-  //     const invisibleEdges: Edge[] = [
-  //       {
-  //         id: 'e-invisible-1-2',
-  //         source: 'invisible-connector-1',
-  //         target: 'invisible-connector-2',
-  //         animated: true,
-  //         style: {
-  //           stroke: '#ef4444',
-  //           strokeWidth: 4,
-  //           filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))',
-  //         },
-  //         zIndex: 9999,
-  //       },
-  //     ];
-  //     setEdges((eds) => [...eds, ...invisibleEdges]);
-  //   } else {
-  //     setEdges((eds) =>
-  //       eds.filter((edge) => !edge.id.includes('invisible'))
-  //     );
-  //   }
-  // }, [showInvisibleConnections, showingConnection, setNodes, setEdges]);
+  // Toggle invisible connections
+  const toggleInvisibleConnections = useCallback(() => {
+    const newShowInvisible = !showInvisibleConnections;
+    const newShowingConnection = !showingConnection;
+    
+    setShowInvisibleConnections(newShowInvisible);
+    setShowingConnection(newShowingConnection);
+    
+    // Update invisible nodes to show highlight
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.type === 'invisible') {
+          return {
+            ...node,
+            data: { ...node.data, highlighted: newShowInvisible },
+          };
+        }
+        if (node.type === 'timeline') {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              showingConnection: newShowingConnection,
+              highlightEncounterNo: newShowingConnection ? 2 : undefined,
+              highlightBiomarker: newShowingConnection ? 'ALT' : undefined,
+            },
+          };
+        }
+        return node;
+      })
+    );
+
+    // Add or remove invisible connection edges
+    if (newShowInvisible) {
+      const invisibleEdges: Edge[] = [
+        {
+          id: 'e-invisible-1-2',
+          source: 'invisible-connector-1',
+          target: 'invisible-connector-2',
+          animated: true,
+          style: {
+            stroke: '#ef4444',
+            strokeWidth: 4,
+            filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))',
+          },
+          zIndex: 9999,
+        },
+      ];
+      setEdges((eds) => [...eds, ...invisibleEdges]);
+    } else {
+      setEdges((eds) =>
+        eds.filter((edge) => !edge.id.includes('invisible'))
+      );
+    }
+  }, [showInvisibleConnections, showingConnection, setNodes, setEdges]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
@@ -615,16 +615,16 @@ function Canvas4() {
         fontWeight: 600,
         color: '#667eea'
       }}>
-         Canvas 4 - Chronomed Timeline View
+        💊 Canvas 4 - Medication Timeline View
       </div>
 
-      {/* Invisible Connector Button - Commented out for Chronomed only view */}
-      {/* <ConnectorButton 
+      {/* Invisible Connector Button */}
+      <ConnectorButton 
         onClick={toggleInvisibleConnections}
         isActive={showingConnection}
       >
         {showingConnection ? '✕ Exit Focus Mode' : '🔗 Show Connection'}
-      </ConnectorButton> */}
+      </ConnectorButton>
     </div>
   );
 }

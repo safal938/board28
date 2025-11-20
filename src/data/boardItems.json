@@ -746,77 +746,78 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #1 - Outpatient Visit",
-      "component": "SingleEncounterDocument",
-      "props": {
-        "encounter": {
-          "encounter_no": 1,
-          "meta": {
-            "visit_type": "Outpatient",
-            "date_time": "2024-03-05T10:15:22Z",
-            "provider": {
-              "name": "Dr. P. Stevens",
-              "specialty": "General Practice"
-            },
-            "ui_risk_color": "yellow"
-          },
-          "assessment": {
-            "impression": "Suboptimal control of T2DM/HTN, Chronic Fatigue Syndrome possibly related to MASLD.",
-            "differential": [
-              "T2DM suboptimal control",
-              "Hypertension suboptimal control",
-              "Chronic Fatigue Syndrome",
-              "MASLD"
-            ]
-          },
-          "chief_complaint": "Increased fatigue over the past 4-5 months",
-          "hpi": "Sarah Miller, a 43-year-old administrative assistant, presents with debilitating fatigue affecting work performance. She averages 6.5 hours of non-restorative sleep per night and experiences RA-related discomfort, particularly in the right wrist. She takes Ibuprofen 4-5 times per week for pain and chemically-induced frequent bloating.",
-          "medications_prior": [
-            {
-              "name": "Metformin",
-              "route": "Oral, unknown dose, BD frequency, for T2DM"
-            },
-            {
-              "name": "Ramipril",
-              "route": "Oral, 5mg, OD frequency, for Hypertension"
-            },
-            {
-              "name": "Ibuprofen",
-              "route": "Oral, unknown dose, taken 4-5 times per week for RA pain"
-            },
-            {
-              "name": "Simethicone",
-              "route": "Oral, unknown dose, unknown frequency, for bloating"
+            "title": "Encounter #1 - Outpatient Visit",
+            "component": "SingleEncounterDocument",
+            "props": {
+                "encounter": {
+                    "encounter_no": 1,
+                    "meta": {
+                        "visit_type": "Outpatient",
+                        "date_time": "2024-03-05T10:15:22Z",
+                        "provider": {
+                            "name": "Dr. P. Stevens",
+                            "specialty": "General Practice"
+                        },
+                        "ui_risk_color": "yellow"
+                    },
+                    "assessment": {
+                        "impression": "Suboptimal control of T2DM/HTN, Chronic Fatigue Syndrome possibly related to MASLD. Diabetes control is poor with HbA1c at 58 mmol/mol, indicating long-standing hyperglycaemia and need for therapeutic adjustment.",
+                        "differential": [
+                            "T2DM suboptimal control",
+                            "Hypertension suboptimal control",
+                            "Chronic Fatigue Syndrome",
+                            "MASLD"
+                        ]
+                    },
+                    "chief_complaint": "Increased fatigue over the past 4-5 months",
+                    "hpi": "Sarah Miller, a 43-year-old administrative assistant, presents with debilitating fatigue affecting work performance. She averages 6.5 hours of non-restorative sleep per night and experiences RA-related discomfort, particularly in the right wrist. She takes Ibuprofen 4-5 times per week for pain and chemically-induced frequent bloating. HbA1c from today’s labs is 58 mmol/mol, confirming persistently weak glycaemic control which may be contributing to fatigue and metabolic strain.",
+                    "medications_prior": [
+                        {
+                            "name": "Metformin",
+                            "route": "Oral, unknown dose, BD frequency, for T2DM"
+                        },
+                        {
+                            "name": "Ramipril",
+                            "route": "Oral, 5mg, OD frequency, for Hypertension"
+                        },
+                        {
+                            "name": "Ibuprofen",
+                            "route": "Oral, unknown dose, taken 4-5 times per week for RA pain"
+                        },
+                        {
+                            "name": "Simethicone",
+                            "route": "Oral, unknown dose, unknown frequency, for bloating"
+                        }
+                    ],
+                    "physical_exam": {
+                        "general": "Appears non-toxic and well-perfused.",
+                        "msk": "Mild effusion in right MCP joint 3, mild pain on movement.",
+                        "other_systems": "Vital Signs: BP 146/92 mmHg (sitting), HR 82 bpm, RR 16/min, Temp 36.8°C, SpO₂ 99% on room air. Anthropometrics: Height 1.64 m, Weight 86 kg (BMI 32.0 kg/m²; class I obesity). Weight reported as broadly stable over the past 12 months. Skin/Sclera: Anicteric sclerae; no chronic liver disease stigmata. Abdomen: Soft, lax, normal liver span, no tenderness. Diabetes: Persistent hyperglycaemia suspected based on elevated HbA1c and obesity."
+                    },
+                    "plan": {
+                        "investigations": {
+                            "labs": [
+                                "Complete LFTs",
+                                "HbA1c",
+                                "Consider future intensification of diabetes therapy if HbA1c remains > 53 mmol/mol"
+                            ]
+                        },
+                        "management": {
+                            "follow_up": "Follow-up in 4 weeks to evaluate LFTs and MTX eligibility.",
+                            "medications_started": []
+                        }
+                    },
+                    "reason_for_visit": "Increased fatigue"
+                },
+                "patient": {
+                    "name": "Sarah Miller",
+                    "sex": "Female",
+                    "age_at_first_encounter": 43
+                },
+                "encounterIndex": 1,
+                "dataSource": "Electronic Health Record"
             }
-          ],
-          "physical_exam": {
-            "general": "Appears non-toxic and well-perfused.",
-            "msk": "Mild effusion in right MCP joint 3, mild pain on movement.",
-            "other_systems": "Vital Signs: BP 146/92 mmHg (sitting), HR 82 bpm, RR 16/min, Temp 36.8°C, SpO₂ 99% on room air. Anthropometrics: Height 1.64 m, Weight 86 kg (BMI 32.0 kg/m²; class I obesity). Weight reported as broadly stable over the past 12 months. Skin/Sclera: Anicteric sclerae; no chronic liver disease stigmata. Abdomen: Soft, lax, normal liver span, no tenderness."
-          },
-          "plan": {
-            "investigations": {
-              "labs": [
-                "Complete LFTs",
-                "HbA1c"
-              ]
-            },
-            "management": {
-              "follow_up": "Follow-up in 4 weeks to evaluate LFTs and MTX eligibility.",
-              "medications_started": []
-            }
-          },
-          "reason_for_visit": "Increased fatigue"
         },
-        "patient": {
-          "name": "Sarah Miller",
-          "sex": "Female",
-          "age_at_first_encounter": 43
-        },
-        "encounterIndex": 1,
-        "dataSource": "Electronic Health Record"
-      }
-    },
     "createdAt": "2025-10-14T16:55:00.003Z",
     "updatedAt": "2025-10-14T16:55:00.003Z"
   },
@@ -1064,65 +1065,66 @@
     "color": "#ffffff",
     "description": "",
     "content": {
-      "title": "Encounter #5 - Outpatient",
-      "component": "SingleEncounterDocument",
-      "props": {
-        "encounter": {
-          "encounter_no": 5,
-          "meta": {
-            "visit_type": "Outpatient",
-            "date_time": "2024-07-15T14:00:30",
-            "provider": {
-              "name": "Dr. P. Stevens",
-              "specialty": "Rheumatology"
-            },
-            "ui_risk_color": "yellow"
-          },
-          "assessment": {
-            "impression": "Methotrexate-induced Drug-Induced Liver Injury (DILI) presenting with elevated ALT (185 U/L, 4.6x ULN), with new intermittent nausea and increased fatigue. Rheumatoid arthritis symptoms are improving on Methotrexate.",
-            "differential": [
-              "Methotrexate-induced Drug-Induced Liver Injury (DILI)",
-              "Underlying MASLD risk factors"
-            ]
-          },
-          "chief_complaint": "Routine Methotrexate (MTX) monitoring. Reports of new intermittent nausea and increased fatigue.",
-          "hpi": "Sarah Miller, a 43-year-old female, presents for routine Methotrexate monitoring. She reports ~1 kg unintentional weight loss over the past month, attributed to reduced appetite and intermittent nausea, primarily in the evenings. No vomiting or diarrhea. Fatigue levels have returned to pre-MTX initiation severity. Rheumatoid arthritis symptoms have significantly improved with diminished joint pain and increased daily function since starting Methotrexate. Recent labs show ALT elevated to 185 U/L (4.6x ULN).",
-          "medications_prior": [],
-          "physical_exam": {
-            "general": "Vital Signs: BP 144/92 mmHg (sitting), HR 88 bpm, RR 16/min, Temp 36.8°C, SpO₂ 98% on room air.",
-            "msk": "Joint pain has diminished.",
-            "other_systems": "Weight 83 kg (BMI 30.8 kg/m²)."
-          },
-          "plan": {
-            "investigations": {
-              "imaging": [],
-              "labs": [
-                "Repeat liver function tests in four weeks"
-              ]
-            },
-            "management": {
-              "follow_up": "Follow up in four weeks. Advised to remain vigilant for any worsening of symptoms or new signs of liver dysfunction such as jaundice, further exacerbated fatigue, or darker urine. Ensure adherence to adjusted Methotrexate regimen. Attend Hepatology consultation.",
-              "medications_started": [
-                {
-                  "dose": "5mg",
-                  "frequency": "weekly",
-                  "name": "Methotrexate",
-                  "route": ""
-                }
-              ]
+            "title": "Encounter #5 - Outpatient",
+            "component": "SingleEncounterDocument",
+            "props": {
+                "encounter": {
+                    "encounter_no": 5,
+                    "meta": {
+                        "visit_type": "Outpatient",
+                        "date_time": "2024-07-15T14:00:30",
+                        "provider": {
+                            "name": "Dr. P. Stevens",
+                            "specialty": "Rheumatology"
+                        },
+                        "ui_risk_color": "yellow"
+                    },
+                    "assessment": {
+                        "impression": "Methotrexate-induced Drug-Induced Liver Injury (DILI) presenting with elevated ALT (185 U/L, 4.6x ULN), with new intermittent nausea and increased fatigue. Rheumatoid arthritis symptoms are improving on Methotrexate. Diabetes control has deteriorated with HbA1c rising to 60 mmol/mol, signalling worsening glycaemia during MTX therapy and possible contribution to fatigue.",
+                        "differential": [
+                            "Methotrexate-induced Drug-Induced Liver Injury (DILI)",
+                            "Underlying MASLD risk factors"
+                        ]
+                    },
+                    "chief_complaint": "Routine Methotrexate (MTX) monitoring. Reports of new intermittent nausea and increased fatigue.",
+                    "hpi": "Sarah Miller, a 43-year-old female, presents for routine Methotrexate monitoring. She reports ~1 kg unintentional weight loss over the past month, attributed to reduced appetite and intermittent nausea, primarily in the evenings. No vomiting or diarrhea. Fatigue levels have returned to pre-MTX initiation severity. Rheumatoid arthritis symptoms have significantly improved with diminished joint pain and increased daily function since starting Methotrexate. Recent labs show ALT elevated to 185 U/L (4.6x ULN). HbA1c has worsened to 60 mmol/mol, indicating declining diabetes control despite weight loss.",
+                    "medications_prior": [],
+                    "physical_exam": {
+                        "general": "Vital Signs: BP 144/92 mmHg (sitting), HR 88 bpm, RR 16/min, Temp 36.8°C, SpO₂ 98% on room air.",
+                        "msk": "Joint pain has diminished.",
+                        "other_systems": "Weight 83 kg (BMI 30.8 kg/m²). Despite some weight reduction, diabetes control is worsening with higher HbA1c and increased metabolic fatigue."
+                    },
+                    "plan": {
+                        "investigations": {
+                            "imaging": [],
+                            "labs": [
+                                "Repeat liver function tests in four weeks",
+                                "HbA1c monitoring recommended due to recent deterioration"
+                            ]
+                        },
+                        "management": {
+                            "follow_up": "Follow up in four weeks. Advised to remain vigilant for any worsening of symptoms or new signs of liver dysfunction such as jaundice, further exacerbated fatigue, or darker urine. Ensure adherence to adjusted Methotrexate regimen. Attend Hepatology consultation.",
+                            "medications_started": [
+                                {
+                                    "dose": "5mg",
+                                    "frequency": "weekly",
+                                    "name": "Methotrexate",
+                                    "route": ""
+                                }
+                            ]
+                        }
+                    },
+                    "reason_for_visit": "Routine Methotrexate monitoring and management of new symptoms of nausea and fatigue, and elevated liver enzymes."
+                },
+                "patient": {
+                    "name": "Sarah Miller",
+                    "sex": "Female",
+                    "age_at_first_encounter": 43
+                },
+                "encounterIndex": 5,
+                "dataSource": "Nervecentre"
             }
-          },
-          "reason_for_visit": "Routine Methotrexate monitoring and management of new symptoms of nausea and fatigue, and elevated liver enzymes."
         },
-        "patient": {
-          "name": "Sarah Miller",
-          "sex": "Female",
-          "age_at_first_encounter": 43
-        },
-        "encounterIndex": 5,
-        "dataSource": "Nervecentre"
-      }
-    },
     "createdAt": "2025-10-15T08:00:00.000Z",
     "updatedAt": "2025-10-15T08:00:00.000Z"
   },
@@ -3078,7 +3080,7 @@
     "buttonText": "Generate Medico-Legal Documentation",
     "buttonIcon": "",
     "buttonColor": "#1E88E5",
-    "buttonAction": "generateLegalReport",
+    "buttonAction": "generateLegal",
     "draggable": false,
     "createdAt": "2025-11-10T16:00:00.000Z",
     "updatedAt": "2025-11-10T16:00:00.000Z"
