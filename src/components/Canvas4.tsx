@@ -279,6 +279,9 @@ function Canvas4() {
   const [showInvisibleConnections, setShowInvisibleConnections] = useState(false);
   const [showingConnection, setShowingConnection] = useState(false);
   
+  // Track timeline-1 position to move invisible connectors with it
+  const [timelineOffset, setTimelineOffset] = useState({ x: 0, y: 0 });
+  
   // Sample data for MedicationTimeline2
   const sampleEncounters = [
     {
@@ -453,22 +456,31 @@ function Canvas4() {
     }
   ];
 
+  // Base positions for invisible connectors (relative to timeline-1's initial position)
+  const timelineBasePosition = { x: 100, y: 100 };
+  const invisibleConnector1Offset = { x: 412, y: 373 }; // Relative to timeline-1
+  const invisibleConnector2Offset = { x: 1085, y: 1028 }; // Relative to timeline-1
+  
   const initialNodes: Node[] = [
     {
       id: 'timeline-1',
       type: 'timeline',
-      position: { x: 100, y: 100 },
+      position: timelineBasePosition,
       data: {
         encounters: sampleEncounters,
         medicationTimeline: sampleMedicationTimeline,
         labTimeline: sampleLabTimeline
-      }
+      },
+      draggable: false
     },
-    // Invisible connector nodes - fixed positions, non-draggable
+    // Invisible connector nodes - will move with timeline-1
     {
       id: 'invisible-connector-1',
       type: 'invisible',
-      position: { x: 512, y: 473 },
+      position: { 
+        x: timelineBasePosition.x + invisibleConnector1Offset.x, 
+        y: timelineBasePosition.y + invisibleConnector1Offset.y 
+      },
       data: { 
         highlighted: showInvisibleConnections,
         componentType: 'encounter',
@@ -482,7 +494,10 @@ function Canvas4() {
     {
       id: 'invisible-connector-2',
       type: 'invisible',
-      position: { x: 1185, y: 1128 },
+      position: { 
+        x: timelineBasePosition.x + invisibleConnector2Offset.x, 
+        y: timelineBasePosition.y + invisibleConnector2Offset.y 
+      },
       data: { 
         highlighted: showInvisibleConnections,
         componentType: 'labTimeline',
