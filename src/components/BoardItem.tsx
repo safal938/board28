@@ -12,6 +12,7 @@ import DifferentialDiagnosis from "./dashboard/DifferentialDiagnosis";
 import DILIDiagnostic from "./dashboard/DILIDiagnostic";
 import PatientReport from "./dashboard/PatientReport";
 import DiagnosticReport from "./dashboard/DiagnosticReport";
+import SchedulingPanel from "./dashboard/SchedulingPanel";
 import EHRSystemComponent from "./encounters/EHRSystemComponent";
 import EncounterDocument from "./encounters/EncounterDocument";
 import SingleEncounterDocument from "./encounters/SingleEncounterDocument";
@@ -810,6 +811,16 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
         switch (componentType) {
           case "PatientContext":
             return <PatientContext patientData={componentProps.patientData} />;
+
+          case "SchedulingPanel":
+            return (
+              <SchedulingPanel
+                title={componentProps.title}
+                patientId={componentProps.patientId}
+                currentStatus={componentProps.currentStatus}
+                schedulingContext={componentProps.schedulingContext}
+              />
+            );
 
           case "MedicationTimeline":
             return (

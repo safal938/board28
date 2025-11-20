@@ -25,7 +25,7 @@ const TimelineWrapper = styled.div`
   min-width: max-content;
   height: auto;
   display: flex;
-  left:75px;
+  left:77px;
   flex-direction: column;
   align-items: stretch;
 `;
@@ -35,6 +35,8 @@ const TimelineUpper = styled.div`
   width: 100%;
   margin-bottom: 20px;
   min-height: 280px;
+  display: flex;
+  align-items: flex-end;
 `;
 
 const TimelineMiddle = styled.div`
@@ -135,19 +137,38 @@ const TimelineSlot = styled.div<{ isEmpty?: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   position: relative;
 `;
 
-const EncounterCard = styled.div`
+const EncounterCard = styled.div<{ isHighlighted?: boolean; isDimmed?: boolean }>`
   background: white;
-  border: 1px solid #ddd;
+  border: ${props => props.isHighlighted ? '3px solid #3b82f6' : '1px solid #ddd'};
   border-radius: 6px;
   padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: ${props => props.isHighlighted 
+    ? '0 0 0 4px rgba(59, 130, 246, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3)' 
+    : '0 2px 4px rgba(0, 0, 0, 0.1)'};
   font-size: 10px;
   line-height: 1.3;
   width: 200px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  opacity: ${props => props.isDimmed ? 0.2 : 1};
+  filter: ${props => props.isDimmed ? 'blur(4px)' : 'none'};
+  z-index: ${props => props.isHighlighted ? 10000 : 'auto'};
+  transition: all 0.3s ease;
+  animation: ${props => props.isHighlighted ? 'pulse-highlight 2s ease-in-out infinite' : 'none'};
+  
+  @keyframes pulse-highlight {
+    0%, 100% {
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.5), 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+  }
 `;
 
 const EncounterDot = styled.div`
@@ -164,12 +185,12 @@ const EncounterDot = styled.div`
 
 const ConnectorLine = styled.div<{ isAbove: boolean }>`
   width: 1px;
-  height: 10px;
+  height: 20px;
   background: #333;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: -10px;
+  bottom: -20px;
 `;
 
 const EncounterDate = styled.div`
@@ -239,11 +260,15 @@ const ConfidenceScore = styled.div`
 interface MedicationTimeLine1Props {
   encounters: any[];
   MedicationTimeLine1: any[];
+  showingConnection?: boolean;
+  highlightEncounterNo?: number;
 }
 
 const MedicationTimeLine1: React.FC<MedicationTimeLine1Props> = ({
   encounters,
   MedicationTimeLine1,
+  showingConnection = false,
+  highlightEncounterNo,
 }) => {
   const getConfidenceScore = (encounter: any): number => {
     // Calculate AE risk based on encounter data
@@ -385,9 +410,16 @@ const MedicationTimeLine1: React.FC<MedicationTimeLine1Props> = ({
     const confidenceScore = getConfidenceScore(encounter);
     const medicationChanges = getMedicationChangesForEncounter(encounter);
     const keyDiagnoses = getKeyDiagnoses(encounter);
+    
+    const isHighlighted = showingConnection && highlightEncounterNo === encounter.encounter_no;
+    const isDimmed = showingConnection && !isHighlighted;
 
     return (
-      <EncounterCard key={encounter.encounter_no || index}>
+      <EncounterCard 
+        key={encounter.encounter_no || index}
+        isHighlighted={isHighlighted}
+        isDimmed={isDimmed}
+      >
         <ConfidenceScore>AE Risk: {confidenceScore}%</ConfidenceScore>
 
         <EncounterDate>

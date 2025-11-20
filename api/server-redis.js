@@ -96,20 +96,20 @@ const initializeRedisPubSub = async () => {
     }
 
     const { createClient } = require('redis');
-    
+
     redisPublisher = createClient({ url: redisUrl });
     redisSubscriber = createClient({ url: redisUrl });
-    
+
     await redisPublisher.connect();
     await redisSubscriber.connect();
-    
+
     // Set up ONE global subscription that broadcasts to ALL local clients
     if (!isSubscriberSetup) {
       await redisSubscriber.subscribe('sse-events', (message) => {
         try {
           const { event, data } = JSON.parse(message);
           console.log(`📨 Received ${event} from Redis, broadcasting to ${sseClients.size} local clients`);
-          
+
           // Broadcast to ALL local SSE clients
           for (const client of sseClients) {
             try {
@@ -126,7 +126,7 @@ const initializeRedisPubSub = async () => {
       isSubscriberSetup = true;
       console.log('✅ Redis Pub/Sub initialized - global subscription active');
     }
-    
+
     return true;
   } catch (error) {
     console.error('❌ Failed to initialize Redis Pub/Sub:', error.message);
@@ -213,11 +213,11 @@ app.get("/api/events", (req, res) => {
   req.on("close", () => {
     clearInterval(heartbeat);
     sseClients.delete(res);
-    
+
     try {
       res.end();
-    } catch (_) {}
-    
+    } catch (_) { }
+
     console.log(`📡 SSE client disconnected (${sseClients.size} remaining)`);
   });
 });
@@ -388,239 +388,118 @@ const estimateItemHeight = (item) => {
     return 280;
   }
 
+  if (item.type === "component") {
+    if (item.componentType === "SchedulingPanel") return 650;
+    return 500;
+  }
+
   // Default fallback
   return 450;
 };
 
-// Find position within Task Management Zone with proper spacing and collision detection
-const findTaskZonePosition = (newItem, existingItems) => {
-  const padding = 60; // Space between items (increased for better vertical spacing)
-  const colWidth = 520; // Standard column width for items
-  const startX = TASK_ZONE.x + 60; // Start 60px from left edge
-  const startY = TASK_ZONE.y + 60; // Start 60px from top edge
-  const maxColumns = 3; // Maximum 3 columns
 
-  // Filter existing items to only those in the Task Management Zone
-  const taskZoneItems = existingItems.filter(
-    (item) =>
-      item.x >= TASK_ZONE.x &&
-      item.x < TASK_ZONE.x + TASK_ZONE.width &&
-      item.y >= TASK_ZONE.y &&
-      item.y < TASK_ZONE.y + TASK_ZONE.height &&
-      item.type === "todo"
-  );
 
-  console.log(
-    `🎯 Finding position in Task Management Zone for ${newItem.type} item`
-  );
-  console.log(
-    `📊 Found ${taskZoneItems.length} existing API items in Task Zone`
-  );
-
-  // Estimate height of new item
-  const newItemHeight = estimateItemHeight(newItem);
-  const newItemWidth = newItem.width || colWidth;
-
-  console.log(
-    `📏 Estimated new item dimensions: ${newItemWidth}w × ${newItemHeight}h`
-  );
-
-  // Create columns to track Y positions
-  const columns = Array(maxColumns).fill(startY);
-
-  // Place existing items into columns based on their X position
-  taskZoneItems.forEach((item) => {
-    const col = Math.floor((item.x - startX) / (colWidth + padding));
-    if (col >= 0 && col < maxColumns) {
-      const itemHeight = estimateItemHeight(item);
-      const itemBottom = item.y + itemHeight + padding;
-
-      // Update column height if this item extends further down
-      if (itemBottom > columns[col]) {
-        columns[col] = itemBottom;
-      }
-
-      console.log(
-        `📦 Item ${item.id} in column ${col}, bottom at ${itemBottom}px (height: ${itemHeight}px)`
-      );
-    }
-  });
-
-  console.log(
-    `📊 Column heights: ${columns.map((h, i) => `Col${i}:${h}`).join(", ")}`
-  );
-
-  // Find the column with the lowest Y position (most space available)
-  let bestCol = 0;
-  let bestY = columns[0];
-
-  for (let col = 0; col < maxColumns; col++) {
-    if (columns[col] < bestY) {
-      bestY = columns[col];
-      bestCol = col;
-    }
-  }
-
-  const x = startX + bestCol * (colWidth + padding);
-  const y = bestY;
-
-  // Check if position is within zone bounds
-  if (y + newItemHeight > TASK_ZONE.y + TASK_ZONE.height) {
-    console.log(`⚠️  Item would exceed zone height, placing at bottom of zone`);
-    // If it exceeds, try to find space in another column or place at the top of the next column
-    for (let col = 0; col < maxColumns; col++) {
-      if (columns[col] + newItemHeight <= TASK_ZONE.y + TASK_ZONE.height) {
-        const altX = startX + col * (colWidth + padding);
-        const altY = columns[col];
-        console.log(`✅ Found space in column ${col} at (${altX}, ${altY})`);
-        return { x: altX, y: altY };
-      }
-    }
-  }
-
-  console.log(`✅ Placing item in column ${bestCol} at (${x}, ${y})`);
-
-  return { x, y };
-};
-
-// Generic function to find position in any zone
+// Generic function to find position in any zone using collision detection
 const findPositionInZone = (newItem, existingItems, zoneConfig) => {
-  const padding = 60; // Space between items (increased for better spacing)
-  const colWidth = 520; // Standard column width for items
-  const startX = zoneConfig.x + 60; // Start 60px from left edge
-  const startY = zoneConfig.y + 60; // Start 60px from top edge
-  const newItemHeight = estimateItemHeight(newItem);
-  const newItemWidth = newItem.width || colWidth;
+  const padding = 20; // Gap between items
+  const zoneX = zoneConfig.x;
+  const zoneY = zoneConfig.y;
+  const zoneW = zoneConfig.width;
+  const zoneH = zoneConfig.height;
 
-  // Filter existing items to only those in the specified zone
+  const newItemW = newItem.width || 500;
+  const newItemH = estimateItemHeight(newItem);
+
+  console.log(
+    `🎯 Finding smart position in zone (${zoneX}, ${zoneY}) for ${newItem.type} (${newItemW}x${newItemH})`
+  );
+
+  // Filter items in zone
   const zoneItems = existingItems.filter(
     (item) =>
-      item.x >= zoneConfig.x &&
-      item.x < zoneConfig.x + zoneConfig.width &&
-      item.y >= zoneConfig.y &&
-      item.y < zoneConfig.y + zoneConfig.height
+      item.x >= zoneX &&
+      item.x < zoneX + zoneW &&
+      item.y >= zoneY &&
+      item.y < zoneY + zoneH
   );
 
-  console.log(
-    `🎯 Finding position in zone (${zoneConfig.x}, ${zoneConfig.y}) for ${newItem.type} item`
-  );
   console.log(`📊 Found ${zoneItems.length} existing items in zone`);
-  console.log(
-    `📏 Estimated new item dimensions: ${newItemWidth}w × ${newItemHeight}h`
-  );
 
-  // Helper function to check if two rectangles overlap
-  const overlaps = (x1, y1, w1, h1, x2, y2, w2, h2) => {
-    return !(x1 + w1 + padding < x2 || x2 + w2 + padding < x1 || 
-             y1 + h1 + padding < y2 || y2 + h2 + padding < y1);
-  };
+  // 1. Generate candidate positions
+  // Start with top-left of zone
+  let candidates = [{ x: zoneX + 60, y: zoneY + 60 }];
 
-  // For wide items (>= 1000px), use vertical stacking instead of columns
-  if (newItemWidth >= 1000) {
-    console.log(`📐 Wide item detected (${newItemWidth}px), using vertical stacking`);
-    
-    // Try to find a position that doesn't overlap with existing items
-    let candidateY = startY;
-    let attempts = 0;
-    const maxAttempts = 50;
-    
-    while (attempts < maxAttempts) {
-      const candidateX = startX;
-      let hasOverlap = false;
-      
-      // Check if this position overlaps with any existing item
-      for (const item of zoneItems) {
-        const itemWidth = item.width || colWidth;
-        const itemHeight = estimateItemHeight(item);
-        
-        if (overlaps(candidateX, candidateY, newItemWidth, newItemHeight,
-                     item.x, item.y, itemWidth, itemHeight)) {
-          hasOverlap = true;
-          // Move below this item
-          candidateY = Math.max(candidateY, item.y + itemHeight + padding);
-          break;
-        }
-      }
-      
-      if (!hasOverlap) {
-        console.log(`✅ Found non-overlapping position at (${candidateX}, ${candidateY})`);
-        return { x: candidateX, y: candidateY };
-      }
-      
-      attempts++;
-    }
-    
-    console.log(`✅ Placing wide item at (${startX}, ${candidateY}) after ${attempts} attempts`);
-    return { x: startX, y: candidateY };
-  }
-
-  // For normal-width items, use column-based layout
-  const maxColumns = Math.floor(
-    (zoneConfig.width - 120) / (colWidth + padding)
-  );
-  const columns = Array(maxColumns).fill(startY);
-
-  // Place existing items into columns based on their X position
+  // Add positions relative to existing items
   zoneItems.forEach((item) => {
-    const itemWidth = item.width || colWidth;
-    
-    // Skip wide items in column calculation
-    if (itemWidth >= 1000) {
-      console.log(`⏭️  Skipping wide item ${item.id} in column calculation`);
-      return;
-    }
-    
-    const col = Math.floor((item.x - startX) / (colWidth + padding));
-    if (col >= 0 && col < maxColumns) {
-      const itemHeight = estimateItemHeight(item);
-      const itemBottom = item.y + itemHeight + padding;
+    const iH = estimateItemHeight(item);
+    const iW = item.width || 500;
 
-      if (itemBottom > columns[col]) {
-        columns[col] = itemBottom;
-      }
+    // Position to the right
+    candidates.push({ x: item.x + iW + padding, y: item.y });
 
-      console.log(
-        `📦 Item ${item.id} (${item.type}) in column ${col}, bottom at ${itemBottom}px (height: ${itemHeight}px)`
-      );
-    }
+    // Position below
+    candidates.push({ x: item.x, y: item.y + iH + padding });
+
+    // Position at start of row below (carriage return)
+    candidates.push({ x: zoneX + 60, y: item.y + iH + padding });
   });
 
-  console.log(
-    `📊 Column heights: ${columns.map((h, i) => `Col${i}:${h}`).join(", ")}`
+  // 2. Filter invalid candidates (out of bounds)
+  candidates = candidates.filter(
+    (p) =>
+      p.x >= zoneX &&
+      p.y >= zoneY &&
+      p.x + newItemW <= zoneX + zoneW &&
+      p.y + newItemH <= zoneY + zoneH
   );
 
-  // Find the column with the lowest Y position (most space available)
-  let bestCol = 0;
-  let bestY = columns[0];
+  // 3. Sort candidates: Top-down, then Left-right
+  // We use a small threshold for Y comparison to group items in "rows"
+  candidates.sort((a, b) => {
+    if (Math.abs(a.y - b.y) > 20) return a.y - b.y;
+    return a.x - b.x;
+  });
 
-  for (let col = 0; col < maxColumns; col++) {
-    if (columns[col] < bestY) {
-      bestY = columns[col];
-      bestCol = col;
-    }
-  }
+  // 4. Find first non-overlapping candidate
+  for (const p of candidates) {
+    let overlaps = false;
+    for (const item of zoneItems) {
+      const iH = estimateItemHeight(item);
+      const iW = item.width || 500;
 
-  const x = startX + bestCol * (colWidth + padding);
-  const y = bestY;
-
-  // Check if position is within zone bounds
-  if (y + newItemHeight > zoneConfig.y + zoneConfig.height) {
-    console.log(`⚠️  Item would exceed zone height, trying other columns`);
-    for (let col = 0; col < maxColumns; col++) {
-      if (columns[col] + newItemHeight <= zoneConfig.y + zoneConfig.height) {
-        const altX = startX + col * (colWidth + padding);
-        const altY = columns[col];
-        console.log(`✅ Found space in column ${col} at (${altX}, ${altY})`);
-        return { x: altX, y: altY };
+      // Check intersection
+      if (
+        p.x < item.x + iW + padding &&
+        p.x + newItemW + padding > item.x &&
+        p.y < item.y + iH + padding &&
+        p.y + newItemH + padding > item.y
+      ) {
+        overlaps = true;
+        break;
       }
     }
-    console.log(`⚠️  No space found, placing at top of zone`);
-    return { x: startX, y: startY };
+
+    if (!overlaps) {
+      console.log(`✅ Found smart position at (${p.x}, ${p.y})`);
+      return p;
+    }
   }
 
-  console.log(`✅ Placing ${newItem.type} item in column ${bestCol} at (${x}, ${y})`);
+  // Fallback: Stack at bottom if no gap found
+  console.log("⚠️ No gap found, stacking at bottom of zone content");
+  let maxY = zoneY + 60;
+  zoneItems.forEach((item) => {
+    const iH = estimateItemHeight(item);
+    maxY = Math.max(maxY, item.y + iH + padding);
+  });
 
-  return { x, y };
+  // Check if it fits in zone height
+  if (maxY + newItemH > zoneY + zoneH) {
+    console.log("⚠️ Item exceeds zone height, placing at top (overlap inevitable)");
+    return { x: zoneX + 60, y: zoneY + 60 };
+  }
+
+  return { x: zoneX + 60, y: maxY };
 };
 
 // Doctor's Notes Zone boundaries
@@ -631,157 +510,9 @@ const DOCTORS_NOTE_ZONE = {
   height: 2100,
 };
 
-// Find position within Doctor's Notes Zone with proper spacing
-const findDoctorsNotePosition = (newItem, existingItems) => {
-  const padding = 50; // Space between items and zone border
-  const rowHeight = 620; // Standard row height for notes (600px + 20px spacing)
-  const colWidth = 470; // Standard column width for notes (450px + 20px spacing)
 
-  // Filter existing items to only those in the Doctor's Notes Zone
-  const noteZoneItems = existingItems.filter(
-    (item) =>
-      item.x >= DOCTORS_NOTE_ZONE.x &&
-      item.x < DOCTORS_NOTE_ZONE.x + DOCTORS_NOTE_ZONE.width &&
-      item.y >= DOCTORS_NOTE_ZONE.y &&
-      item.y < DOCTORS_NOTE_ZONE.y + DOCTORS_NOTE_ZONE.height &&
-      item.type === "doctor-note"
-  );
 
-  console.log(
-    `🎯 Finding position in Doctor's Notes Zone for ${newItem.type} item`
-  );
-  console.log(
-    `📊 Found ${noteZoneItems.length} existing notes in Doctor's Notes Zone`
-  );
 
-  // Calculate grid positions
-  const maxCols = Math.floor(DOCTORS_NOTE_ZONE.width / colWidth);
-  const maxRows = Math.floor(DOCTORS_NOTE_ZONE.height / rowHeight);
-
-  console.log(
-    `📐 Grid capacity: ${maxCols} columns × ${maxRows} rows = ${
-      maxCols * maxRows
-    } positions`
-  );
-
-  // Create a grid to track occupied positions
-  const grid = Array(maxRows)
-    .fill(null)
-    .map(() => Array(maxCols).fill(false));
-
-  // Mark occupied positions
-  noteZoneItems.forEach((item) => {
-    const col = Math.floor((item.x - DOCTORS_NOTE_ZONE.x - padding) / colWidth);
-    const row = Math.floor(
-      (item.y - DOCTORS_NOTE_ZONE.y - padding) / rowHeight
-    );
-
-    if (row >= 0 && row < maxRows && col >= 0 && col < maxCols) {
-      grid[row][col] = true;
-      console.log(`🔒 Position occupied: row ${row}, col ${col} by ${item.id}`);
-    }
-  });
-
-  // Find first available position (left to right, top to bottom)
-  for (let row = 0; row < maxRows; row++) {
-    for (let col = 0; col < maxCols; col++) {
-      if (!grid[row][col]) {
-        const x = DOCTORS_NOTE_ZONE.x + col * colWidth + padding;
-        const y = DOCTORS_NOTE_ZONE.y + row * rowHeight + padding;
-
-        console.log(
-          `✅ Found available position: row ${row}, col ${col} at (${x}, ${y})`
-        );
-        return { x, y };
-      }
-    }
-  }
-
-  // If no grid position available, stack vertically in first column
-  const x = DOCTORS_NOTE_ZONE.x + padding;
-  const y = DOCTORS_NOTE_ZONE.y + padding + noteZoneItems.length * rowHeight;
-
-  console.log(`⚠️  Grid full, stacking vertically at (${x}, ${y})`);
-  return { x, y };
-};
-
-// Find position within Retrieved Data Zone with proper spacing
-const findRetrievedDataZonePosition = (newItem, existingItems) => {
-  const padding = 60; // Space between items and zone border (increased for better spacing)
-  const rowHeight = 490; // Standard row height for items (450px + 40px spacing)
-  const colWidth = 560; // Standard column width for items (520px item + 40px spacing)
-
-  // Filter existing items to only those in the Retrieved Data Zone
-  const retrievedDataZoneItems = existingItems.filter(
-    (item) =>
-      item.x >= RETRIEVED_DATA_ZONE.x &&
-      item.x < RETRIEVED_DATA_ZONE.x + RETRIEVED_DATA_ZONE.width &&
-      item.y >= RETRIEVED_DATA_ZONE.y &&
-      item.y < RETRIEVED_DATA_ZONE.y + RETRIEVED_DATA_ZONE.height &&
-      (item.type === "ehr-data" ||
-        item.type === "lab-result" ||
-        item.type === "patient-data" ||
-        item.type === "clinical-data")
-  );
-
-  console.log(
-    `🎯 Finding position in Retrieved Data Zone for ${newItem.type} item`
-  );
-  console.log(
-    `📊 Found ${retrievedDataZoneItems.length} existing EHR data items in Retrieved Data Zone`
-  );
-
-  // Calculate grid positions
-  const maxCols = Math.floor(RETRIEVED_DATA_ZONE.width / colWidth);
-  const maxRows = Math.floor(RETRIEVED_DATA_ZONE.height / rowHeight);
-
-  console.log(
-    `📐 Grid capacity: ${maxCols} columns × ${maxRows} rows = ${
-      maxCols * maxRows
-    } positions`
-  );
-
-  // Create a grid to track occupied positions
-  const grid = Array(maxRows)
-    .fill(null)
-    .map(() => Array(maxCols).fill(false));
-
-  // Mark occupied positions
-  retrievedDataZoneItems.forEach((item) => {
-    const col = Math.floor((item.x - RETRIEVED_DATA_ZONE.x) / colWidth);
-    const row = Math.floor((item.y - RETRIEVED_DATA_ZONE.y - 60) / rowHeight); // Adjust for starting Y offset
-
-    if (row >= 0 && row < maxRows && col >= 0 && col < maxCols) {
-      grid[row][col] = true;
-      console.log(`🔒 Position occupied: row ${row}, col ${col} by ${item.id}`);
-    }
-  });
-
-  // Find first available position (left to right, top to bottom)
-  for (let row = 0; row < maxRows; row++) {
-    for (let col = 0; col < maxCols; col++) {
-      if (!grid[row][col]) {
-        const x = RETRIEVED_DATA_ZONE.x + col * colWidth + padding;
-        const y = RETRIEVED_DATA_ZONE.y + row * rowHeight + 60; // Start at 60px from top of zone
-
-        console.log(
-          `✅ Found available position: row ${row}, col ${col} at (${x}, ${y})`
-        );
-        return { x, y };
-      }
-    }
-  }
-
-  // If no grid position available, stack vertically in first column
-  const x = RETRIEVED_DATA_ZONE.x + padding;
-  const y =
-    RETRIEVED_DATA_ZONE.y +
-    60 +
-    retrievedDataZoneItems.length * (rowHeight + padding);
-
-  console.log(`⚠️  Grid full, stacking vertically at (${x}, ${y})`);
-  return { x, y };
-};
 
 // Legacy collision detection for non-API items - Find non-overlapping position for new item
 const findNonOverlappingPosition = (newItem, existingItems) => {
@@ -980,8 +711,8 @@ app.post("/api/board-items", async (req, res) => {
         type === "text"
           ? "Double click to edit"
           : type === "ehr"
-          ? "EHR Data"
-          : "";
+            ? "EHR Data"
+            : "";
     }
 
     // Create new board item
@@ -1025,7 +756,7 @@ app.put("/api/board-items/:id", async (req, res) => {
     const loadStart = Date.now();
     const items = await loadBoardItems();
     const loadTime = Date.now() - loadStart;
-    
+
     const itemIndex = items.findIndex((item) => item.id === id);
 
     if (itemIndex === -1) {
@@ -1053,7 +784,7 @@ app.put("/api/board-items/:id", async (req, res) => {
 
     // If height was updated, also update the source data file
     if (updates.height !== undefined) {
-      updateSourceDataHeight(id, updates.height).catch(err => 
+      updateSourceDataHeight(id, updates.height).catch(err =>
         console.error('Source data update error:', err)
       );
     }
@@ -1187,7 +918,7 @@ app.post("/api/todos", async (req, res) => {
     } else {
       // Auto-positioning - use Task Zone
       const tempItem = { type: "todo", width: 420, height: dynamicHeight };
-      const taskPosition = findTaskZonePosition(tempItem, existingItems);
+      const taskPosition = findPositionInZone(tempItem, existingItems, TASK_ZONE);
       itemX = taskPosition.x;
       itemY = taskPosition.y;
       console.log(
@@ -1246,7 +977,7 @@ app.post("/api/agents", async (req, res) => {
     }
 
     // Zone configuration mapping (matches src/data/zone-config.json)
-     const zoneConfig = {
+    const zoneConfig = {
       "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
       "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
       "patient-report-zone": { x: -675, y: 12600, width: 2750, height: 3800 },
@@ -1254,7 +985,7 @@ app.post("/api/agents", async (req, res) => {
       "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
       "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
       "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
-      
+
       "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
       "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
       "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
@@ -1313,7 +1044,7 @@ app.post("/api/agents", async (req, res) => {
     } else {
       // Default: Auto-positioning - use Task Management Zone
       const tempItem = { type: "agent", width: itemWidth, height: dynamicHeight };
-      const taskPosition = findTaskZonePosition(tempItem, existingItems);
+      const taskPosition = findPositionInZone(tempItem, existingItems, TASK_ZONE);
       itemX = taskPosition.x;
       itemY = taskPosition.y;
       console.log(
@@ -1409,9 +1140,10 @@ app.post("/api/lab-results", async (req, res) => {
     } else {
       // Auto-positioning - use Retrieved Data Zone
       const tempItem = { type: "lab-result", width: 400, height: 280 };
-      const retrievedDataPosition = findRetrievedDataZonePosition(
+      const retrievedDataPosition = findPositionInZone(
         tempItem,
-        existingItems
+        existingItems,
+        RETRIEVED_DATA_ZONE
       );
       itemX = retrievedDataPosition.x;
       itemY = retrievedDataPosition.y;
@@ -1492,9 +1224,10 @@ app.post("/api/ehr-data", async (req, res) => {
         width: width || 400,
         height: height || 300,
       };
-      const retrievedDataPosition = findRetrievedDataZonePosition(
+      const retrievedDataPosition = findPositionInZone(
         tempItem,
-        existingItems
+        existingItems,
+        RETRIEVED_DATA_ZONE
       );
       itemX = retrievedDataPosition.x;
       itemY = retrievedDataPosition.y;
@@ -1730,7 +1463,7 @@ app.post("/api/enhanced-todo", async (req, res) => {
         height: height,
         todoData: { todos, description },
       };
-      const taskPosition = findTaskZonePosition(tempItem, existingItems);
+      const taskPosition = findPositionInZone(tempItem, existingItems, TASK_ZONE);
       itemX = taskPosition.x;
       itemY = taskPosition.y;
       console.log(
@@ -1783,6 +1516,147 @@ app.post("/api/enhanced-todo", async (req, res) => {
       error: "Failed to create enhanced todo",
       message: error.message,
       details: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
+  }
+});
+
+// POST /api/schedule - Create a new scheduling panel item
+app.post("/api/schedule", async (req, res) => {
+  try {
+    const {
+      title,
+      patientId,
+      currentStatus,
+      schedulingContext,
+      zone,
+      x,
+      y,
+      width = 600,
+      height = "auto",
+      color = "#ffffff",
+    } = req.body;
+
+    // Validate required fields
+    if (!schedulingContext) {
+      return res.status(400).json({
+        error: "schedulingContext is required",
+      });
+    }
+
+    // Zone configuration mapping (matches src/data/zone-config.json)
+    const zoneConfig = {
+      "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
+      "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
+      "patient-report-zone": { x: -675, y: 12600, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -4150, y: 12600, width: 2750, height: 3800 },
+      "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
+      "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
+      "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
+
+      "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
+      "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
+      "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
+      "easl-chatbot-zone": { x: 1000, y: 7000, width: 2000, height: 1400 },
+    };
+
+    // Generate unique ID
+    const id = `dashboard-item-${Date.now()}-scheduling-panel`;
+
+    // Load existing items for positioning BEFORE creating the item
+    const existingItems = await loadBoardItems();
+    console.log(
+      `🔍 Loaded ${existingItems.length} existing items for positioning`
+    );
+
+    // Determine position
+    let itemX, itemY;
+    if (x !== undefined && y !== undefined) {
+      // Manual positioning - use provided coordinates
+      itemX = x;
+      itemY = y;
+      console.log(
+        `📍 Using provided coordinates for SCHEDULING PANEL item at (${itemX}, ${itemY})`
+      );
+    } else if (zone && zoneConfig[zone]) {
+      // Zone-based positioning
+      const targetZone = zoneConfig[zone];
+      const tempItem = {
+        type: "component",
+        width: width,
+        height: 600, // Estimate height
+      };
+      const position = findPositionInZone(tempItem, existingItems, targetZone);
+      itemX = position.x;
+      itemY = position.y;
+      console.log(
+        `📍 Auto-positioned SCHEDULING PANEL item in ${zone} at (${itemX}, ${itemY})`
+      );
+    } else {
+      // Default: Auto-positioning - use Task Management Zone
+      const tempItem = {
+        type: "component",
+        width: width,
+        height: 600, // Estimate height
+      };
+      // Use findTaskZonePosition as default fallback logic for task management zone
+      // Or use findPositionInZone with task-management-zone config
+      const targetZone = zoneConfig["task-management-zone"];
+      const position = findPositionInZone(tempItem, existingItems, targetZone);
+
+      itemX = position.x;
+      itemY = position.y;
+      console.log(
+        `📍 Auto-positioned SCHEDULING PANEL item in Task Management Zone (default) at (${itemX}, ${itemY})`
+      );
+    }
+
+    // Create the new item
+    const newItem = {
+      id,
+      type: "component",
+      x: itemX,
+      y: itemY,
+      width,
+      height,
+      componentType: "SchedulingPanel",
+      color,
+      description: "Integrated scheduling and investigation ordering panel",
+      content: {
+        title: title || "Care Coordination & Scheduling",
+        component: "SchedulingPanel",
+        props: {
+          patientId: patientId || "Unknown",
+          currentStatus: currentStatus || "Unknown",
+          schedulingContext,
+        },
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    console.log(
+      `📍 Positioned new scheduling panel at (${newItem.x}, ${newItem.y})`
+    );
+
+    // Save to board items
+    const updatedItems = [...existingItems, newItem];
+    await saveBoardItems(updatedItems);
+
+    // Broadcast to all connected clients
+    const payload = {
+      event: "new-item",
+      item: newItem,
+      timestamp: new Date().toISOString(),
+      action: "created",
+    };
+    broadcastSSE(payload);
+
+    res.status(201).json(newItem);
+  } catch (error) {
+    console.error("Error creating scheduling panel:", error);
+    res.status(500).json({
+      error: "Failed to create scheduling panel",
+      message: error.message,
     });
   }
 });
@@ -1868,9 +1742,8 @@ app.post("/api/update-todo-status", async (req, res) => {
 
       if (subTaskIndex < 0 || subTaskIndex >= task.subTodos.length) {
         return res.status(404).json({
-          error: `Subtask index ${subTaskIndex} is out of range (0-${
-            task.subTodos.length - 1
-          })`,
+          error: `Subtask index ${subTaskIndex} is out of range (0-${task.subTodos.length - 1
+            })`,
         });
       }
 
@@ -1940,7 +1813,7 @@ app.post("/api/doctor-notes", async (req, res) => {
       id: noteId,
       type: "doctor-note",
       x: noteX,
-      y: noteY+20,
+      y: noteY + 20,
       width: noteWidth,
       height: noteHeight,
       noteData: {
@@ -1955,7 +1828,7 @@ app.post("/api/doctor-notes", async (req, res) => {
     const items = await loadBoardItems();
 
     // Find optimal position in Doctor's Notes Zone
-    const position = findDoctorsNotePosition(noteItem, items);
+    const position = findPositionInZone(noteItem, items, DOCTORS_NOTE_ZONE);
     noteItem.x = position.x;
     noteItem.y = position.y;
 
@@ -2307,16 +2180,16 @@ app.post("/api/easl-reset", async (req, res) => {
 app.post("/api/reload-board-items", async (req, res) => {
   try {
     console.log("🔄 Force reloading board items from static file...");
-    
+
     // Load from static file
     const staticItems = await loadStaticItems();
-    
+
     // Save to Redis (overwrite existing data)
     if (isRedisConnected && redisClient) {
       await redisClient.set("boardItems", JSON.stringify(staticItems));
       console.log(`✅ Reloaded ${staticItems.length} items from static file to Redis`);
     }
-    
+
     // Broadcast reload event to all connected clients so they refresh
     await broadcastSSE({
       event: 'board-reloaded',
@@ -2324,9 +2197,9 @@ app.post("/api/reload-board-items", async (req, res) => {
       itemCount: staticItems.length,
       timestamp: new Date().toISOString()
     });
-    
+
     console.log(`📡 Broadcasted board-reloaded event to all clients`);
-    
+
     res.json({
       success: true,
       message: "Board items reloaded from static file. All clients will refresh automatically.",
@@ -2353,12 +2226,12 @@ app.post("/api/redis/clear", async (req, res) => {
     }
 
     console.log("🗑️ Clearing all Redis data...");
-    
+
     // Delete the boardItems key
     await redisClient.del("boardItems");
-    
+
     console.log("✅ Redis data cleared");
-    
+
     res.json({
       success: true,
       message: "Redis data cleared successfully"
@@ -2385,7 +2258,7 @@ app.get("/api/redis/info", async (req, res) => {
     // Get boardItems data
     const data = await redisClient.get("boardItems");
     const itemCount = data ? JSON.parse(data).length : 0;
-    
+
     res.json({
       connected: true,
       itemCount: itemCount,
@@ -2649,7 +2522,7 @@ app.post("/api/patient-report", async (req, res) => {
     }
 
     // Zone configuration mapping (matches src/data/zone-config.json)
-     const zoneConfig = {
+    const zoneConfig = {
       "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
       "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
       "patient-report-zone": { x: -425, y: 12600, width: 2750, height: 3800 },
@@ -2657,7 +2530,7 @@ app.post("/api/patient-report", async (req, res) => {
       "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
       "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
       "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
-      
+
       "retrieved-data-zone": { x: 5800, y: -4600, width: 2000, height: 2100 },
       "doctors-note-zone": { x: 2600, y: 12400, width: 2000, height: 2100 },
       "task-management-zone": { x: 5800, y: -2300, width: 2000, height: 2100 },
@@ -2756,7 +2629,7 @@ app.post("/api/diagnostic-report", async (req, res) => {
     }
 
     // Zone configuration mapping (matches src/data/zone-config.json)
-     const zoneConfig = {
+    const zoneConfig = {
       "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
       "dili-analysis-zone": { x: -2250, y: 7000, width: 2750, height: 3800 },
       "patient-report-zone": { x: -675, y: 12600, width: 2750, height: 3800 },

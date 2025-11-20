@@ -252,9 +252,74 @@ function EncounterNode({ data }: NodeProps) {
   );
 }
 
+// Invisible node component for Canvas3
+const InvisibleNodeContainer = styled.div`
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  
+  &.highlighted {
+    background: rgba(59, 130, 246, 0.2);
+    border: 2px solid #3b82f6;
+    animation: pulse 1s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 1;
+    }
+  }
+`;
+
+function InvisibleNode({ data }: NodeProps) {
+  return (
+    <InvisibleNodeContainer className={data.highlighted ? 'highlighted' : ''}>
+      <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
+      <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
+      <Handle type="source" position={Position.Bottom} style={{ opacity: 0 }} />
+      <Handle type="target" position={Position.Top} style={{ opacity: 0 }} />
+    </InvisibleNodeContainer>
+  );
+}
+
+const ConnectorButton = styled.button`
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  z-index: 1000;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
 function Canvas3() {
   const [rawData, setRawData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showInvisibleConnections, setShowInvisibleConnections] = useState(false);
 
   // Get API base URL
   const API_BASE_URL =
@@ -404,8 +469,22 @@ function Canvas3() {
     }]
   });
 
-  // Initial nodes - Raw EHR Data Zone + 2 zones with 6 encounters each
+  // Initial nodes - Raw EHR Data Zone + 2 zones with 6 encounters each + invisible connectors
   const initialNodes: Node[] = [
+    // Invisible connector nodes
+    {
+      id: 'invisible-connector-1',
+      type: 'invisible',
+      position: { x: 400, y: 600 },
+      data: { highlighted: showInvisibleConnections },
+    },
+    {
+      id: 'invisible-connector-2',
+      type: 'invisible',
+      position: { x: 1600, y: 1400 },
+      data: { highlighted: showInvisibleConnections },
+    },
+    
     // Raw EHR Data Zone - from Canvas2
     {
       id: 'zone-raw-ehr',
@@ -730,7 +809,72 @@ function Canvas3() {
     rawData: RawDataNode,
     triageFlow: TriageFlowNode,
     ehrHub: EHRHubNode,
+    invisible: InvisibleNode,
   }), []);
+
+  // Toggle invisible connections
+  const toggleInvisibleConnections = useCallback(() => {
+    setShowInvisibleConnections(!showInvisibleConnections);
+    
+    // Update invisible nodes to show highlight
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.type === 'invisible') {
+          return {
+            ...node,
+            data: { ...node.data, highlighted: !showInvisibleConnections },
+          };
+        }
+        return node;
+      })
+    );
+
+    // Add or remove invisible connection edges
+    if (!showInvisibleConnections) {
+      const invisibleEdges: Edge[] = [
+        {
+          id: 'e-invisible-1-2',
+          source: 'invisible-connector-1',
+          target: 'invisible-connector-2',
+          animated: true,
+          style: {
+            stroke: '#ef4444',
+            strokeWidth: 4,
+          },
+        },
+        {
+          id: 'e-encounter-to-invisible',
+          source: 'encounter-1-2',
+          target: 'invisible-connector-1',
+          animated: true,
+          style: {
+            stroke: '#10b981',
+            strokeWidth: 3,
+          },
+        },
+        {
+          id: 'e-invisible-to-encounter',
+          source: 'invisible-connector-2',
+          target: 'encounter-2-3',
+          animated: true,
+          style: {
+            stroke: '#10b981',
+            strokeWidth: 3,
+          },
+        },
+      ];
+      setEdges((eds) => [...eds, ...invisibleEdges]);
+    } else {
+      setEdges((eds) =>
+        eds.filter(
+          (edge) =>
+            !edge.id.includes('invisible') &&
+            edge.id !== 'e-encounter-to-invisible' &&
+            edge.id !== 'e-invisible-to-encounter'
+        )
+      );
+    }
+  }, [showInvisibleConnections, setNodes, setEdges]);
 
   // Display loading state
   if (isLoading) {
@@ -789,6 +933,11 @@ function Canvas3() {
       }}>
         📊 Raw Data Items: {rawData.length}
       </div>
+
+      {/* Invisible Connector Button */}
+      <ConnectorButton onClick={toggleInvisibleConnections}>
+        {showInvisibleConnections ? '🔴 Hide Connections' : '🔗 Show Invisible Connections'}
+      </ConnectorButton>
     </div>
   );
 }
