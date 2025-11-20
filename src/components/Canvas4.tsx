@@ -615,7 +615,7 @@ function Canvas4() {
         fontWeight: 600,
         color: '#667eea'
       }}>
-        💊 Canvas 4 - Medication Timeline View
+        Medication Timeline View
       </div>
 
       {/* Invisible Connector Button */}
@@ -623,7 +623,7 @@ function Canvas4() {
         onClick={toggleInvisibleConnections}
         isActive={showingConnection}
       >
-        {showingConnection ? '✕ Exit Focus Mode' : '🔗 Show Connection'}
+        {showingConnection ? '✕ Exit Focus Mode' : 'Show Casual Links'}
       </ConnectorButton>
     </div>
   );
