@@ -496,7 +496,7 @@ function Canvas4() {
     {
       id: 'chronomed-1',
       type: 'chronomed',
-      position: { x: 100, y: 1000 }, // Placed below the first timeline
+      position: { x: 2000, y: 100 }, // Placed below the first timeline
       data: { label: 'Chronomed Timeline' }
     },
   ];
