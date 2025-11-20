@@ -1158,7 +1158,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                     // Get API base URL from environment or default
                     const API_BASE_URL = 'https://api3.medforce-ai.com';
                     
-                    const response = await fetch(`${API_BASE_URL}/generate_report`, {
+                    const response = await fetch(`${API_BASE_URL}/generate_legal`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
