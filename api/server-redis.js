@@ -1989,6 +1989,41 @@ app.post("/api/focus", (req, res) => {
   });
 });
 
+// POST /api/notification - Show notification to all connected clients
+app.post("/api/notification", (req, res) => {
+  const { message, type = 'info' } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ error: "Message is required" });
+  }
+
+  // Validate notification type
+  const validTypes = ['success', 'error', 'warning', 'info'];
+  if (!validTypes.includes(type)) {
+    return res.status(400).json({
+      error: "Invalid type",
+      message: `Type must be one of: ${validTypes.join(', ')}`
+    });
+  }
+
+  console.log(`📢 Broadcasting notification: [${type}] ${message}`);
+
+  // Broadcast notification via SSE to all connected clients
+  const notificationPayload = {
+    event: "notification",
+    message,
+    type,
+    timestamp: new Date().toISOString(),
+  };
+  broadcastSSE(notificationPayload);
+
+  res.json({
+    success: true,
+    message: "Notification sent successfully",
+    notification: { message, type }
+  });
+});
+
 // POST /api/send-to-easl - Send query to EASL iframe via SSE
 app.post("/api/send-to-easl", (req, res) => {
   const { query, metadata } = req.body;

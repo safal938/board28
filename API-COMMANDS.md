@@ -614,7 +614,74 @@ Save this as `workflow.sh`, make it executable with `chmod +x workflow.sh`, and 
 
 ---
 
-## 14. DILI Diagnostic & Patient Report
+## 14. Show Notification
+
+Send a notification message to all connected clients. The notification will appear as an alert modal in the UI.
+
+### Basic Notification
+
+```bash
+curl -X POST http://localhost:3001/api/notification \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Patient data has been updated successfully",
+    "type": "success"
+  }' | jq
+```
+
+### Error Notification
+
+```bash
+curl -X POST http://localhost:3001/api/notification \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Failed to process the request. Please try again.",
+    "type": "error"
+  }' | jq
+```
+
+### Warning Notification
+
+```bash
+curl -X POST http://localhost:3001/api/notification \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Lab results are pending review",
+    "type": "warning"
+  }' | jq
+```
+
+### Info Notification
+
+```bash
+curl -X POST http://localhost:3001/api/notification \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "System maintenance scheduled for tonight",
+    "type": "info"
+  }' | jq
+```
+
+**Parameters:**
+- `message` (required): The notification message to display
+- `type` (optional): Notification type - one of `"success"`, `"error"`, `"warning"`, or `"info"` (defaults to `"info"`)
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Notification sent successfully",
+  "notification": {
+    "message": "Patient data has been updated successfully",
+    "type": "success"
+  }
+}
+```
+
+---
+
+## 15. DILI Diagnostic & Patient Report
 
 ### Create DILI Diagnostic Panel
 

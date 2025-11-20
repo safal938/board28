@@ -18,6 +18,7 @@ import 'reactflow/dist/style.css';
 import { FileText, Database, Settings, Users } from 'lucide-react';
 import MedicationTimeline2 from './dashboard/MedicationTimeline2';
 import LabTimeline from './dashboard/LabTimeline';
+import { Dashboard as ChronomedDashboard } from './chronomed/Dashboard';
 
 const ReactFlowWrapper = styled.div`
   width: 100%;
@@ -251,6 +252,29 @@ function TimelineNode({ data }: NodeProps) {
   );
 }
 
+// Chronomed Timeline Node Component
+const ChronomedNodeContainer = styled.div`
+  width: 1600px;
+  min-height: 1200px;
+  height: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: visible;
+  position: relative;
+  z-index: 1;
+`;
+
+function ChronomedNode({ data }: NodeProps) {
+  return (
+    <ChronomedNodeContainer>
+      <Handle type="target" position={Position.Top} />
+      <Handle type="source" position={Position.Bottom} />
+      <ChronomedDashboard className="w-full h-full" />
+    </ChronomedNodeContainer>
+  );
+}
+
 function Canvas4() {
   const [showInvisibleConnections, setShowInvisibleConnections] = useState(false);
   const [showingConnection, setShowingConnection] = useState(false);
@@ -468,6 +492,13 @@ function Canvas4() {
       draggable: false,
       selectable: false,
     },
+    // New Chronomed Timeline Node
+    {
+      id: 'chronomed-1',
+      type: 'chronomed',
+      position: { x: 100, y: 1400 }, // Placed below the first timeline
+      data: { label: 'Chronomed Timeline' }
+    },
   ];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -482,6 +513,7 @@ function Canvas4() {
     custom: CustomNode,
     timeline: TimelineNode,
     invisible: InvisibleNode,
+    chronomed: ChronomedNode,
   }), []);
 
   // Toggle invisible connections

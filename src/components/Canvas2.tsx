@@ -1523,6 +1523,20 @@ function Canvas2() {
           }
         });
 
+        es.addEventListener('notification', (event: any) => {
+          try {
+            const { message, type } = JSON.parse(event.data);
+            console.log('📢 Notification event received:', { message, type });
+            setAlertModal({
+              isOpen: true,
+              message: message,
+              type: type || 'info'
+            });
+          } catch (err) {
+            console.error('❌ Error handling notification event:', err);
+          }
+        });
+
         es.addEventListener('board-reloaded', async (event: any) => {
           try {
             const data = JSON.parse(event.data);
