@@ -1143,7 +1143,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                       type: 'error'
                     });
                   }
-                } else if (item.buttonAction === "generateReport") {
+                } else if (item.buttonAction === "generateLegalReport") {
                   try {
                     console.log('📄 Generating Patient Report...');
                     setIsProcessing(true);
