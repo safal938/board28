@@ -1037,7 +1037,7 @@ function Canvas2() {
         const diliConsolidatorNode: Node = {
           id: 'dili-consolidator',
           type: 'custom',
-          position: { x: -1390, y: 6150 },
+          position: { x: -1390, y: 6850 },
           data: {
             label: 'DILI Assessment Agent',
             content: 'Reviews reported hepatic events to support structured DILI evaluation.',
@@ -1054,7 +1054,7 @@ function Canvas2() {
         const reportConsolidatorNode: Node = {
           id: 'report-consolidator',
           type: 'custom',
-          position: { x: -1390, y: 11400 },
+          position: { x: -1390, y: 12100 },
           data: {
             label: 'Hepatology Expert Agent',
             content: 'Clinical decision point for hepatology referral and patient report generation.',

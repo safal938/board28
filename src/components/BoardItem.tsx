@@ -22,6 +22,7 @@ import RadiologyImage from "./encounters/RadiologyImage";
 import ICELabData from "./encounters/ICELabData";
 import DoctorNote from "./DoctorNote";
 import AlertModal from "./AlertModal";
+import { Dashboard as Chronomed2Dashboard } from "./chronomed-2/Dashboard";
 // Types removed for Storybook compatibility
 
 const ItemContainer = styled(motion.div)`
@@ -917,6 +918,9 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
 
           case "ICELabData":
             return <ICELabData encounters={componentProps.encounters} />;
+
+          case "Chronomed2Dashboard":
+            return <Chronomed2Dashboard />;
 
           default:
             return (

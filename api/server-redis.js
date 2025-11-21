@@ -2559,10 +2559,10 @@ app.post("/api/patient-report", async (req, res) => {
     // Zone configuration mapping (matches src/data/zone-config.json)
     const zoneConfig = {
       "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
-      "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
-      "patient-report-zone": { x: -425, y: 12600, width: 2750, height: 3800 },
-      "medico-legal-report-zone": { x: -4150, y: 12600, width: 2750, height: 3800 },
-      "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
+      "dili-analysis-zone": { x: -2375, y: 7700, width: 2750, height: 3800 },
+      "patient-report-zone": { x: -425, y: 13300, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -4150, y: 13300, width: 2750, height: 3800 },
+      "report-zone": { x: -4375, y: 13100, width: 6750, height: 4400 },
       "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
       "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
 
@@ -2666,7 +2666,7 @@ app.post("/api/diagnostic-report", async (req, res) => {
     // Zone configuration mapping (matches src/data/zone-config.json)
     const zoneConfig = {
       "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
-      "dili-analysis-zone": { x: -2250, y: 7000, width: 2750, height: 3800 },
+      "dili-analysis-zone": { x: -2250, y: 7700, width: 2750, height: 3800 },
       "patient-report-zone": { x: -675, y: 12600, width: 2750, height: 3800 },
       "medico-legal-report-zone": { x: -4150, y: 12600, width: 2750, height: 3800 },
       "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
@@ -2773,7 +2773,7 @@ app.post("/api/legal-compliance", async (req, res) => {
       "adv-event-zone": { x: -3000, y: 3500, width: 4000, height: 2300 },
       "dili-analysis-zone": { x: -2375, y: 7000, width: 2750, height: 3800 },
       "patient-report-zone": { x: -425, y: 12600, width: 2750, height: 3800 },
-      "medico-legal-report-zone": { x: -3930, y: 12864, width: 2750, height: 3800 },
+      "medico-legal-report-zone": { x: -3930, y: 13564, width: 2750, height: 3800 },
       "report-zone": { x: -4375, y: 12400, width: 6750, height: 4400 },
       "raw-ehr-data-zone": { x: -1000, y: -6600, width: 5000, height: 2500 },
       "data-zone": { x: -3500, y: 500, width: 5000, height: 1500 },
