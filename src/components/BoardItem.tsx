@@ -1162,6 +1162,52 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
+                        zone: 'medico-legal-report-zone'
+                      })
+                    });
+                    
+                    if (!response.ok) {
+                      throw new Error('Failed to generate report');
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Report generated:', data);
+                    
+                    // Close loading modal - the SSE will handle navigation
+                    setAlertModal({
+                      isOpen: false,
+                      message: '',
+                      type: 'success'
+                    });
+                    setIsProcessing(false);
+                  } catch (error) {
+                    console.error('❌ Error generating report:', error);
+                    setIsProcessing(false);
+                    setAlertModal({
+                      isOpen: true,
+                      message: 'Failed to generate report. Please try again.',
+                      type: 'error'
+                    });
+                  }
+                } else if (item.buttonAction === "generateReport") {
+                  try {
+                    console.log('📄 Generating Patient Report...');
+                    setIsProcessing(true);
+                    
+                    // Show loading modal
+                    setAlertModal({
+                      isOpen: true,
+                      message: 'Generating Legal Report... Please wait.',
+                      type: 'loading'
+                    });
+                    
+                    // Get API base URL from environment or default
+                    const API_BASE_URL = 'https://api3.medforce-ai.com';
+                    
+                    const response = await fetch(`${API_BASE_URL}/generate_report`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
                         zone: 'patient-report-zone'
                       })
                     });
@@ -1189,7 +1235,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                       type: 'error'
                     });
                   }
-                }  else if (item.buttonAction === "shareToHepato") {
+                }    else if (item.buttonAction === "shareToHepato") {
                   try {
                     console.log('🔗 Sharing board to hepato...');
                     setAlertModal({

@@ -388,17 +388,17 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
         .domain([domainMin, domainMax])
         .range([height - CHART_MARGIN.bottom, CHART_MARGIN.top]);
 
-    // Generators
+    // Generators - Use step curve to show constant values until next measurement
     const line = d3.line<{t: string, value: number}>()
         .x(d => scale(new Date(d.t)))
         .y(d => yScale(d.value))
-        .curve(d3.curveMonotoneX);
+        .curve(d3.curveStepAfter);
 
     const area = d3.area<{t: string, value: number}>()
         .x(d => scale(new Date(d.t)))
         .y0(height - CHART_MARGIN.bottom)
         .y1(d => yScale(d.value))
-        .curve(d3.curveMonotoneX);
+        .curve(d3.curveStepAfter);
 
     const pathD = line(values) || "";
     const areaD = area(values) || "";
