@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import  INITIAL_DATA  from '../../data/new_med_timeline.json';
-import { TimelineAxis, EncounterTrack, MedicationTrack, LabTrack, KeyEventsTrack, RiskTrack, CausalPathways, useTimelineScale, MasterGrid } from './TimelineComponents';
+import { TimelineAxis, EncounterTrack, MedicationTrack, LabTrack, KeyEventsTrack, RiskTrack, useTimelineScale, MasterGrid } from './TimelineComponents';
 import { Sidebar } from './Sidebar';
-import * as d3 from 'd3';
+import { CausalSidebar } from './CausalSidebar';
 import { MedicalData, PatientData } from './types';
 
 export const Dashboard: React.FC = () => {
@@ -59,8 +59,8 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex bg-gray-100 text-slate-800 font-sans min-h-full" style={{ width: width + 300 }}>
-      {/* Sidebar */}
+    <div className="flex bg-gray-100 text-slate-800 font-sans min-h-full" style={{ width: width + 300 + 384 }}>
+      {/* Left Sidebar */}
       {patientData && <Sidebar patientData={patientData} />}
 
       {/* Main Content */}
@@ -101,15 +101,15 @@ export const Dashboard: React.FC = () => {
                          <RiskTrack data={timelineProps.riskTimeline} scale={scale} />
                     )}
                     <KeyEventsTrack events={timelineProps.keyEvents} scale={scale} />
-                    
-                    {/* Causal Pathway Analysis */}
-                    {timelineProps.causalChain && timelineProps.causalChain.length > 0 && (
-                        <CausalPathways nodes={timelineProps.causalChain} />
-                    )}
                 </div>
             </div>
         </main>
       </div>
+
+      {/* Right Sidebar - Causal Pathway Analysis */}
+      {timelineProps.causalChain && timelineProps.causalChain.length > 0 && (
+        <CausalSidebar nodes={timelineProps.causalChain} />
+      )}
     </div>
   );
 };

@@ -18,7 +18,6 @@ import 'reactflow/dist/style.css';
 import { FileText, Database, Settings, Users } from 'lucide-react';
 import MedicationTimeline2 from './dashboard/MedicationTimeline2';
 import LabTimeline from './dashboard/LabTimeline';
-import { Dashboard as ChronomedDashboard } from './chronomed/Dashboard';
 
 const ReactFlowWrapper = styled.div`
   width: 100%;
@@ -254,26 +253,22 @@ function TimelineNode({ data }: NodeProps) {
 
 // Chronomed Timeline Node Component
 const ChronomedNodeContainer = styled.div`
-  width: 1600px;
-  min-height: 1200px;
-  height: auto;
-  background: white;
+  width: 2400px;
+  height: 2000px;
+  background: #f8fafc;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow: visible;
   position: relative;
   z-index: 1;
+  
+  /* Override the Dashboard's h-screen to fit within this container */
+  & > div {
+    height: 100% !important;
+    width: 100% !important;
+  }
 `;
 
-function ChronomedNode({ data }: NodeProps) {
-  return (
-    <ChronomedNodeContainer>
-      <Handle type="target" position={Position.Top} />
-      <Handle type="source" position={Position.Bottom} />
-      <ChronomedDashboard className="w-full h-full" />
-    </ChronomedNodeContainer>
-  );
-}
 
 function Canvas4() {
   const [showInvisibleConnections, setShowInvisibleConnections] = useState(false);
@@ -507,12 +502,17 @@ function Canvas4() {
       draggable: false,
       selectable: false,
     },
-    // New Chronomed Timeline Node
+    // New Chronomed Timeline Node - Full size render
     {
       id: 'chronomed-1',
       type: 'chronomed',
-      position: { x: 2000, y: 100 }, // Placed below the first timeline
-      data: { label: 'Chronomed Timeline' }
+      position: { x: 100, y: 1600 },
+      data: { label: 'Chronomed Timeline' },
+      draggable: true,
+      style: {
+        width: 2400,
+        height: 2000,
+      }
     },
   ];
 
@@ -528,7 +528,6 @@ function Canvas4() {
     custom: CustomNode,
     timeline: TimelineNode,
     invisible: InvisibleNode,
-    chronomed: ChronomedNode,
   }), []);
 
   // Toggle invisible connections
@@ -598,9 +597,9 @@ function Canvas4() {
           onConnect={onConnect}
           nodeTypes={nodeTypes}
           fitView
-          minZoom={0.1}
-          maxZoom={4}
-          defaultViewport={{ x: 0, y: 0, zoom: 1 }}
+          minZoom={0.05}
+          maxZoom={2}
+          defaultViewport={{ x: 0, y: 0, zoom: 0.4 }}
           proOptions={{ hideAttribution: true }}
         >
           <Controls />
