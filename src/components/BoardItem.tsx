@@ -1201,7 +1201,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                     // Show loading modal
                     setAlertModal({
                       isOpen: true,
-                      message: 'Generating Legal Report... Please wait.',
+                      message: 'Generating Patient Report... Please wait.',
                       type: 'loading'
                     });
                     
