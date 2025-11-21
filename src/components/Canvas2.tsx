@@ -176,7 +176,7 @@ const CanvasContainer = styled.div`
   background: #ffffff;
 `;
 
-const ReactFlowWrapper = styled.div<{ sidebarOpen: boolean }>`
+const ReactFlowWrapper = styled.div<{ sidebarOpen: boolean; isPanning?: boolean }>`
   position: absolute;
   left: ${props => props.sidebarOpen ? 'clamp(380px, 30vw, 500px)' : '0'};
   right: 0;
@@ -219,6 +219,18 @@ const ReactFlowWrapper = styled.div<{ sidebarOpen: boolean }>`
       fill: #0288d1;
     }
   }
+
+  /* Panning mode styles */
+  ${props => props.isPanning && `
+    .react-flow__node, .react-flow__node *, .react-flow__edge {
+      pointer-events: none !important;
+    }
+    cursor: grab !important;
+    
+    &:active {
+      cursor: grabbing !important;
+    }
+  `}
 `;
 
 const FloatingToolbar = styled.div`
@@ -744,6 +756,8 @@ function Canvas2() {
     message: '',
     type: 'info'
   });
+  
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
   const reactFlowInstance = useRef<any>(null);
 
   // Get API base URL
@@ -2290,6 +2304,43 @@ function Canvas2() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [items, centerOnItem]);
 
+  // Spacebar listener for panning mode
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        const target = e.target as HTMLElement;
+        // Don't trigger if user is typing in an input
+        if (
+          target.tagName === 'INPUT' || 
+          target.tagName === 'TEXTAREA' || 
+          target.isContentEditable
+        ) {
+          return;
+        }
+        
+        // Only prevent default if we're not in an input (prevents page scroll)
+        e.preventDefault(); 
+        if (!isSpacePressed) {
+          setIsSpacePressed(true);
+        }
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        setIsSpacePressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isSpacePressed]);
+
   console.log('Canvas2 rendering with nodes:', nodes.length);
 
   return (
@@ -2308,7 +2359,7 @@ function Canvas2() {
           }
         `}
       </style>
-      <ReactFlowWrapper sidebarOpen={showAgentChat}>
+      <ReactFlowWrapper sidebarOpen={showAgentChat} isPanning={isSpacePressed}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -2330,9 +2381,12 @@ function Canvas2() {
           proOptions={{ hideAttribution: true }}
           selectNodesOnDrag={false}
           connectOnClick={false}
-          nodesDraggable={true}
+          nodesDraggable={!isSpacePressed}
           nodesConnectable={false}
           elementsSelectable={true}
+          panOnDrag={true}
+          panOnScroll={false}
+          zoomOnScroll={true}
         >
           <Controls showInteractive={false} />
           <Background 
