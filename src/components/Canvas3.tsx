@@ -11,6 +11,7 @@ import ReactFlow, {
 import styled from 'styled-components';
 import 'reactflow/dist/style.css';
 import { Dashboard } from './chronomed/Dashboard';
+import { Dashboard as Dashboard2 } from './chronomed-2/Dashboard';
 
 const ReactFlowWrapper = styled.div`
   width: 100%;
@@ -41,6 +42,14 @@ function DashboardNode({ data }: NodeProps) {
   );
 }
 
+function Dashboard2Node({ data }: NodeProps) {
+  return (
+    <DashboardNodeContainer>
+      <Dashboard2 />
+    </DashboardNodeContainer>
+  );
+}
+
 function Canvas3() {
   const initialNodes: Node[] = [
     {
@@ -50,6 +59,13 @@ function Canvas3() {
       data: { label: 'Chronomed Dashboard' },
       draggable: true,
     },
+    {
+      id: 'dashboard-2',
+      type: 'dashboard2',
+      position: { x: 100, y: 1200 },
+      data: { label: 'Chronomed Dashboard 2' },
+      draggable: true,
+    },
   ];
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
@@ -57,6 +73,7 @@ function Canvas3() {
 
   const nodeTypes = useMemo(() => ({
     dashboard: DashboardNode,
+    dashboard2: Dashboard2Node,
   }), []);
 
   return (
