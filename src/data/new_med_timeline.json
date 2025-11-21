@@ -160,18 +160,24 @@
                 {
                     "name": "Methotrexate",
                     "startDate": "2018-09-05",
+                                        "endDate": "2025-06-25",
+
                     "dose": "20mg weekly",
                     "indication": "RA"
                 },
                 {
                     "name": "Folic Acid",
                     "startDate": "2015-08-10",
+                                        "endDate": "2025-06-25",
+
                     "dose": "5mg weekly",
                     "indication": "MTX supplementation"
                 },
                 {
                     "name": "Lisinopril",
                     "startDate": "2018-09-05",
+                                        "endDate": "2025-06-25",
+
                     "dose": "10mg daily",
                     "indication": "Hypertension"
                 },
