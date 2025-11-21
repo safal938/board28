@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { CheckCircle, XCircle, AlertCircle, FileText, Shield, Brain, MessageSquare, BookOpen, Flag, Stethoscope, Users, FileCheck, AlertTriangle, ChevronDown, ChevronUp, Download, Printer } from 'lucide-react';
+import formQuestions from '../data/legal_form_question.json';
 
 // Dynamic imports for print libraries
 let jsPDF: any = null;
@@ -193,12 +194,25 @@ const FormHeader = styled.div`
   margin-bottom: 8px;
 `;
 
+const FormTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
 const FormId = styled.span`
   font-size: 12px;
   font-weight: 600;
   color: #666;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
+`;
+
+const FormTitle = styled.span`
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a202c;
 `;
 
 const StatusBadge = styled.div<{ status: boolean | null }>`
@@ -437,7 +451,11 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
     return <AlertCircle size={16} />;
   };
 
-  const renderSection = (sectionKey: string, sectionData: any, columnSide: 'left' | 'right') => {
+  const getFormTitle = (formId: string): string => {
+    return (formQuestions as any)[formId] || formId;
+  };
+
+  const renderSection = (sectionKey: string, sectionData: any) => {
     if (sectionKey === 'red_flags_diagnosis') {
       return (
         <Section key={sectionKey} isExpanded={expandedSections[sectionKey]}>
@@ -513,7 +531,16 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
           {forms.map((form: any, index: number) => (
             <FormItem key={index} isHighlighted={form.checks === false}>
               <FormHeader>
-                <FormId>{form.form_id || form.appointment || `Item ${index + 1}`}</FormId>
+                <FormTitleWrapper>
+                  {form.form_id && (
+                    <>
+                      <FormId>{form.form_id}</FormId>
+                      <FormTitle>{getFormTitle(form.form_id)}</FormTitle>
+                    </>
+                  )}
+                  {!form.form_id && form.appointment && <FormId>{form.appointment}</FormId>}
+                  {!form.form_id && !form.appointment && <FormId>Item {index + 1}</FormId>}
+                </FormTitleWrapper>
                 {form.checks !== undefined && (
                   <StatusBadge status={form.checks}>
                     {renderStatusIcon(form.checks)}
@@ -594,7 +621,7 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
         <LeftColumn>
           {leftColumnSections.map(sectionKey => {
             if (data[sectionKey]) {
-              return renderSection(sectionKey, data[sectionKey], 'left');
+              return renderSection(sectionKey, data[sectionKey]);
             }
             return null;
           })}
@@ -603,7 +630,7 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
         <RightColumn>
           {rightColumnSections.map(sectionKey => {
             if (data[sectionKey]) {
-              return renderSection(sectionKey, data[sectionKey], 'right');
+              return renderSection(sectionKey, data[sectionKey]);
             }
             return null;
           })}
