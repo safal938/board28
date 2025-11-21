@@ -11,80 +11,138 @@
     "content": {
         "title": "Medication Timeline",
         "component": "MedicationTimeline",
+        "patientData": {
+            "patient": {
+                "name": "Sarah Miller",
+                "date_of_birth": "1981-06-03",
+                "age": 43,
+                "sex": "Female",
+                "age_at_first_encounter": 43,
+                "identifiers": {
+                "mrn": "SM43850603"
+                }
+            },
+            "riskLevel": "high",
+            "primaryDiagnosis": "Severe Drug-Induced Liver Injury (Methotrexate-related)",
+            "problem_list": [
+                {"name": "Type 2 Diabetes Mellitus", "status": "active"},
+                {"name": "Essential Hypertension", "status": "active"},
+                {"name": "Rheumatoid Arthritis", "status": "active"},
+                {"name": "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD/MASH)", "status": "active"},
+                {"name": "Severe Methotrexate-induced Drug-Induced Liver Injury (DILI)", "status": "active"},
+                {"name": "Acute jaundice episode (2024-08)", "status": "resolved/improving"}
+            ]
+        },
         "props": {
             "encounters": [
-                {
-                    "encounter_no": 1,
-                    "date": "2015-08-10",
-                    "type": "Rheumatology Initial Consult",
-                    "provider": "Dr. Elizabeth Hayes",
-                    "diagnosis": "Seropositive Rheumatoid Arthritis (active)",
-                    "medications": [
-                        "Methotrexate 10mg weekly",
-                        "Folic Acid 5mg weekly",
-                        "Ibuprofen 200mg Occasional previously"
-                    ],
-                    "notes": "Started MTX therapy with folic acid supplementation"
-                },
-                {
-                    "encounter_no": 2,
-                    "date": "2016-02-20",
-                    "type": "General Practice",
-                    "provider": "GP",
-                    "diagnosis": "Stable RA on MTX",
-                    "medications": [
-                        "Methotrexate 10mg weekly",
-                        "Folic Acid 5mg weekly"
-                    ],
-                    "notes": "Good RA control on MTX 10 mg weekly; no MTX side effects"
-                },
-                {
-                    "encounter_no": 3,
-                    "date": "2018-09-05",
-                    "type": "General Practice",
-                    "provider": "GP",
-                    "diagnosis": "New essential hypertension; RA stable; plan MTX dose increase",
-                    "medications": [
-                        "Methotrexate 20mg weekly",
-                        "Folic Acid 5mg weekly",
-                        "Lisinopril 10mg daily"
-                    ],
-                    "notes": "Elevated BP readings 145\u2013155/90\u201395; MTX increased to 20mg"
-                },
-                {
-                    "encounter_no": 4,
-                    "date": "2021-03-15",
-                    "type": "General Practice",
-                    "provider": "GP",
-                    "diagnosis": "Stable RA; controlled HTN; mild CKD (stable)",
-                    "medications": [
-                        "Methotrexate 20mg weekly",
-                        "Folic Acid 5mg weekly",
-                        "Lisinopril 10mg daily"
-                    ],
-                    "notes": "Overall well; RA controlled on MTX 20 mg; BP controlled"
-                },
-                {
-                    "encounter_no": 5,
-                    "date": "2025-06-15",
-                    "type": "General Practice",
-                    "provider": "GP",
-                    "diagnosis": "Acute bacterial sinusitis; RA/HTN/CKD stable",
-                    "medications": [
-                        "Trimethoprim-Sulfamethoxazole 800/160mg BID"
-                    ],
-                    "notes": "5 days nasal congestion, facial pain, headache, green discharge"
-                },
-                {
-                    "encounter_no": 6,
-                    "date": "2025-06-21",
-                    "type": "Emergency Medicine",
-                    "provider": "Dr. Sarah Chen",
-                    "diagnosis": "Acute liver injury likely DILI and/or severe methotrexate toxicity",
-                    "medications": [],
-                    "notes": "Severe fatigue, jaundice, epigastric pain, confusion"
-                }
-            ],
+    {
+      "encounter_no": 1,
+      "date": "2015-08-10",
+      "type": "Rheumatology Initial Consult",
+      "provider": "Dr. Elizabeth Hayes",
+      "medications": [
+        "Methotrexate 10mg weekly",
+        "Folic Acid 5mg weekly",
+        "Ibuprofen 200mg Occasional previously"
+      ],
+      "impression": "Newly diagnosed seropositive rheumatoid arthritis with active joint inflammation. Initiation of Methotrexate and folic acid supplementation appropriate based on disease activity.",
+      "differential_diagnosis": [
+        "Seropositive rheumatoid arthritis",
+        "Early inflammatory arthritis",
+        "Other autoimmune arthropathies (less likely)"
+      ],
+      "notes": "Acute MTX toxicity episode; MTX and Folic Acid must be stopped; TMP-SMX likely exacerbated toxicity; requires hospital-level care."
+
+    },
+    {
+      "encounter_no": 2,
+      "date": "2016-02-20",
+      "type": "General Practice",
+      "provider": "GP",
+      "medications": [
+        "Methotrexate 10mg weekly",
+        "Folic Acid 5mg weekly"
+      ],
+      "impression": "Stable rheumatoid arthritis on current Methotrexate dose with no reported adverse effects. Disease activity remains well controlled.",
+      "differential_diagnosis": [
+        "Stable rheumatoid arthritis",
+        "Quiescent inflammatory arthritis"
+      ],
+      "notes": "RA stable; MTX tolerated well; no adverse effects noted."
+
+    },
+    {
+      "encounter_no": 3,
+      "date": "2018-09-05",
+      "type": "General Practice",
+      "provider": "GP",
+      "medications": [
+        "Methotrexate 20mg weekly",
+        "Folic Acid 5mg weekly",
+        "Lisinopril 10mg daily"
+      ],
+      "impression": "New diagnosis of essential hypertension requiring initiation of antihypertensive therapy. Rheumatoid arthritis remains controlled; Methotrexate dose increased to optimise long-term disease suppression.",
+      "differential_diagnosis": [
+        "Essential hypertension",
+        "Rheumatoid arthritis (stable but requiring dose optimisation)",
+        "Medication-related BP elevation (less likely)"
+      ],
+     "notes": "BP persistently elevated; MTX dose escalated; Lisinopril initiated; first signal of cardiovascular/metabolic comorbidity."
+
+    },
+    {
+      "encounter_no": 4,
+      "date": "2021-03-15",
+      "type": "General Practice",
+      "provider": "GP",
+      "medications": [
+        "Methotrexate 20mg weekly",
+        "Folic Acid 5mg weekly",
+        "Lisinopril 10mg daily"
+      ],
+      "impression": "Rheumatoid arthritis remains well controlled on current Methotrexate regimen. Hypertension well managed on Lisinopril. Mild chronic kidney disease stable with no progression.",
+      "differential_diagnosis": [
+        "Stable rheumatoid arthritis",
+        "Controlled hypertension",
+        "Chronic kidney disease (stable stage)"
+      ],
+    "notes": "CKD noted for the first time; renal function stable; RA continues well controlled."
+
+    },
+    {
+      "encounter_no": 5,
+      "date": "2025-06-15",
+      "type": "General Practice",
+      "provider": "GP",
+      "medications": [
+        "Trimethoprim-Sulfamethoxazole 800/160mg BID"
+      ],
+      "impression": "Acute bacterial sinusitis presenting with congestion, facial pain, and purulent discharge. Underlying rheumatoid arthritis, hypertension, and CKD remain stable.",
+      "differential_diagnosis": [
+        "Acute bacterial sinusitis",
+        "Viral upper respiratory infection",
+        "Allergic rhinosinusitis"
+      ],
+    "notes": "TMP-SMX prescribed—clinically important because it interacts with MTX, increasing DILI and marrow toxicity risk."
+
+    },
+    {
+      "encounter_no": 6,
+      "date": "2025-06-21",
+      "type": "Emergency Medicine",
+      "provider": "Dr. Sarah Chen",
+      "medications": [],
+      "impression": "Acute liver injury with jaundice, fatigue, pain, and confusion concerning for drug-induced liver injury and possible severe methotrexate toxicity. Requires urgent evaluation and stabilisation.",
+      "differential_diagnosis": [
+        "Drug-induced liver injury (likely MTX-related)",
+        "Severe methotrexate toxicity",
+        "Acute viral hepatitis",
+        "Obstructive jaundice"
+      ],
+     "notes": "Acute MTX toxicity episode; MTX and Folic Acid must be stopped; TMP-SMX likely exacerbated toxicity; requires hospital-level care."
+
+    }
+  ],
             "medicationTimeline": [
                 {
                     "name": "Methotrexate",
@@ -96,18 +154,24 @@
                 {
                     "name": "Methotrexate",
                     "startDate": "2018-09-05",
+                                        "endDate": "2025-06-25",
+
                     "dose": "20mg weekly",
                     "indication": "RA"
                 },
                 {
                     "name": "Folic Acid",
                     "startDate": "2015-08-10",
+                                        "endDate": "2025-06-25",
+
                     "dose": "5mg weekly",
                     "indication": "MTX supplementation"
                 },
                 {
                     "name": "Lisinopril",
                     "startDate": "2018-09-05",
+                                        "endDate": "2025-06-25",
+
                     "dose": "10mg daily",
                     "indication": "Hypertension"
                 },
@@ -119,7 +183,6 @@
                     "indication": "Acute bacterial sinusitis"
                 }
             ],
-            
             "labTimeline": [
                     {
                     "biomarker": "WBC",
@@ -216,9 +279,62 @@
                 "t": "2025-06-21T14:00:00",
                 "note": "Urgent hepatology evaluation requested for suspected severe DILI."
                 }
+            ],
+            "riskTimeline": [
+                {
+                  "t": "2015-08-10T11:00:00",
+                  "riskScore": 0.5,
+                  "factors": ["Baseline RA", "Normal ALT/AST", "MTX 10mg started"]
+                },
+                {
+                  "t": "2016-02-20T09:30:00",
+                  "riskScore": 0.3,
+                  "factors": ["Stable RA", "Normal labs"]
+                },
+                {
+                  "t": "2018-09-05T10:00:00",
+                  "riskScore": 0.6,
+                  "factors": ["MTX dose increased to 20mg", "Still normal labs", "Hypertension diagnosed"]
+                },
+                {
+                  "t": "2025-06-15T10:30:00",
+                  "riskScore": 8.5,
+                  "factors": [
+                    "ALT 1520 U/L",
+                    "AST 1380 U/L",
+                    "Bilirubin 8.4 mg/dL",
+                    "Jaundice onset",
+                    "INR > 1.5 (Coagulopathy)",
+                    "TMP-SMX added to chronic MTX therapy"
+                  ]
+                },
+                {
+                  "t": "2025-06-21T14:00:00",
+                  "riskScore": 9.6,
+                  "factors": [
+                    "Severe DILI",
+                    "ALT 1380 U/L (persistent)",
+                    "AST 1200 U/L (persistent)",
+                    "Acute hepatic encephalopathy",
+                    "NAC infusion started",
+                    "Specialist hepatology consult"
+                  ]
+                }
+            ],
+            "causalChain": [
+                { "title": "MTX Exposure", "description": "RA treatment, chronic use" },
+                { "title": "Underlying Risk Factors", "description": "MASH/MASLD, BMI 30, steatosis, long-term MTX" },
+                { "title": "Early Warning Signs Missed", "description": "May–July: rising ALT → 150 → 260 U/L, nausea, fatigue" },
+                { "title": "Continued MTX Despite Hepatotoxicity", "description": "Critical prescribing oversight → delayed cessation" },
+                { "title": "Toxic Accumulation of MTX", "description": "In diseased liver; steatotic hepatocytes + impaired clearance" },
+                { "title": "Acute Hepatocellular Injury", "description": "Aug 11 labs: ALT 490, AST 350" },
+                { "title": "Cholestatic Features Develop", "description": "Bilirubin 110 → 190 µmol/L, dark urine, jaundice" },
+                { "title": "Crisis Presentation", "description": "Severe nausea, anorexia, jaundice → ED referral" },
+                { "title": "Diagnosis", "description": "Severe MTX-induced DILI (RUCAM 9/10, hepatocellular → cholestatic pattern)" },
+                { "title": "Immediate MTX Cessation + NAC", "description": "Rapid stabilization; INR preserved throughout" },
+                { "title": "Clinical Course", "description": "ALT falling (490 → 420); Bilirubin peaks but expected slow decline; No encephalopathy" },
+                { "title": "Outcome", "description": "Severe DILI confirmed; MTX permanently contraindicated; Long-term follow-up for MASH & fibrosis" }
             ]
-        
-
         }
     },
     "createdAt": "2025-10-14T16:47:56.098Z",

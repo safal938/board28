@@ -39,6 +39,7 @@
       "encounter_no": 1,
       "date": "2015-08-10",
       "type": "Rheumatology Initial Consult",
+      "chief_complaint": "Increased fatigue over the past 4-5 months",
       "provider": "Dr. Elizabeth Hayes",
       "medications": [
         "Methotrexate 10mg weekly",
@@ -58,6 +59,7 @@
       "encounter_no": 2,
       "date": "2016-02-20",
       "type": "General Practice",
+      "chief_complaint": "Review of abnormal liver function tests and planning for rheumatoid arthritis treatment.",
       "provider": "GP",
       "medications": [
         "Methotrexate 10mg weekly",
@@ -75,6 +77,7 @@
       "encounter_no": 3,
       "date": "2018-09-05",
       "type": "General Practice",
+      "chief_complaint": "Follow-up regarding normalization of liver function tests (LFTs) and potential initiation of Methotrexate for rheumatoid arthritis management.",
       "provider": "GP",
       "medications": [
         "Methotrexate 20mg weekly",
@@ -94,6 +97,7 @@
       "encounter_no": 4,
       "date": "2021-03-15",
       "type": "General Practice",
+      "chief_complaint": "Initiation of Disease-Modifying Anti-Rheumatic Drug (DMARD) - Methotrexate (MTX) for Rheumatoid Arthritis (RA) management.",
       "provider": "GP",
       "medications": [
         "Methotrexate 20mg weekly",
@@ -113,6 +117,7 @@
       "encounter_no": 5,
       "date": "2025-06-15",
       "type": "General Practice",
+      "chief_complaint": "Routine Methotrexate (MTX) monitoring. Reports of new intermittent nausea and increased fatigue.",
       "provider": "GP",
       "medications": [
         "Trimethoprim-Sulfamethoxazole 800/160mg BID"
@@ -130,6 +135,7 @@
       "encounter_no": 6,
       "date": "2025-06-21",
       "type": "Emergency Medicine",
+      "chief_complaint": "Urgent review for new onset jaundice, dark urine, and constant, severe nausea leading to anorexia.",
       "provider": "Dr. Sarah Chen",
       "medications": [],
       "impression": "Acute liver injury with jaundice, fatigue, pain, and confusion concerning for drug-induced liver injury and possible severe methotrexate toxicity. Requires urgent evaluation and stabilisation.",
