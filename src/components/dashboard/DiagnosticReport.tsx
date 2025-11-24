@@ -1,6 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Edit2, Save, X, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, CheckCircle, XCircle, Clock, Plus, Trash2 } from 'lucide-react';
+import { Download, Printer, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, CheckCircle, XCircle, Clock, Edit, Save, X } from 'lucide-react';
+
+// Dynamic imports for print libraries
+let jsPDF: any = null;
+let html2canvas: any = null;
+
+try {
+  jsPDF = require('jspdf').jsPDF;
+  html2canvas = require('html2canvas');
+} catch (e) {
+  console.log('Print libraries not installed. Run: npm install jspdf html2canvas');
+}
 
 // Styled Components
 const ViewContainer = styled.div`
@@ -43,11 +54,11 @@ const ActionButtons = styled.div`
   gap: 8px;
 `;
 
-const ActionButton = styled.button<{ variant?: string }>`
+const ActionButton = styled.button<{ variant?: 'primary' | 'danger' }>`
   padding: 6px 14px;
-  border: 1px solid ${props => props.variant === 'primary' ? '#1E88E5' : '#dadce0'};
-  background: ${props => props.variant === 'primary' ? '#1E88E5' : 'white'};
-  color: ${props => props.variant === 'primary' ? 'white' : '#5f6368'};
+  border: 1px solid ${props => props.variant === 'primary' ? '#667eea' : props.variant === 'danger' ? '#ef4444' : '#dadce0'};
+  background: ${props => props.variant === 'primary' ? '#667eea' : props.variant === 'danger' ? '#ef4444' : 'white'};
+  color: ${props => props.variant === 'primary' || props.variant === 'danger' ? 'white' : '#5f6368'};
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
@@ -58,7 +69,7 @@ const ActionButton = styled.button<{ variant?: string }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.variant === 'primary' ? '#1976D2' : '#f8f9fa'};
+    background: ${props => props.variant === 'primary' ? '#5568d3' : props.variant === 'danger' ? '#dc2626' : '#f8f9fa'};
   }
 
   svg {
@@ -128,6 +139,43 @@ const ViewText = styled.div`
   strong {
     color: #1a202c;
     font-weight: 600;
+  }
+`;
+
+const EditableInput = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #2d3748;
+  font-family: inherit;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+`;
+
+const EditableTextarea = styled.textarea`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #2d3748;
+  font-family: inherit;
+  line-height: 1.8;
+  min-height: 80px;
+  resize: vertical;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
 `;
 
@@ -244,54 +292,7 @@ const CriterionCard = styled.div<{ met: boolean }>`
   border: 1px solid #e0e0e0;
 `;
 
-const Input = styled.input`
-  display: block;
-  width: 100% !important;
-  max-width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-bottom: 8px;
-  box-sizing: border-box;
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  }
-`;
-
-const TextArea = styled.textarea`
-  display: block;
-  width: 100% !important;
-  max-width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 14px;
-  min-height: 80px;
-  resize: vertical;
-  margin-bottom: 8px;
-  font-family: inherit;
-  box-sizing: border-box;
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  }
-`;
-
-const Label = styled.label`
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  margin-bottom: 4px;
-`;
-
 interface DiagnosticReportProps {
-  onEdit?: () => void;
-  onSave?: (data: any) => void;
   diagnosticData?: {
     patientInformation?: {
       name?: string;
@@ -362,60 +363,99 @@ interface DiagnosticReportProps {
       references?: string[];
     };
   };
+  onSave?: (updatedData: DiagnosticReportProps['diagnosticData']) => void;
 }
 
-const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onEdit, onSave }) => {
+const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onSave }) => {
   const documentRef = useRef<HTMLDivElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<any>(diagnosticData || {});
+  const [editedData, setEditedData] = useState(diagnosticData);
 
-  // Update formData when diagnosticData changes from props
-  React.useEffect(() => {
-    if (diagnosticData) {
-      setFormData(diagnosticData);
+  const handleDownload = async () => {
+    if (!jsPDF || !html2canvas) {
+      alert('PDF libraries not installed. Please run: npm install jspdf html2canvas');
+      return;
     }
-  }, [diagnosticData]);
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-    if (onEdit) onEdit();
-  };
+    const element = documentRef.current;
+    if (!element) return;
 
-  const handleSaveClick = () => {
-    if (onSave) {
-      onSave(formData);
-    }
-    setIsEditing(false);
-  };
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      });
 
-  const handleCancelClick = () => {
-    setFormData(diagnosticData || {});
-    setIsEditing(false);
-  };
+      const imgWidth = 210;
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
 
-  const handleChange = (path: string, value: any) => {
-    setFormData((prev: any) => {
-      const newData = { ...prev };
-      const parts = path.split('.');
-      let current = newData;
-      for (let i = 0; i < parts.length - 1; i++) {
-        if (!current[parts[i]]) current[parts[i]] = {};
-        current = current[parts[i]];
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      let position = 0;
+
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
       }
-      current[parts[parts.length - 1]] = value;
+
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `Diagnostic_Report_${diagnosticData?.patientInformation?.name?.replace(/\s+/g, '_')}_${timestamp}.pdf`;
+      
+      pdf.save(filename);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedData(diagnosticData);
+  };
+
+  const handleSave = () => {
+    if (onSave && editedData) {
+      onSave(editedData);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedData(diagnosticData);
+  };
+
+  const updateField = (path: string[], value: any) => {
+    setEditedData(prev => {
+      if (!prev) return prev;
+      const newData = JSON.parse(JSON.stringify(prev));
+      let current: any = newData;
+      for (let i = 0; i < path.length - 1; i++) {
+        current = current[path[i]];
+      }
+      current[path[path.length - 1]] = value;
       return newData;
     });
   };
 
-  const handleArrayChange = (path: string, value: string) => {
-    // Split by newline to create array
-    const array = value.split('\n').filter(item => item.trim() !== '');
-    handleChange(path, array);
-  };
-
-  if (!diagnosticData && !isEditing) {
+  if (!diagnosticData) {
     return <div>No diagnostic data available</div>;
   }
+
+  const displayData = isEditing ? editedData : diagnosticData;
 
   return (
     <ViewContainer ref={documentRef} data-print-content>
@@ -427,20 +467,23 @@ const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onE
         <ActionButtons>
           {isEditing ? (
             <>
-              <ActionButton onClick={handleCancelClick}>
-                <X />
-                Cancel
-              </ActionButton>
-              <ActionButton variant="primary" onClick={handleSaveClick}>
+              <ActionButton variant="primary" onClick={handleSave}>
                 <Save />
                 Save
               </ActionButton>
+              <ActionButton variant="danger" onClick={handleCancel}>
+                <X />
+                Cancel
+              </ActionButton>
             </>
           ) : (
-            <ActionButton onClick={handleEditClick}>
-              <Edit2 />
-              Edit
-            </ActionButton>
+            <>
+              <ActionButton onClick={handleEdit}>
+                <Edit />
+                Edit
+              </ActionButton>
+             
+            </>
           )}
         </ActionButtons>
       </ViewHeader>
@@ -449,110 +492,137 @@ const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onE
         {/* LEFT COLUMN */}
         <LeftColumn>
           {/* Patient Information */}
-          {(formData.patientInformation || isEditing) && (
+          {displayData?.patientInformation && (
             <ViewSection>
               <ViewSectionTitle>
                 <User />
                 Patient Information
               </ViewSectionTitle>
               {isEditing ? (
-                <>
-                  <Label>Name</Label>
-                  <Input value={formData.patientInformation?.name || ''} onChange={(e) => handleChange('patientInformation.name', e.target.value)} />
-                  <Label>MRN</Label>
-                  <Input value={formData.patientInformation?.mrn || ''} onChange={(e) => handleChange('patientInformation.mrn', e.target.value)} />
-                  <Label>Date of Birth</Label>
-                  <Input value={formData.patientInformation?.dateOfBirth || ''} onChange={(e) => handleChange('patientInformation.dateOfBirth', e.target.value)} />
-                  <Label>Age</Label>
-                  <Input type="number" value={formData.patientInformation?.age || ''} onChange={(e) => handleChange('patientInformation.age', parseInt(e.target.value))} />
-                  <Label>Sex</Label>
-                  <Input value={formData.patientInformation?.sex || ''} onChange={(e) => handleChange('patientInformation.sex', e.target.value)} />
-                </>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div>
+                    <strong>Name:</strong>
+                    <EditableInput
+                      value={displayData.patientInformation.name || ''}
+                      onChange={(e) => updateField(['patientInformation', 'name'], e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <strong>MRN:</strong>
+                    <EditableInput
+                      value={displayData.patientInformation.mrn || ''}
+                      onChange={(e) => updateField(['patientInformation', 'mrn'], e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <strong>Date of Birth:</strong>
+                    <EditableInput
+                      value={displayData.patientInformation.dateOfBirth || ''}
+                      onChange={(e) => updateField(['patientInformation', 'dateOfBirth'], e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <strong>Age:</strong>
+                    <EditableInput
+                      type="number"
+                      value={displayData.patientInformation.age || ''}
+                      onChange={(e) => updateField(['patientInformation', 'age'], parseInt(e.target.value) || 0)}
+                    />
+                  </div>
+                  <div>
+                    <strong>Sex:</strong>
+                    <EditableInput
+                      value={displayData.patientInformation.sex || ''}
+                      onChange={(e) => updateField(['patientInformation', 'sex'], e.target.value)}
+                    />
+                  </div>
+                </div>
               ) : (
                 <ViewText>
-                  <strong>Name:</strong> {formData.patientInformation?.name}<br/>
-                  <strong>MRN:</strong> {formData.patientInformation?.mrn}<br/>
-                  <strong>Date of Birth:</strong> {formData.patientInformation?.dateOfBirth}<br/>
-                  <strong>Age:</strong> {formData.patientInformation?.age} years<br/>
-                  <strong>Sex:</strong> {formData.patientInformation?.sex}
+                  <strong>Name:</strong> {displayData.patientInformation.name}<br/>
+                  <strong>MRN:</strong> {displayData.patientInformation.mrn}<br/>
+                  <strong>Date of Birth:</strong> {displayData.patientInformation.dateOfBirth}<br/>
+                  <strong>Age:</strong> {displayData.patientInformation.age} years<br/>
+                  <strong>Sex:</strong> {displayData.patientInformation.sex}
                 </ViewText>
               )}
             </ViewSection>
           )}
 
           {/* Presenting Complaint */}
-          {(formData.presentingComplaint || isEditing) && (
+          {displayData?.presentingComplaint && (
             <ViewSection>
               <ViewSectionTitle>
                 <AlertCircle />
                 Presenting Complaint
               </ViewSectionTitle>
               {isEditing ? (
-                <TextArea 
-                  value={formData.presentingComplaint || ''} 
-                  onChange={(e) => handleChange('presentingComplaint', e.target.value)} 
+                <EditableTextarea
+                  value={displayData.presentingComplaint}
+                  onChange={(e) => updateField(['presentingComplaint'], e.target.value)}
                 />
               ) : (
-                <ViewText>{formData.presentingComplaint}</ViewText>
+                <ViewText>{displayData.presentingComplaint}</ViewText>
               )}
             </ViewSection>
           )}
 
           {/* Medical History */}
-          {(formData.medicalHistory || isEditing) && (
+          {displayData?.medicalHistory && (
             <ViewSection>
               <ViewSectionTitle>
                 <ClipboardList />
                 Medical History
               </ViewSectionTitle>
               
-              {isEditing ? (
+              {displayData.medicalHistory.conditions && displayData.medicalHistory.conditions.length > 0 && (
                 <>
-                  <Label>Conditions (one per line)</Label>
-                  <TextArea 
-                    value={(formData.medicalHistory?.conditions || []).join('\n')} 
-                    onChange={(e) => handleArrayChange('medicalHistory.conditions', e.target.value)} 
-                  />
-                  <Label>Allergies (one per line)</Label>
-                  <TextArea 
-                    value={(formData.medicalHistory?.allergies || []).join('\n')} 
-                    onChange={(e) => handleArrayChange('medicalHistory.allergies', e.target.value)} 
-                  />
-                  <Label>Social History</Label>
-                  <TextArea 
-                    value={formData.medicalHistory?.socialHistory || ''} 
-                    onChange={(e) => handleChange('medicalHistory.socialHistory', e.target.value)} 
-                  />
+                  <ViewText><strong>Conditions:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.medicalHistory.conditions.join('\n')}
+                      onChange={(e) => updateField(['medicalHistory', 'conditions'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One condition per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.medicalHistory.conditions.map((condition, index) => (
+                        <ViewListItem key={index}>{condition}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
-              ) : (
+              )}
+              
+              {displayData.medicalHistory.allergies && displayData.medicalHistory.allergies.length > 0 && (
                 <>
-                  {formData.medicalHistory?.conditions && formData.medicalHistory.conditions.length > 0 && (
-                    <>
-                      <ViewText><strong>Conditions:</strong></ViewText>
-                      <ViewList>
-                        {formData.medicalHistory.conditions.map((condition: string, index: number) => (
-                          <ViewListItem key={index}>{condition}</ViewListItem>
-                        ))}
-                      </ViewList>
-                    </>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Allergies:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.medicalHistory.allergies.join('\n')}
+                      onChange={(e) => updateField(['medicalHistory', 'allergies'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One allergy per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.medicalHistory.allergies.map((allergy, index) => (
+                        <ViewListItem key={index}>{allergy}</ViewListItem>
+                      ))}
+                    </ViewList>
                   )}
-                  
-                  {formData.medicalHistory?.allergies && formData.medicalHistory.allergies.length > 0 && (
-                    <>
-                      <ViewText style={{ marginTop: '12px' }}><strong>Allergies:</strong></ViewText>
-                      <ViewList>
-                        {formData.medicalHistory.allergies.map((allergy: string, index: number) => (
-                          <ViewListItem key={index}>{allergy}</ViewListItem>
-                        ))}
-                      </ViewList>
-                    </>
-                  )}
-                  
-                  {formData.medicalHistory?.socialHistory && (
-                    <ViewText style={{ marginTop: '12px' }}>
-                      <strong>Social History:</strong><br/>
-                      {formData.medicalHistory.socialHistory}
-                    </ViewText>
+                </>
+              )}
+              
+              {displayData.medicalHistory.socialHistory && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Social History:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.medicalHistory.socialHistory}
+                      onChange={(e) => updateField(['medicalHistory', 'socialHistory'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.medicalHistory.socialHistory}</ViewText>
                   )}
                 </>
               )}
@@ -560,44 +630,42 @@ const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onE
           )}
 
           {/* Medications */}
-          {(formData.medications || isEditing) && (
+          {displayData?.medications && (
             <ViewSection>
               <ViewSectionTitle>
                 <Pill />
                 Medications
               </ViewSectionTitle>
               
-              {isEditing ? (
+              {displayData.medications.chronicPriorToEvent && displayData.medications.chronicPriorToEvent.length > 0 && (
                 <>
-                  <Label>Chronic Medications (Prior to Event) (one per line)</Label>
-                  <TextArea 
-                    value={(formData.medications?.chronicPriorToEvent || []).join('\n')} 
-                    onChange={(e) => handleArrayChange('medications.chronicPriorToEvent', e.target.value)} 
-                  />
-                  <Label>Initiated at Acute Event</Label>
-                  <TextArea 
-                    value={formData.medications?.initiatedAtAcuteEvent || ''} 
-                    onChange={(e) => handleChange('medications.initiatedAtAcuteEvent', e.target.value)} 
-                  />
-                </>
-              ) : (
-                <>
-                  {formData.medications?.chronicPriorToEvent && formData.medications.chronicPriorToEvent.length > 0 && (
-                    <>
-                      <ViewText><strong>Chronic Medications (Prior to Event):</strong></ViewText>
-                      <ViewList>
-                        {formData.medications.chronicPriorToEvent.map((med: string, index: number) => (
-                          <ViewListItem key={index}>{med}</ViewListItem>
-                        ))}
-                      </ViewList>
-                    </>
+                  <ViewText><strong>Chronic Medications (Prior to Event):</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.medications.chronicPriorToEvent.join('\n')}
+                      onChange={(e) => updateField(['medications', 'chronicPriorToEvent'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One medication per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.medications.chronicPriorToEvent.map((med, index) => (
+                        <ViewListItem key={index}>{med}</ViewListItem>
+                      ))}
+                    </ViewList>
                   )}
-                  
-                  {formData.medications?.initiatedAtAcuteEvent && (
-                    <ViewText style={{ marginTop: '12px' }}>
-                      <strong>Initiated at Acute Event:</strong><br/>
-                      {formData.medications.initiatedAtAcuteEvent}
-                    </ViewText>
+                </>
+              )}
+              
+              {displayData.medications.initiatedAtAcuteEvent && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Initiated at Acute Event:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.medications.initiatedAtAcuteEvent}
+                      onChange={(e) => updateField(['medications', 'initiatedAtAcuteEvent'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.medications.initiatedAtAcuteEvent}</ViewText>
                   )}
                 </>
               )}
@@ -605,120 +673,233 @@ const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onE
           )}
 
           {/* Key Laboratory Findings */}
-          {(formData.keyLaboratoryFindings || isEditing) && (
+          {displayData?.keyLaboratoryFindings && (
             <ViewSection>
               <ViewSectionTitle>
                 <Beaker />
                 Key Laboratory Findings
               </ViewSectionTitle>
               
-              {isEditing ? (
+              {displayData.keyLaboratoryFindings.encounterDate && (
                 <>
-                  <Label>Encounter Date</Label>
-                  <Input 
-                    value={formData.keyLaboratoryFindings?.encounterDate || ''} 
-                    onChange={(e) => handleChange('keyLaboratoryFindings.encounterDate', e.target.value)} 
-                  />
-                  {/* Note: Editing complex array of objects like lab results is simplified here or would require more complex UI */}
-                  <ViewText style={{ fontStyle: 'italic', color: '#666' }}>
-                    Detailed lab result editing is not supported in this quick edit view.
-                  </ViewText>
-                </>
-              ) : (
-                <>
-                  {formData.keyLaboratoryFindings?.encounterDate && (
-                    <ViewText style={{ marginBottom: '16px' }}>
-                      <strong>Encounter Date:</strong> {formData.keyLaboratoryFindings.encounterDate}
-                    </ViewText>
+                  <ViewText style={{ marginBottom: '16px' }}><strong>Encounter Date:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableInput
+                      value={displayData.keyLaboratoryFindings.encounterDate}
+                      onChange={(e) => updateField(['keyLaboratoryFindings', 'encounterDate'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.keyLaboratoryFindings.encounterDate}</ViewText>
                   )}
-                  
-                  {formData.keyLaboratoryFindings?.results && formData.keyLaboratoryFindings.results.length > 0 && (
-                    <LabTable>
-                      <thead>
-                        <tr>
-                          <LabTableHeader>Test</LabTableHeader>
-                          <LabTableHeader>Value</LabTableHeader>
-                          <LabTableHeader>Flag</LabTableHeader>
-                          <LabTableHeader>Reference</LabTableHeader>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {formData.keyLaboratoryFindings.results.map((result: any, index: number) => (
-                          <LabTableRow key={index}>
-                            <LabTableCell><strong>{result.test}</strong></LabTableCell>
-                            <LabTableCell>{result.value}</LabTableCell>
-                            <LabTableCell>
-                              {result.flag && <FlagBadge flag={result.flag}>{result.flag}</FlagBadge>}
-                            </LabTableCell>
-                            <LabTableCell>
+                </>
+              )}
+              
+              {displayData.keyLaboratoryFindings.results && displayData.keyLaboratoryFindings.results.length > 0 && (
+                <LabTable>
+                  <thead>
+                    <tr>
+                      <LabTableHeader>Test</LabTableHeader>
+                      <LabTableHeader>Value</LabTableHeader>
+                      <LabTableHeader>Flag</LabTableHeader>
+                      <LabTableHeader>Reference</LabTableHeader>
+                      {isEditing && <LabTableHeader>Note</LabTableHeader>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {displayData.keyLaboratoryFindings.results.map((result, index) => (
+                      <LabTableRow key={index}>
+                        <LabTableCell>
+                          {isEditing ? (
+                            <EditableInput
+                              value={result.test}
+                              onChange={(e) => {
+                                const updated = [...(displayData.keyLaboratoryFindings?.results || [])];
+                                updated[index] = { ...updated[index], test: e.target.value };
+                                updateField(['keyLaboratoryFindings', 'results'], updated);
+                              }}
+                            />
+                          ) : (
+                            <strong>{result.test}</strong>
+                          )}
+                        </LabTableCell>
+                        <LabTableCell>
+                          {isEditing ? (
+                            <EditableInput
+                              value={result.value}
+                              onChange={(e) => {
+                                const updated = [...(displayData.keyLaboratoryFindings?.results || [])];
+                                updated[index] = { ...updated[index], value: e.target.value };
+                                updateField(['keyLaboratoryFindings', 'results'], updated);
+                              }}
+                            />
+                          ) : (
+                            result.value
+                          )}
+                        </LabTableCell>
+                        <LabTableCell>
+                          {isEditing ? (
+                            <EditableInput
+                              value={result.flag || ''}
+                              onChange={(e) => {
+                                const updated = [...(displayData.keyLaboratoryFindings?.results || [])];
+                                updated[index] = { ...updated[index], flag: e.target.value };
+                                updateField(['keyLaboratoryFindings', 'results'], updated);
+                              }}
+                              placeholder="High/Low/Normal"
+                            />
+                          ) : (
+                            result.flag && <FlagBadge flag={result.flag}>{result.flag}</FlagBadge>
+                          )}
+                        </LabTableCell>
+                        <LabTableCell>
+                          {isEditing ? (
+                            <EditableInput
+                              value={result.reference}
+                              onChange={(e) => {
+                                const updated = [...(displayData.keyLaboratoryFindings?.results || [])];
+                                updated[index] = { ...updated[index], reference: e.target.value };
+                                updateField(['keyLaboratoryFindings', 'results'], updated);
+                              }}
+                            />
+                          ) : (
+                            <>
                               {result.reference}
                               {result.note && (
                                 <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>
                                   Note: {result.note}
                                 </div>
                               )}
-                            </LabTableCell>
-                          </LabTableRow>
-                        ))}
-                      </tbody>
-                    </LabTable>
-                  )}
-                </>
+                            </>
+                          )}
+                        </LabTableCell>
+                        {isEditing && (
+                          <LabTableCell>
+                            <EditableInput
+                              value={result.note || ''}
+                              onChange={(e) => {
+                                const updated = [...(displayData.keyLaboratoryFindings?.results || [])];
+                                updated[index] = { ...updated[index], note: e.target.value };
+                                updateField(['keyLaboratoryFindings', 'results'], updated);
+                              }}
+                              placeholder="Optional note"
+                            />
+                          </LabTableCell>
+                        )}
+                      </LabTableRow>
+                    ))}
+                  </tbody>
+                </LabTable>
               )}
             </ViewSection>
           )}
 
           {/* Differential Diagnosis Tracker */}
-          {(formData.differentialDiagnosisTracker || isEditing) && (
+          {displayData?.differentialDiagnosisTracker && (
             <ViewSection>
               <ViewSectionTitle>
                 <Activity />
                 Differential Diagnosis Tracker
               </ViewSectionTitle>
               
-              {isEditing ? (
-                <ViewText style={{ fontStyle: 'italic', color: '#666' }}>
-                  Differential diagnosis tracking editing is not supported in this quick edit view.
-                </ViewText>
-              ) : (
+              {displayData.differentialDiagnosisTracker.diagnoses && displayData.differentialDiagnosisTracker.diagnoses.length > 0 && (
                 <>
-                  {formData.differentialDiagnosisTracker?.diagnoses && formData.differentialDiagnosisTracker.diagnoses.length > 0 && (
-                    <>
-                      <ViewText style={{ marginBottom: '12px' }}><strong>Active Diagnoses:</strong></ViewText>
-                      {formData.differentialDiagnosisTracker.diagnoses.map((diagnosis: any, index: number) => (
-                        <StatusCard key={index} status={diagnosis.status}>
-                          <StatusBadge status={diagnosis.status}>
-                            {diagnosis.status === 'PRIMARY' && <CheckCircle size={14} />}
-                            {diagnosis.status === 'INVESTIGATE' && <AlertCircle size={14} />}
-                            {diagnosis.status === 'PENDING' && <Clock size={14} />}
-                            {diagnosis.status}
-                          </StatusBadge>
-                          <ViewText>
-                            <strong>{diagnosis.name}</strong><br/>
-                            {diagnosis.notes}
-                          </ViewText>
-                        </StatusCard>
-                      ))}
-                    </>
-                  )}
-                  
-                  {formData.differentialDiagnosisTracker?.ruledOut && formData.differentialDiagnosisTracker.ruledOut.length > 0 && (
-                    <>
-                      <ViewText style={{ marginTop: '20px', marginBottom: '12px' }}><strong>Ruled Out:</strong></ViewText>
-                      {formData.differentialDiagnosisTracker.ruledOut.map((diagnosis: any, index: number) => (
-                        <StatusCard key={index} status={diagnosis.status}>
-                          <StatusBadge status={diagnosis.status}>
-                            <XCircle size={14} />
-                            {diagnosis.status}
-                          </StatusBadge>
-                          <ViewText>
-                            <strong>{diagnosis.name}</strong><br/>
-                            {diagnosis.notes}
-                          </ViewText>
-                        </StatusCard>
-                      ))}
-                    </>
-                  )}
+                  <ViewText style={{ marginBottom: '12px' }}><strong>Active Diagnoses:</strong></ViewText>
+                  {displayData.differentialDiagnosisTracker.diagnoses.map((diagnosis, index) => (
+                    <StatusCard key={index} status={diagnosis.status}>
+                      <StatusBadge status={diagnosis.status}>
+                        {diagnosis.status === 'PRIMARY' && <CheckCircle size={14} />}
+                        {diagnosis.status === 'INVESTIGATE' && <AlertCircle size={14} />}
+                        {diagnosis.status === 'PENDING' && <Clock size={14} />}
+                        {diagnosis.status}
+                      </StatusBadge>
+                      {isEditing ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <EditableInput
+                            value={diagnosis.name}
+                            onChange={(e) => {
+                              const updated = [...(displayData.differentialDiagnosisTracker?.diagnoses || [])];
+                              updated[index] = { ...updated[index], name: e.target.value };
+                              updateField(['differentialDiagnosisTracker', 'diagnoses'], updated);
+                            }}
+                            placeholder="Diagnosis name"
+                          />
+                          <EditableInput
+                            value={diagnosis.status}
+                            onChange={(e) => {
+                              const updated = [...(displayData.differentialDiagnosisTracker?.diagnoses || [])];
+                              updated[index] = { ...updated[index], status: e.target.value };
+                              updateField(['differentialDiagnosisTracker', 'diagnoses'], updated);
+                            }}
+                            placeholder="Status"
+                          />
+                          <EditableTextarea
+                            value={diagnosis.notes}
+                            onChange={(e) => {
+                              const updated = [...(displayData.differentialDiagnosisTracker?.diagnoses || [])];
+                              updated[index] = { ...updated[index], notes: e.target.value };
+                              updateField(['differentialDiagnosisTracker', 'diagnoses'], updated);
+                            }}
+                            placeholder="Notes"
+                          />
+                        </div>
+                      ) : (
+                        <ViewText>
+                          <strong>{diagnosis.name}</strong><br/>
+                          {diagnosis.notes}
+                        </ViewText>
+                      )}
+                    </StatusCard>
+                  ))}
+                </>
+              )}
+              
+              {displayData.differentialDiagnosisTracker.ruledOut && displayData.differentialDiagnosisTracker.ruledOut.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '20px', marginBottom: '12px' }}><strong>Ruled Out:</strong></ViewText>
+                  {displayData.differentialDiagnosisTracker.ruledOut.map((diagnosis, index) => (
+                    <StatusCard key={index} status={diagnosis.status}>
+                      <StatusBadge status={diagnosis.status}>
+                        <XCircle size={14} />
+                        {diagnosis.status}
+                      </StatusBadge>
+                      {isEditing ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <EditableInput
+                            value={diagnosis.name}
+                            onChange={(e) => {
+                              const updated = [...(displayData.differentialDiagnosisTracker?.ruledOut || [])];
+                              updated[index] = { ...updated[index], name: e.target.value };
+                              updateField(['differentialDiagnosisTracker', 'ruledOut'], updated);
+                            }}
+                            placeholder="Diagnosis name"
+                          />
+                          <EditableInput
+                            value={diagnosis.status}
+                            onChange={(e) => {
+                              const updated = [...(displayData.differentialDiagnosisTracker?.ruledOut || [])];
+                              updated[index] = { ...updated[index], status: e.target.value };
+                              updateField(['differentialDiagnosisTracker', 'ruledOut'], updated);
+                            }}
+                            placeholder="Status"
+                          />
+                          <EditableTextarea
+                            value={diagnosis.notes}
+                            onChange={(e) => {
+                              const updated = [...(displayData.differentialDiagnosisTracker?.ruledOut || [])];
+                              updated[index] = { ...updated[index], notes: e.target.value };
+                              updateField(['differentialDiagnosisTracker', 'ruledOut'], updated);
+                            }}
+                            placeholder="Notes"
+                          />
+                        </div>
+                      ) : (
+                        <ViewText>
+                          <strong>{diagnosis.name}</strong><br/>
+                          {diagnosis.notes}
+                        </ViewText>
+                      )}
+                    </StatusCard>
+                  ))}
                 </>
               )}
             </ViewSection>
@@ -728,51 +909,51 @@ const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onE
         {/* RIGHT COLUMN */}
         <RightColumn>
           {/* Diagnosis */}
-          {(formData.diagnosis || isEditing) && (
+          {displayData?.diagnosis && (
             <ViewSection>
               <ViewSectionTitle>
                 <Stethoscope />
                 Diagnosis
               </ViewSectionTitle>
               
-              {isEditing ? (
+              {displayData.diagnosis.main && (
+                <HighlightBox>
+                  <ViewText><strong>Main Diagnosis:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.diagnosis.main}
+                      onChange={(e) => updateField(['diagnosis', 'main'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.diagnosis.main}</ViewText>
+                  )}
+                </HighlightBox>
+              )}
+              
+              {displayData.diagnosis.causality && (
                 <>
-                  <Label>Main Diagnosis</Label>
-                  <TextArea 
-                    value={formData.diagnosis?.main || ''} 
-                    onChange={(e) => handleChange('diagnosis.main', e.target.value)} 
-                  />
-                  <Label>Causality</Label>
-                  <TextArea 
-                    value={formData.diagnosis?.causality || ''} 
-                    onChange={(e) => handleChange('diagnosis.causality', e.target.value)} 
-                  />
-                  <Label>Mechanism</Label>
-                  <TextArea 
-                    value={formData.diagnosis?.mechanism || ''} 
-                    onChange={(e) => handleChange('diagnosis.mechanism', e.target.value)} 
-                  />
+                  <ViewText style={{ marginTop: '12px' }}><strong>Causality:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.diagnosis.causality}
+                      onChange={(e) => updateField(['diagnosis', 'causality'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.diagnosis.causality}</ViewText>
+                  )}
                 </>
-              ) : (
+              )}
+              
+              {displayData.diagnosis.mechanism && (
                 <>
-                  {formData.diagnosis?.main && (
-                    <HighlightBox>
-                      <ViewText><strong>Main Diagnosis:</strong><br/>{formData.diagnosis.main}</ViewText>
-                    </HighlightBox>
-                  )}
-                  
-                  {formData.diagnosis?.causality && (
-                    <ViewText style={{ marginTop: '12px' }}>
-                      <strong>Causality:</strong><br/>
-                      {formData.diagnosis.causality}
-                    </ViewText>
-                  )}
-                  
-                  {formData.diagnosis?.mechanism && (
-                    <ViewText style={{ marginTop: '12px' }}>
-                      <strong>Mechanism:</strong><br/>
-                      {formData.diagnosis.mechanism}
-                    </ViewText>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Mechanism:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.diagnosis.mechanism}
+                      onChange={(e) => updateField(['diagnosis', 'mechanism'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.diagnosis.mechanism}</ViewText>
                   )}
                 </>
               )}
@@ -780,277 +961,234 @@ const DiagnosticReport: React.FC<DiagnosticReportProps> = ({ diagnosticData, onE
           )}
 
           {/* EASL Assessment */}
-          {(formData.easlAssessment || isEditing) && (
+          {displayData?.easlAssessment && (
             <ViewSection>
               <ViewSectionTitle>
                 <TrendingUp />
                 EASL Assessment
               </ViewSectionTitle>
               
-              {isEditing ? (
+              {displayData.easlAssessment.overallImpression && (
+                <HighlightBox>
+                  <ViewText><strong>Overall Impression:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.easlAssessment.overallImpression}
+                      onChange={(e) => updateField(['easlAssessment', 'overallImpression'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.easlAssessment.overallImpression}</ViewText>
+                  )}
+                </HighlightBox>
+              )}
+              
+              {displayData.easlAssessment.diliDiagnosticCriteriaMet && displayData.easlAssessment.diliDiagnosticCriteriaMet.length > 0 && (
                 <>
-                  <Label>Overall Impression</Label>
-                  <TextArea 
-                    value={formData.easlAssessment?.overallImpression || ''} 
-                    onChange={(e) => handleChange('easlAssessment.overallImpression', e.target.value)} 
-                  />
-                  <Label>Overall Severity</Label>
-                  <Input 
-                    value={formData.easlAssessment?.severityAssessment?.overallSeverity || ''} 
-                    onChange={(e) => handleChange('easlAssessment.severityAssessment.overallSeverity', e.target.value)} 
-                  />
-                  <Label>Prognosis Note</Label>
-                  <TextArea 
-                    value={formData.easlAssessment?.severityAssessment?.prognosisNote || ''} 
-                    onChange={(e) => handleChange('easlAssessment.severityAssessment.prognosisNote', e.target.value)} 
-                  />
-                  <Label>Exclusion of Alternative Causes Required (one per line)</Label>
-                  <TextArea 
-                    value={(formData.easlAssessment?.exclusionOfAlternativeCausesRequired || []).join('\n')} 
-                    onChange={(e) => handleArrayChange('easlAssessment.exclusionOfAlternativeCausesRequired', e.target.value)} 
-                  />
-
-                  <Label style={{ marginTop: '16px', marginBottom: '8px' }}>DILI Diagnostic Criteria</Label>
-                  {(formData.easlAssessment?.diliDiagnosticCriteriaMet || []).map((criterion: any, index: number) => (
-                    <div key={index} style={{ 
-                      padding: '12px', 
-                      border: '1px solid #e2e8f0', 
-                      borderRadius: '6px', 
-                      marginBottom: '12px',
-                      background: '#f8fafc'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>Criterion #{index + 1}</span>
-                        <button 
-                          onClick={() => handleRemoveArrayItem('easlAssessment.diliDiagnosticCriteriaMet', index)}
-                          style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#ef4444' }}
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                      
-                      <Label>Criterion</Label>
-                      <Input 
-                        value={criterion.criterion || ''} 
-                        onChange={(e) => handleNestedArrayChange('easlAssessment.diliDiagnosticCriteriaMet', index, 'criterion', e.target.value)} 
-                      />
-                      
-                      <Label>Status</Label>
-                      <select
-                        value={criterion.status || ''}
-                        onChange={(e) => handleNestedArrayChange('easlAssessment.diliDiagnosticCriteriaMet', index, 'status', e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '8px 12px',
-                          border: '1px solid #e2e8f0',
-                          borderRadius: '6px',
-                          fontSize: '14px',
-                          marginBottom: '8px',
-                          backgroundColor: 'white',
-                          boxSizing: 'border-box'
-                        }}
-                      >
-                        <option value="MET">MET</option>
-                        <option value="NOT MET">NOT MET</option>
-                      </select>
-                      
-                      <Label>Details</Label>
-                      <TextArea 
-                        value={criterion.details || ''} 
-                        onChange={(e) => handleNestedArrayChange('easlAssessment.diliDiagnosticCriteriaMet', index, 'details', e.target.value)} 
-                      />
-                    </div>
+                  <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>DILI Diagnostic Criteria:</strong></ViewText>
+                  {displayData.easlAssessment.diliDiagnosticCriteriaMet.map((criterion, index) => (
+                    <CriterionCard key={index} met={criterion.status === 'MET'}>
+                      {isEditing ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <EditableInput
+                            value={criterion.criterion}
+                            onChange={(e) => {
+                              const updated = [...(displayData.easlAssessment?.diliDiagnosticCriteriaMet || [])];
+                              updated[index] = { ...updated[index], criterion: e.target.value };
+                              updateField(['easlAssessment', 'diliDiagnosticCriteriaMet'], updated);
+                            }}
+                            placeholder="Criterion"
+                          />
+                          <EditableInput
+                            value={criterion.status}
+                            onChange={(e) => {
+                              const updated = [...(displayData.easlAssessment?.diliDiagnosticCriteriaMet || [])];
+                              updated[index] = { ...updated[index], status: e.target.value };
+                              updateField(['easlAssessment', 'diliDiagnosticCriteriaMet'], updated);
+                            }}
+                            placeholder="Status"
+                          />
+                          <EditableTextarea
+                            value={criterion.details}
+                            onChange={(e) => {
+                              const updated = [...(displayData.easlAssessment?.diliDiagnosticCriteriaMet || [])];
+                              updated[index] = { ...updated[index], details: e.target.value };
+                              updateField(['easlAssessment', 'diliDiagnosticCriteriaMet'], updated);
+                            }}
+                            placeholder="Details"
+                          />
+                        </div>
+                      ) : (
+                        <ViewText>
+                          <strong>{criterion.criterion}</strong><br/>
+                          Status: {criterion.status}<br/>
+                          {criterion.details}
+                        </ViewText>
+                      )}
+                    </CriterionCard>
                   ))}
-                  
-                  <button
-                    onClick={() => handleAddArrayItem('easlAssessment.diliDiagnosticCriteriaMet', { criterion: '', status: 'MET', details: '' })}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '8px 12px',
-                      background: '#f0f9ff',
-                      color: '#0284c7',
-                      border: '1px solid #bae6fd',
-                      borderRadius: '6px',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      width: '100%',
-                      justifyContent: 'center',
-                      marginBottom: '24px'
-                    }}
-                  >
-                    <Plus size={14} />
-                    Add Criterion
-                  </button>
-
-                  <Label style={{ marginBottom: '8px' }}>Causative Agent Assessment</Label>
-                  {(formData.easlAssessment?.causativeAgentAssessment || []).map((agent: any, index: number) => (
-                    <div key={index} style={{ 
-                      padding: '12px', 
-                      border: '1px solid #e2e8f0', 
-                      borderRadius: '6px', 
-                      marginBottom: '12px',
-                      background: '#f8fafc'
-                    }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                        <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>Agent #{index + 1}</span>
-                        <button 
-                          onClick={() => handleRemoveArrayItem('easlAssessment.causativeAgentAssessment', index)}
-                          style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#ef4444' }}
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                      
-                      <Label>Agent</Label>
-                      <Input 
-                        value={agent.agent || ''} 
-                        onChange={(e) => handleNestedArrayChange('easlAssessment.causativeAgentAssessment', index, 'agent', e.target.value)} 
-                      />
-                      
-                      <Label>Role</Label>
-                      <Input 
-                        value={agent.role || ''} 
-                        onChange={(e) => handleNestedArrayChange('easlAssessment.causativeAgentAssessment', index, 'role', e.target.value)} 
-                      />
-                      
-                      <Label>Rationale</Label>
-                      <TextArea 
-                        value={agent.rationale || ''} 
-                        onChange={(e) => handleNestedArrayChange('easlAssessment.causativeAgentAssessment', index, 'rationale', e.target.value)} 
-                      />
-                    </div>
-                  ))}
-                  
-                  <button
-                    onClick={() => handleAddArrayItem('easlAssessment.causativeAgentAssessment', { agent: '', role: '', rationale: '' })}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      padding: '8px 12px',
-                      background: '#f0f9ff',
-                      color: '#0284c7',
-                      border: '1px solid #bae6fd',
-                      borderRadius: '6px',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      width: '100%',
-                      justifyContent: 'center',
-                      marginBottom: '24px'
-                    }}
-                  >
-                    <Plus size={14} />
-                    Add Agent
-                  </button>
-
-                  <Label>Local Guidelines Comparison Status</Label>
-                  <Input 
-                    value={formData.easlAssessment?.localGuidelinesComparison?.status || ''} 
-                    onChange={(e) => handleChange('easlAssessment.localGuidelinesComparison.status', e.target.value)} 
-                  />
-                  <Label>Local Guidelines Comparison Details</Label>
-                  <TextArea 
-                    value={formData.easlAssessment?.localGuidelinesComparison?.details || ''} 
-                    onChange={(e) => handleChange('easlAssessment.localGuidelinesComparison.details', e.target.value)} 
-                  />
-
-                  <Label>References (one per line)</Label>
-                  <TextArea 
-                    value={(formData.easlAssessment?.references || []).join('\n')} 
-                    onChange={(e) => handleArrayChange('easlAssessment.references', e.target.value)} 
-                  />
                 </>
-              ) : (
+              )}
+              
+              {displayData.easlAssessment.causativeAgentAssessment && displayData.easlAssessment.causativeAgentAssessment.length > 0 && (
                 <>
-                  {formData.easlAssessment?.overallImpression && (
-                    <HighlightBox>
-                      <ViewText><strong>Overall Impression:</strong><br/>{formData.easlAssessment.overallImpression}</ViewText>
-                    </HighlightBox>
-                  )}
-                  
-                  {formData.easlAssessment?.diliDiagnosticCriteriaMet && formData.easlAssessment.diliDiagnosticCriteriaMet.length > 0 && (
-                    <>
-                      <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>DILI Diagnostic Criteria:</strong></ViewText>
-                      {formData.easlAssessment.diliDiagnosticCriteriaMet.map((criterion: any, index: number) => (
-                        <CriterionCard key={index} met={criterion.status === 'MET'}>
-                          <ViewText>
-                            <strong>{criterion.criterion}</strong><br/>
-                            Status: {criterion.status}<br/>
-                            {criterion.details}
-                          </ViewText>
-                        </CriterionCard>
-                      ))}
-                    </>
-                  )}
-                  
-                  {formData.easlAssessment?.causativeAgentAssessment && formData.easlAssessment.causativeAgentAssessment.length > 0 && (
-                    <>
-                      <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>Causative Agent Assessment:</strong></ViewText>
-                      {formData.easlAssessment.causativeAgentAssessment.map((agent: any, index: number) => (
-                        <ViewText key={index} style={{ marginBottom: '12px', paddingLeft: '12px', borderLeft: '3px solid #667eea' }}>
+                  <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>Causative Agent Assessment:</strong></ViewText>
+                  {displayData.easlAssessment.causativeAgentAssessment.map((agent, index) => (
+                    <div key={index} style={{ marginBottom: '12px', paddingLeft: '12px', borderLeft: '3px solid #667eea' }}>
+                      {isEditing ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <EditableInput
+                            value={agent.agent}
+                            onChange={(e) => {
+                              const updated = [...(displayData.easlAssessment?.causativeAgentAssessment || [])];
+                              updated[index] = { ...updated[index], agent: e.target.value };
+                              updateField(['easlAssessment', 'causativeAgentAssessment'], updated);
+                            }}
+                            placeholder="Agent name"
+                          />
+                          <EditableInput
+                            value={agent.role}
+                            onChange={(e) => {
+                              const updated = [...(displayData.easlAssessment?.causativeAgentAssessment || [])];
+                              updated[index] = { ...updated[index], role: e.target.value };
+                              updateField(['easlAssessment', 'causativeAgentAssessment'], updated);
+                            }}
+                            placeholder="Role"
+                          />
+                          <EditableTextarea
+                            value={agent.rationale}
+                            onChange={(e) => {
+                              const updated = [...(displayData.easlAssessment?.causativeAgentAssessment || [])];
+                              updated[index] = { ...updated[index], rationale: e.target.value };
+                              updateField(['easlAssessment', 'causativeAgentAssessment'], updated);
+                            }}
+                            placeholder="Rationale"
+                          />
+                        </div>
+                      ) : (
+                        <ViewText>
                           <strong>{agent.agent}</strong><br/>
                           Role: {agent.role}<br/>
                           {agent.rationale}
                         </ViewText>
-                      ))}
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+              
+              {displayData.easlAssessment.severityAssessment && (
+                <>
+                  <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>Severity Assessment:</strong></ViewText>
+                  {displayData.easlAssessment.severityAssessment.overallSeverity && (
+                    <>
+                      <ViewText style={{ marginBottom: '8px' }}><strong>Overall Severity:</strong></ViewText>
+                      {isEditing ? (
+                        <EditableInput
+                          value={displayData.easlAssessment.severityAssessment.overallSeverity}
+                          onChange={(e) => updateField(['easlAssessment', 'severityAssessment', 'overallSeverity'], e.target.value)}
+                        />
+                      ) : (
+                        <ViewText>{displayData.easlAssessment.severityAssessment.overallSeverity}</ViewText>
+                      )}
                     </>
                   )}
-                  
-                  {formData.easlAssessment?.severityAssessment && (
+                  {displayData.easlAssessment.severityAssessment.features && displayData.easlAssessment.severityAssessment.features.length > 0 && (
                     <>
-                      <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>Severity Assessment:</strong></ViewText>
-                      {formData.easlAssessment.severityAssessment.overallSeverity && (
-                        <ViewText style={{ marginBottom: '8px' }}>
-                          <strong>Overall Severity:</strong> {formData.easlAssessment.severityAssessment.overallSeverity}
-                        </ViewText>
-                      )}
-                      {formData.easlAssessment.severityAssessment.features && formData.easlAssessment.severityAssessment.features.length > 0 && (
+                      <ViewText style={{ marginTop: '12px' }}><strong>Features:</strong></ViewText>
+                      {isEditing ? (
+                        <EditableTextarea
+                          value={displayData.easlAssessment.severityAssessment.features.join('\n')}
+                          onChange={(e) => updateField(['easlAssessment', 'severityAssessment', 'features'], e.target.value.split('\n').filter(Boolean))}
+                          placeholder="One feature per line"
+                        />
+                      ) : (
                         <ViewList>
-                          {formData.easlAssessment.severityAssessment.features.map((feature: string, index: number) => (
+                          {displayData.easlAssessment.severityAssessment.features.map((feature, index) => (
                             <ViewListItem key={index}>{feature}</ViewListItem>
                           ))}
                         </ViewList>
                       )}
-                      {formData.easlAssessment.severityAssessment.prognosisNote && (
-                        <HighlightBox style={{ marginTop: '12px' }}>
-                          <ViewText><strong>Prognosis:</strong><br/>{formData.easlAssessment.severityAssessment.prognosisNote}</ViewText>
-                        </HighlightBox>
+                    </>
+                  )}
+                  {displayData.easlAssessment.severityAssessment.prognosisNote && (
+                    <HighlightBox style={{ marginTop: '12px' }}>
+                      <ViewText><strong>Prognosis:</strong></ViewText>
+                      {isEditing ? (
+                        <EditableTextarea
+                          value={displayData.easlAssessment.severityAssessment.prognosisNote}
+                          onChange={(e) => updateField(['easlAssessment', 'severityAssessment', 'prognosisNote'], e.target.value)}
+                        />
+                      ) : (
+                        <ViewText>{displayData.easlAssessment.severityAssessment.prognosisNote}</ViewText>
                       )}
-                    </>
+                    </HighlightBox>
                   )}
-                  
-                  {formData.easlAssessment?.exclusionOfAlternativeCausesRequired && formData.easlAssessment.exclusionOfAlternativeCausesRequired.length > 0 && (
-                    <>
-                      <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>Exclusion of Alternative Causes Required:</strong></ViewText>
-                      <ViewList>
-                        {formData.easlAssessment.exclusionOfAlternativeCausesRequired.map((cause: string, index: number) => (
-                          <ViewListItem key={index}>{cause}</ViewListItem>
-                        ))}
-                      </ViewList>
-                    </>
+                </>
+              )}
+              
+              {displayData.easlAssessment.exclusionOfAlternativeCausesRequired && displayData.easlAssessment.exclusionOfAlternativeCausesRequired.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '16px', marginBottom: '12px' }}><strong>Exclusion of Alternative Causes Required:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.easlAssessment.exclusionOfAlternativeCausesRequired.join('\n')}
+                      onChange={(e) => updateField(['easlAssessment', 'exclusionOfAlternativeCausesRequired'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One cause per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.easlAssessment.exclusionOfAlternativeCausesRequired.map((cause, index) => (
+                        <ViewListItem key={index}>{cause}</ViewListItem>
+                      ))}
+                    </ViewList>
                   )}
-                  
-                  {formData.easlAssessment?.localGuidelinesComparison && (
-                    <ViewText style={{ marginTop: '16px' }}>
-                      <strong>Local Guidelines Comparison:</strong><br/>
-                      Status: {formData.easlAssessment.localGuidelinesComparison.status}<br/>
-                      {formData.easlAssessment.localGuidelinesComparison.details}
+                </>
+              )}
+              
+              {displayData.easlAssessment.localGuidelinesComparison && (
+                <>
+                  <ViewText style={{ marginTop: '16px' }}><strong>Local Guidelines Comparison:</strong></ViewText>
+                  {isEditing ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+                      <div>
+                        <strong>Status:</strong>
+                        <EditableInput
+                          value={displayData.easlAssessment.localGuidelinesComparison.status || ''}
+                          onChange={(e) => updateField(['easlAssessment', 'localGuidelinesComparison', 'status'], e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <strong>Details:</strong>
+                        <EditableTextarea
+                          value={displayData.easlAssessment.localGuidelinesComparison.details || ''}
+                          onChange={(e) => updateField(['easlAssessment', 'localGuidelinesComparison', 'details'], e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <ViewText>
+                      Status: {displayData.easlAssessment.localGuidelinesComparison.status}<br/>
+                      {displayData.easlAssessment.localGuidelinesComparison.details}
                     </ViewText>
                   )}
-                  
-                  {formData.easlAssessment?.references && formData.easlAssessment.references.length > 0 && (
-                    <>
-                      <ViewText style={{ marginTop: '16px', marginBottom: '8px' }}><strong>References:</strong></ViewText>
-                      <ViewList>
-                        {formData.easlAssessment.references.map((ref: string, index: number) => (
-                          <ViewListItem key={index} style={{ fontSize: '13px' }}>{ref}</ViewListItem>
-                        ))}
-                      </ViewList>
-                    </>
+                </>
+              )}
+              
+              {displayData.easlAssessment.references && displayData.easlAssessment.references.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '16px', marginBottom: '8px' }}><strong>References:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.easlAssessment.references.join('\n')}
+                      onChange={(e) => updateField(['easlAssessment', 'references'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One reference per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.easlAssessment.references.map((ref, index) => (
+                        <ViewListItem key={index} style={{ fontSize: '13px' }}>{ref}</ViewListItem>
+                      ))}
+                    </ViewList>
                   )}
                 </>
               )}
