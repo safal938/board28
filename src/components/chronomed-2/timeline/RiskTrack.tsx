@@ -49,24 +49,42 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Handles for React Flow */}
+            {/* Handles for React Flow - Overlaid at same position */}
             {showHandles && sortedData.map((point, i) => (
-                <Handle
-                    key={i}
-                    type="target"
-                    position={Position.Left}
-                    id={`risk-point-${i}`}
-                    style={{
-                        left: scale(new Date(point.t)),
-                        top: yScale(point.riskScore),
-                        transform: 'translate(-50%, -50%)',
-                        width: 8,
-                        height: 8,
-                        background: 'transparent',
-                        border: 'none',
-                        zIndex: 50
-                    }}
-                />
+                <React.Fragment key={i}>
+                    <Handle
+                        type="target"
+                        position={Position.Left}
+                        id={`risk-point-${i}-target`}
+                        style={{
+                            left: scale(new Date(point.t)),
+                            top: yScale(point.riskScore),
+                            transform: 'translate(-50%, -50%)',
+                            width: 10,
+                            height: 10,
+                            background: '#ef4444',
+                            border: '2px solid white',
+                            borderRadius: '50%',
+                            boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
+                            zIndex: 50
+                        }}
+                    />
+                    <Handle
+                        type="source"
+                        position={Position.Left}
+                        id={`risk-point-${i}-source`}
+                        style={{
+                            left: scale(new Date(point.t)),
+                            top: yScale(point.riskScore),
+                            transform: 'translate(-50%, -50%)',
+                            width: 10,
+                            height: 10,
+                            background: 'transparent',
+                            border: 'none',
+                            zIndex: 51
+                        }}
+                    />
+                </React.Fragment>
             ))}
 
             {/* Header */}

@@ -83,22 +83,42 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
                         className="absolute flex flex-col items-center"
                         style={{ left: group.x, top: 0, transform: 'translateX(-50%)' }}
                      >
-                        {/* React Flow Handle */}
+                        {/* React Flow Handles - Overlaid at same position on top, offset to left */}
                         {showHandles && (
-                            <Handle
-                                type="target"
-                                position={Position.Left}
-                                id={`key-event-${i}`}
-                                style={{
-                                    left: -4,
-                                    top: topPos + 50, // Approximate center of card
-                                    width: 8,
-                                    height: 8,
-                                    background: '#ef4444',
-                                    border: 'none',
-                                    zIndex: 50
-                                }}
-                            />
+                            <>
+                                <Handle
+                                    type="target"
+                                    position={Position.Top}
+                                    id={`key-event-${i}-target`}
+                                    style={{
+                                        left: '10%',
+                                        top: topPos - 4,
+                                        transform: 'translateX(-50%)',
+                                        width: 10,
+                                        height: 10,
+                                        background: '#f59e0b',
+                                        border: '2px solid white',
+                                        borderRadius: '50%',
+                                        boxShadow: '0 2px 8px rgba(245, 158, 11, 0.4)',
+                                        zIndex: 50
+                                    }}
+                                />
+                                <Handle
+                                    type="source"
+                                    position={Position.Top}
+                                    id={`key-event-${i}-source`}
+                                    style={{
+                                        left: '35%',
+                                        top: topPos - 4,
+                                        transform: 'translateX(-50%)',
+                                        width: 10,
+                                        height: 10,
+                                        background: 'transparent',
+                                        border: 'none',
+                                        zIndex: 51
+                                    }}
+                                />
+                            </>
                         )}
 
                         {/* Connector Line */}

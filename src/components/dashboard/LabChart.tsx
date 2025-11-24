@@ -179,20 +179,18 @@ interface LabDataPoint {
 interface LabChartProps {
   encounters: any[];
   medicationTimeline: any[];
+  chartData?: { [key: string]: LabDataPoint[] };
 }
 
-const LabChart: React.FC<LabChartProps> = ({ encounters, medicationTimeline }) => {
+const LabChart: React.FC<LabChartProps> = ({ encounters, medicationTimeline, chartData }) => {
   const [selectedLabs, setSelectedLabs] = useState<string[]>(['ALT', 'AST', 'Total Bilirubin', 'INR']);
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
 
   const labTests = [
     { name: 'ALT', color: '#1976d2', normalRange: [7, 56], unit: 'U/L' },
     { name: 'AST', color: '#d32f2f', normalRange: [10, 40], unit: 'U/L' },
-    { name: 'ALP', color: '#388e3c', normalRange: [44, 147], unit: 'U/L' },
-    { name: 'GGT', color: '#f57c00', normalRange: [9, 48], unit: 'U/L' },
     { name: 'Total Bilirubin', color: '#7b1fa2', normalRange: [0.3, 1.2], unit: 'mg/dL' },
     { name: 'INR', color: '#c2185b', normalRange: [0.8, 1.1], unit: '' },
-    { name: 'Creatinine', color: '#00796b', normalRange: [0.7, 1.3], unit: 'mg/dL' }
   ];
 
   // Generate lab data based on encounters
@@ -243,7 +241,7 @@ const LabChart: React.FC<LabChartProps> = ({ encounters, medicationTimeline }) =
     return labData;
   };
 
-  const labData = generateLabData();
+  const labData = chartData || generateLabData();
 
   const toggleLab = (labName: string) => {
     setSelectedLabs(prev => 

@@ -23,6 +23,17 @@ import ICELabData from "./encounters/ICELabData";
 import DoctorNote from "./DoctorNote";
 import AlertModal from "./AlertModal";
 import { Dashboard as Chronomed2Dashboard } from "./chronomed-2/Dashboard";
+import { Sidebar } from "./chronomed/Sidebar";
+import { 
+  EncounterTrack, 
+  MedicationTrack, 
+  LabTrack, 
+  RiskTrack, 
+  KeyEventsTrack, 
+  MasterGrid, 
+  TimelineAxis, 
+  useTimelineScale 
+} from "./chronomed-2/timeline";
 // Types removed for Storybook compatibility
 
 const ItemContainer = styled(motion.div)`
@@ -401,6 +412,25 @@ const toHtml = (md: string) => {
 // `;
 
 // BoardItemProps interface removed for Storybook compatibility
+
+const pastMeds = [
+    {
+        "name": "Ramipril",
+        "startDate": "2020-01-01",
+        "endDate": "2025-02-15",
+        "dose": "5mg OD",
+        "indication": "Hypertension"
+    },
+    {
+        "name": "Metformin",
+        "startDate": "2019-01-01",
+        "endDate": "2025-02-15",
+        "dose": "1000mg BD",
+        "indication": "T2DM"
+    }
+];
+
+const pastMedDates = pastMeds.map(m => new Date(m.startDate));
 
 const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -838,13 +868,14 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
             );
 
           case "LabTable":
-            return <LabTable encounters={componentProps.encounters || []} />;
+            return <LabTable encounters={componentProps.encounters || []} labResults={componentProps.labResults} />;
 
           case "LabChart":
             return (
               <LabChart
                 encounters={componentProps.encounters || []}
                 medicationTimeline={componentProps.medicationTimeline || []}
+                chartData={componentProps.chartData}
               />
             );
 
@@ -921,6 +952,106 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
 
           case "Chronomed2Dashboard":
             return <Chronomed2Dashboard />;
+
+          case "Sidebar":
+            return (
+              <div style={{ width: 320, height: 2400, background: 'white', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+                <Sidebar patientData={componentProps.patientData} />
+              </div>
+            );
+
+          case "EncounterTrack": {
+            const encounters = componentProps.encounters || [];
+            const showHandles = componentProps.showHandles;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const { scale, width } = useTimelineScale(encounters, 40, 160, pastMedDates);
+
+            return (
+              <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
+                 <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
+                 
+                 <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+                      <TimelineAxis encounters={encounters} scale={scale} additionalDates={pastMedDates} />
+                 </div>
+          
+                <div className="relative z-20 pt-2 pb-4">
+                  <EncounterTrack encounters={encounters} scale={scale} showHandles={showHandles} />
+                </div>
+              </div>
+            );
+          }
+
+          case "MedicationTrack": {
+            const encounters = componentProps.encounters || [];
+            const medications = componentProps.medications || [];
+            const showHandles = componentProps.showHandles;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
+
+            return (
+              <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
+                <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
+                
+                <div className="relative z-20 pt-5 pb-5">
+                  <MedicationTrack medications={medications} scale={scale} showHandles={showHandles} />
+                </div>
+              </div>
+            );
+          }
+
+          case "LabTrack": {
+            const encounters = componentProps.encounters || [];
+            const labs = componentProps.labs || [];
+            const showHandles = componentProps.showHandles;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
+
+            return (
+              <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
+                <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
+                
+                <div className="relative z-20 pt-5 pb-5">
+                  <LabTrack labs={labs} scale={scale} showHandles={showHandles} />
+                </div>
+              </div>
+            );
+          }
+
+          case "RiskTrack": {
+            const encounters = componentProps.encounters || [];
+            const risks = componentProps.risks || [];
+            const showHandles = componentProps.showHandles;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
+
+            return (
+              <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
+                <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
+                
+                <div className="relative z-20 pt-5 pb-5">
+                  <RiskTrack data={risks} scale={scale} showHandles={showHandles} />
+                </div>
+              </div>
+            );
+          }
+
+          case "KeyEventsTrack": {
+            const encounters = componentProps.encounters || [];
+            const events = componentProps.events || [];
+            const showHandles = componentProps.showHandles;
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
+
+            return (
+              <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
+                <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
+                
+                <div className="relative z-20 pt-5 pb-5">
+                  <KeyEventsTrack events={events} scale={scale} showHandles={showHandles} />
+                </div>
+              </div>
+            );
+          }
 
           default:
             return (

@@ -201,24 +201,42 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
                     })}
                 </svg>
 
-                {/* Handles for React Flow */}
+                {/* Handles for React Flow - Overlaid at same position */}
                 {showHandles && values.map((v, i) => (
-                    <Handle
-                        key={i}
-                        type="target"
-                        position={Position.Left}
-                        id={`lab-${index}-point-${i}`}
-                        style={{
-                            left: scale(new Date(v.t)),
-                            top: yScale(v.value),
-                            transform: 'translate(-50%, -50%)',
-                            width: 8,
-                            height: 8,
-                            background: 'transparent',
-                            border: 'none',
-                            zIndex: 50
-                        }}
-                    />
+                    <React.Fragment key={i}>
+                        <Handle
+                            type="target"
+                            position={Position.Left}
+                            id={`lab-${index}-point-${i}-target`}
+                            style={{
+                                left: scale(new Date(v.t)),
+                                top: yScale(v.value),
+                                transform: 'translate(-50%, -50%)',
+                                width: 10,
+                                height: 10,
+                                background: '#0ea5e9',
+                                border: '2px solid white',
+                                borderRadius: '50%',
+                                boxShadow: '0 2px 8px rgba(14, 165, 233, 0.4)',
+                                zIndex: 50
+                            }}
+                        />
+                        <Handle
+                            type="source"
+                            position={Position.Left}
+                            id={`lab-${index}-point-${i}-source`}
+                            style={{
+                                left: scale(new Date(v.t)),
+                                top: yScale(v.value),
+                                transform: 'translate(-50%, -50%)',
+                                width: 10,
+                                height: 10,
+                                background: 'transparent',
+                                border: 'none',
+                                zIndex: 51
+                            }}
+                        />
+                    </React.Fragment>
                 ))}
             </div>
         </div>

@@ -56,25 +56,42 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
 
             return (
                 <div key={groupIdx} className="relative h-5 w-full group">
-                    {/* React Flow Handle for the row */}
+                    {/* React Flow Handles - Overlaid at same position */}
                     {showHandles && (
-                        <Handle
-                            type="target"
-                            position={Position.Left}
-                            id={`med-group-${medName.replace(/\s+/g, '-').toLowerCase()}`}
-                            style={{
-                                left: minStart - 8,
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                width: 12,
-                                height: 12,
-                                background: '#10b981',
-                                border: '2px solid white',
-                                borderRadius: '50%',
-                                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
-                                zIndex: 50
-                            }}
-                        />
+                        <>
+                            <Handle
+                                type="target"
+                                position={Position.Left}
+                                id={`med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-target`}
+                                style={{
+                                    left: minStart - 8,
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    width: 12,
+                                    height: 12,
+                                    background: '#10b981',
+                                    border: '2px solid white',
+                                    borderRadius: '50%',
+                                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
+                                    zIndex: 50
+                                }}
+                            />
+                            <Handle
+                                type="source"
+                                position={Position.Left}
+                                id={`med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-source`}
+                                style={{
+                                    left: minStart - 8,
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    width: 12,
+                                    height: 12,
+                                    background: 'transparent',
+                                    border: 'none',
+                                    zIndex: 51
+                                }}
+                            />
+                        </>
                     )}
 
                     {groupMeds.map((med, idx) => {

@@ -8,6 +8,10 @@ import ReactFlow, {
   Node,
   NodeProps,
   Panel,
+  MarkerType,
+  EdgeProps,
+  getBezierPath,
+  getStraightPath,
 } from 'reactflow';
 import styled from 'styled-components';
 import 'reactflow/dist/style.css';
@@ -223,89 +227,58 @@ function Canvas3() {
     const newNodes: Node[] = [];
     const newEdges: any[] = [];
 
-    // Create single MedForce AI node
-    const medforceAINodeId = 'medforce-ai';
-    newNodes.push({
-        id: medforceAINodeId,
-        type: 'default',
-        position: { x: -400, y: 1200 },
-        data: { label: 'MedForce AI' },
-        style: { 
-            width: 200, 
-            height: 80,
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-            border: '2px solid #5a67d8',
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '18px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '12px',
-            boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)'
-        }
-    });
-
-    // Connect MedForce AI to each individual encounter
-    encounters.forEach((enc: any) => {
-        newEdges.push({
-            id: `e-${medforceAINodeId}-enc-${enc.encounter_no}`,
-            source: medforceAINodeId,
-            target: encounterNodeId,
-            targetHandle: `enc-${enc.encounter_no}`,
-            animated: true,
-            style: { stroke: '#667eea', strokeWidth: 1.5, strokeDasharray: '5,5' }
-        });
-    });
-
-    // Connect MedForce AI to each medication group
-    const groupedMeds: Record<string, any[]> = {};
-    medications.forEach((med: any) => {
-        if (!groupedMeds[med.name]) {
-            groupedMeds[med.name] = [];
-        }
-        groupedMeds[med.name].push(med);
-    });
+    // Edge: Methotrexate → ALT spike (2024-07-15)
+    const mtxHandleId = 'med-group-methotrexate-source';
+    const altLabIdx = labs.findIndex((l: any) => l.biomarker === 'ALT');
+    const altSpikePointIdx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-07-15T14:00:00');
     
-    Object.keys(groupedMeds).forEach((name) => {
-        const handleId = `med-group-${name.replace(/\s+/g, '-').toLowerCase()}`;
+    if (altLabIdx !== -1 && altSpikePointIdx !== -1) {
         newEdges.push({
-            id: `e-${medforceAINodeId}-${handleId}`,
-            source: medforceAINodeId,
-            target: medNodeId,
-            targetHandle: handleId,
-            animated: true,
-            style: { stroke: '#10b981', strokeWidth: 1.5, strokeDasharray: '5,5' }
+            id: 'e-mtx-to-alt-spike',
+            source: medNodeId,
+            sourceHandle: mtxHandleId,
+            target: labNodeId,
+            targetHandle: `lab-${altLabIdx}-point-${altSpikePointIdx}-target`,
+            animated: false,
+            label: '6 weeks of MTX → ALT 185',
+            style: { stroke: '#f59e0b', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#f59e0b',
+            },
+            labelStyle: { fill: '#f59e0b', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fffbeb', fillOpacity: 0.9 }
         });
-    });
+    }
 
-    // Connect MedForce AI to each lab data point
-    labs.forEach((metric: any, idx: number) => {
-        metric.values.forEach((_val: any, valIdx: number) => {
-            newEdges.push({
-                id: `e-${medforceAINodeId}-lab-${idx}-${valIdx}`,
-                source: medforceAINodeId,
-                target: labNodeId,
-                targetHandle: `lab-${idx}-point-${valIdx}`,
-                animated: true,
-                style: { stroke: '#0ea5e9', strokeWidth: 1, strokeDasharray: '3,3' }
-            });
-        });
-    });
-
-    // Connect MedForce AI to each risk point
-    risks.forEach((_point: any, idx: number) => {
+    // Edge: Methotrexate → AST spike (2024-07-15)
+    const astLabIdx = labs.findIndex((l: any) => l.biomarker === 'AST');
+    const astSpikePointIdx = labs[astLabIdx]?.values.findIndex((v: any) => v.t === '2024-07-15T14:00:00');
+    
+    if (astLabIdx !== -1 && astSpikePointIdx !== -1) {
         newEdges.push({
-            id: `e-${medforceAINodeId}-risk-${idx}`,
-            source: medforceAINodeId,
-            target: riskNodeId,
-            targetHandle: `risk-point-${idx}`,
-            animated: true,
-            style: { stroke: '#ef4444', strokeWidth: 1.5, strokeDasharray: '5,5' }
+            id: 'e-mtx-to-ast-spike',
+            source: medNodeId,
+            sourceHandle: mtxHandleId,
+            target: labNodeId,
+            targetHandle: `lab-${astLabIdx}-point-${astSpikePointIdx}-target`,
+            animated: false,
+            label: 'AST 130',
+            style: { stroke: '#f59e0b', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#f59e0b',
+            },
+            labelStyle: { fill: '#f59e0b', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fffbeb', fillOpacity: 0.9 }
         });
-    });
+    }
 
-    // Connect MedForce AI to each key event group
+    // Find the key event for July 15, 2024 (Missed Warning Signal)
     const groupedEvents: Record<string, any[]> = {};
     keyEvents.forEach((evt: any) => {
         const dateKey = new Date(evt.t).toDateString();
@@ -315,17 +288,195 @@ function Canvas3() {
         groupedEvents[dateKey].push(evt);
     });
     const eventGroups = Object.values(groupedEvents).sort((a, b) => new Date(a[0].t).getTime() - new Date(b[0].t).getTime());
+    const july15EventIdx = eventGroups.findIndex(group => new Date(group[0].t).toDateString() === new Date('2024-07-15T14:00:00').toDateString());
 
-    eventGroups.forEach((_group, idx) => {
+    // Edge: ALT spike → Key Event (July 15)
+    if (altLabIdx !== -1 && altSpikePointIdx !== -1 && july15EventIdx !== -1) {
         newEdges.push({
-            id: `e-${medforceAINodeId}-key-event-${idx}`,
-            source: medforceAINodeId,
+            id: 'e-alt-to-july15-event',
+            source: labNodeId,
+            sourceHandle: `lab-${altLabIdx}-point-${altSpikePointIdx}-source`,
             target: keyEventNodeId,
-            targetHandle: `key-event-${idx}`,
-            animated: true,
-            style: { stroke: '#f59e0b', strokeWidth: 1.5, strokeDasharray: '5,5' }
+            targetHandle: `key-event-${july15EventIdx}-target`,
+            animated: false,
+            label: 'ALT 185 triggers warning',
+            style: { stroke: '#ef4444', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#ef4444',
+            },
+            labelStyle: { fill: '#ef4444', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.9 }
         });
-    });
+    }
+
+    // Edge: AST spike → Key Event (July 15)
+    if (astLabIdx !== -1 && astSpikePointIdx !== -1 && july15EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-ast-to-july15-event',
+            source: labNodeId,
+            sourceHandle: `lab-${astLabIdx}-point-${astSpikePointIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${july15EventIdx}-target`,
+            animated: false,
+            label: 'AST 130 confirms injury',
+            style: { stroke: '#ef4444', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#ef4444',
+            },
+            labelStyle: { fill: '#ef4444', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.9 }
+        });
+    }
+
+    // Find August 12 crisis event
+    const aug12EventIdx = eventGroups.findIndex(group => new Date(group[0].t).toDateString() === new Date('2024-08-12T09:30:00').toDateString());
+    
+    // Edge 1: Lab cluster (ALT 490, AST 350, Bilirubin 110) → Crisis Presentation
+    const altCrisisIdx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-12T09:30:00');
+    const astCrisisIdx = labs[astLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-12T09:30:00');
+    const bilirubinLabIdx = labs.findIndex((l: any) => l.biomarker === 'Total Bilirubin');
+    const bilirubinCrisisIdx = labs[bilirubinLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-12T09:30:00');
+    
+    if (altLabIdx !== -1 && altCrisisIdx !== -1 && aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-alt-crisis-to-event',
+            source: labNodeId,
+            sourceHandle: `lab-${altLabIdx}-point-${altCrisisIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug12EventIdx}-target`,
+            animated: false,
+            label: 'ALT 490 → crisis',
+            style: { stroke: '#dc2626', strokeWidth: 3 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 22,
+                height: 22,
+                color: '#dc2626',
+            },
+            labelStyle: { fill: '#dc2626', fontWeight: 700, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.95 }
+        });
+    }
+
+    if (astLabIdx !== -1 && astCrisisIdx !== -1 && aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-ast-crisis-to-event',
+            source: labNodeId,
+            sourceHandle: `lab-${astLabIdx}-point-${astCrisisIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug12EventIdx}-target`,
+            animated: false,
+            label: 'AST 350',
+            style: { stroke: '#dc2626', strokeWidth: 3 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 22,
+                height: 22,
+                color: '#dc2626',
+            },
+            labelStyle: { fill: '#dc2626', fontWeight: 700, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.95 }
+        });
+    }
+
+    if (bilirubinLabIdx !== -1 && bilirubinCrisisIdx !== -1 && aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-bilirubin-crisis-to-event',
+            source: labNodeId,
+            sourceHandle: `lab-${bilirubinLabIdx}-point-${bilirubinCrisisIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug12EventIdx}-target`,
+            animated: false,
+            label: 'Bilirubin 110',
+            style: { stroke: '#dc2626', strokeWidth: 3 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 22,
+                height: 22,
+                color: '#dc2626',
+            },
+            labelStyle: { fill: '#dc2626', fontWeight: 700, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.95 }
+        });
+    }
+
+    // Edge 2: Crisis Presentation → NAC medication
+    const nacHandleId = 'med-group-n-acetylcysteine-(nac)-target';
+    if (aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-crisis-to-nac',
+            source: keyEventNodeId,
+            sourceHandle: `key-event-${aug12EventIdx}-source`,
+            target: medNodeId,
+            targetHandle: nacHandleId,
+            animated: false,
+            label: 'NAC infusion started after crisis',
+            style: { stroke: '#10b981', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#10b981',
+            },
+            labelStyle: { fill: '#10b981', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#f0fdf4', fillOpacity: 0.9 }
+        });
+    }
+
+    // Edge 3: NAC → ALT begins to fall (Aug 15)
+    const altAug15Idx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-15T10:00:00');
+    const nacSourceHandleId = 'med-group-n-acetylcysteine-(nac)-source';
+    if (altLabIdx !== -1 && altAug15Idx !== -1) {
+        newEdges.push({
+            id: 'e-nac-to-alt-fall',
+            source: medNodeId,
+            sourceHandle: nacSourceHandleId,
+            target: labNodeId,
+            targetHandle: `lab-${altLabIdx}-point-${altAug15Idx}-target`,
+            animated: false,
+            label: 'MTX stopped + NAC → ALT begins to fall',
+            style: { stroke: '#10b981', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#10b981',
+            },
+            labelStyle: { fill: '#10b981', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#f0fdf4', fillOpacity: 0.9 }
+        });
+    }
+
+    // Edge 4: Bilirubin peak → Peak Cholestasis event
+    const aug15EventIdx = eventGroups.findIndex(group => new Date(group[0].t).toDateString() === new Date('2024-08-15T10:00:00').toDateString());
+    const bilirubinPeakIdx = labs[bilirubinLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-15T10:00:00');
+    
+    if (bilirubinLabIdx !== -1 && bilirubinPeakIdx !== -1 && aug15EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-bilirubin-peak-to-cholestasis',
+            source: labNodeId,
+            sourceHandle: `lab-${bilirubinLabIdx}-point-${bilirubinPeakIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug15EventIdx}-target`,
+            animated: false,
+            label: 'Bilirubin 190 → peak cholestasis',
+            style: { stroke: '#f59e0b', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#f59e0b',
+            },
+            labelStyle: { fill: '#f59e0b', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fffbeb', fillOpacity: 0.9 }
+        });
+    }
 
     return { nodes: newNodes, edges: newEdges };
   }, [showConnections]);

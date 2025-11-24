@@ -19,12 +19,14 @@ export const Dashboard: React.FC = () => {
         "name": "Ramipril",
         "startDate": "2020-01-01",
         "dose": "5mg OD",
+        "endDate": "2025-02-15",
         "indication": "Hypertension"
     },
     {
         "name": "Metformin",
         "startDate": "2019-01-01",
         "dose": "1000mg BD",
+        "endDate": "2025-02-15",
         "indication": "T2DM"
     }
   ];
@@ -75,7 +77,7 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex bg-gray-100 text-slate-800 font-sans min-h-full" style={{ width: width + 300 + 384 }}>
+    <div className="flex bg-gray-100 text-slate-800 font-sans min-h-full" style={{ width: width + 300 }}>
       {/* Left Sidebar */}
       {patientData && <Sidebar patientData={patientData} />}
 
