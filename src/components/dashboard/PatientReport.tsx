@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Edit2, Save, X, Download, Printer, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, Heart } from 'lucide-react';
+import { Download, Printer, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, Heart, Edit, Save, X } from 'lucide-react';
 
 // Dynamic imports for print libraries
 let jsPDF: any = null;
@@ -35,6 +35,35 @@ const ViewHeader = styled.div`
   border-bottom: 2px solid #e0e0e0;
 `;
 
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const ActionButton = styled.button<{ variant?: 'primary' | 'danger' }>`
+  padding: 6px 14px;
+  border: 1px solid ${props => props.variant === 'primary' ? '#667eea' : props.variant === 'danger' ? '#ef4444' : '#dadce0'};
+  background: ${props => props.variant === 'primary' ? '#667eea' : props.variant === 'danger' ? '#ef4444' : 'white'};
+  color: ${props => props.variant === 'primary' || props.variant === 'danger' ? 'white' : '#5f6368'};
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${props => props.variant === 'primary' ? '#5568d3' : props.variant === 'danger' ? '#dc2626' : '#f8f9fa'};
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
 const ViewTitle = styled.h2`
   margin: 0;
   font-size: 26px;
@@ -46,35 +75,6 @@ const ViewTitle = styled.h2`
 
   svg {
     color: #667eea;
-  }
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const ActionButton = styled.button<{ variant?: string }>`
-  padding: 6px 14px;
-  border: 1px solid ${props => props.variant === 'primary' ? '#1E88E5' : '#dadce0'};
-  background: ${props => props.variant === 'primary' ? '#1E88E5' : 'white'};
-  color: ${props => props.variant === 'primary' ? 'white' : '#5f6368'};
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${props => props.variant === 'primary' ? '#1976D2' : '#f8f9fa'};
-  }
-
-  svg {
-    width: 14px;
-    height: 14px;
   }
 `;
 
@@ -94,10 +94,9 @@ const ViewSection = styled.div`
 
 const TwoColumnLayout = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr;
   gap: 32px;
-  max-width: 2000px;
-  margin: 0 auto;
+  width: 100%;
 `;
 
 const LeftColumn = styled.div`
@@ -208,6 +207,43 @@ const LabValue = styled.div`
   line-height: 1.4;
 `;
 
+const EditableInput = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #2d3748;
+  font-family: inherit;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+`;
+
+const EditableTextarea = styled.textarea`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #2d3748;
+  font-family: inherit;
+  line-height: 1.8;
+  min-height: 80px;
+  resize: vertical;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+`;
+
 interface PatientReportProps {
   patientData?: {
     name?: string;
@@ -267,10 +303,13 @@ interface PatientReportProps {
     };
     current_status_last_48h?: string;
   };
+  onSave?: (updatedData: PatientReportProps['patientData']) => void;
 }
 
-const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
+const PatientReport: React.FC<PatientReportProps> = ({ patientData, onSave }) => {
   const documentRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState(patientData);
 
   const handleDownload = async () => {
     if (!jsPDF || !html2canvas) {
@@ -322,9 +361,41 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
     window.print();
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedData(patientData);
+  };
+
+  const handleSave = () => {
+    if (onSave && editedData) {
+      onSave(editedData);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedData(patientData);
+  };
+
+  const updateField = (path: string[], value: any) => {
+    setEditedData(prev => {
+      if (!prev) return prev;
+      const newData = JSON.parse(JSON.stringify(prev));
+      let current: any = newData;
+      for (let i = 0; i < path.length - 1; i++) {
+        current = current[path[i]];
+      }
+      current[path[path.length - 1]] = value;
+      return newData;
+    });
+  };
+
   if (!patientData) {
     return <div>No patient data available</div>;
   }
+
+  const displayData = isEditing ? editedData : patientData;
 
   return (
     <ViewContainer ref={documentRef} data-print-content>
@@ -334,14 +405,33 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
           Patient Summary Report
         </ViewTitle>
         <ActionButtons>
-          <ActionButton onClick={handleDownload}>
-            <Download />
-            Download
-          </ActionButton>
-          <ActionButton onClick={handlePrint}>
-            <Printer />
-            Print
-          </ActionButton>
+          {isEditing ? (
+            <>
+              <ActionButton variant="primary" onClick={handleSave}>
+                <Save />
+                Save
+              </ActionButton>
+              <ActionButton variant="danger" onClick={handleCancel}>
+                <X />
+                Cancel
+              </ActionButton>
+            </>
+          ) : (
+            <>
+              <ActionButton onClick={handleEdit}>
+                <Edit />
+                Edit
+              </ActionButton>
+              <ActionButton onClick={handleDownload}>
+                <Download />
+                Download
+              </ActionButton>
+              <ActionButton onClick={handlePrint}>
+                <Printer />
+                Print
+              </ActionButton>
+            </>
+          )}
         </ActionButtons>
       </ViewHeader>
 
@@ -354,171 +444,304 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
               <User />
               Patient Demographics
             </ViewSectionTitle>
-            <ViewText>
-              <strong>Name:</strong> {patientData.name}<br/>
-              <strong>MRN:</strong> {patientData.mrn}<br/>
-              <strong>Age/Sex:</strong> {patientData.age_sex}<br/>
-              <strong>Date of Summary:</strong> {patientData.date_of_summary}
-            </ViewText>
+            {isEditing ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <strong>Name:</strong>
+                  <EditableInput
+                    value={displayData?.name || ''}
+                    onChange={(e) => updateField(['name'], e.target.value)}
+                  />
+                </div>
+                <div>
+                  <strong>MRN:</strong>
+                  <EditableInput
+                    value={displayData?.mrn || ''}
+                    onChange={(e) => updateField(['mrn'], e.target.value)}
+                  />
+                </div>
+                <div>
+                  <strong>Age/Sex:</strong>
+                  <EditableInput
+                    value={displayData?.age_sex || ''}
+                    onChange={(e) => updateField(['age_sex'], e.target.value)}
+                  />
+                </div>
+                <div>
+                  <strong>Date of Summary:</strong>
+                  <EditableInput
+                    value={displayData?.date_of_summary || ''}
+                    onChange={(e) => updateField(['date_of_summary'], e.target.value)}
+                  />
+                </div>
+              </div>
+            ) : (
+              <ViewText>
+                <strong>Name:</strong> {displayData?.name}<br/>
+                <strong>MRN:</strong> {displayData?.mrn}<br/>
+                <strong>Age/Sex:</strong> {displayData?.age_sex}<br/>
+                <strong>Date of Summary:</strong> {displayData?.date_of_summary}
+              </ViewText>
+            )}
           </ViewSection>
 
           {/* One Sentence Impression */}
-          {patientData.one_sentence_impression && (
+          {displayData?.one_sentence_impression && (
             <ViewSection>
               <ViewSectionTitle>
                 <Stethoscope />
                 Clinical Impression
               </ViewSectionTitle>
               <HighlightBox>
-                <ViewText>{patientData.one_sentence_impression}</ViewText>
+                {isEditing ? (
+                  <EditableTextarea
+                    value={displayData.one_sentence_impression}
+                    onChange={(e) => updateField(['one_sentence_impression'], e.target.value)}
+                  />
+                ) : (
+                  <ViewText>{displayData.one_sentence_impression}</ViewText>
+                )}
               </HighlightBox>
             </ViewSection>
           )}
 
           {/* Clinical Context Baseline */}
-          {patientData.clinical_context_baseline && (
+          {displayData?.clinical_context_baseline && (
             <ViewSection>
               <ViewSectionTitle>
                 <Heart />
                 Clinical Context - Baseline
               </ViewSectionTitle>
               
-              {patientData.clinical_context_baseline.comorbidities && patientData.clinical_context_baseline.comorbidities.length > 0 && (
+              {displayData.clinical_context_baseline?.comorbidities && displayData.clinical_context_baseline.comorbidities.length > 0 && (
                 <>
                   <ViewText><strong>Comorbidities:</strong></ViewText>
-                  <ViewList>
-                    {patientData.clinical_context_baseline.comorbidities.map((item, index) => (
-                      <ViewListItem key={index}>{item}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.clinical_context_baseline.comorbidities.join('\n')}
+                      onChange={(e) => updateField(['clinical_context_baseline', 'comorbidities'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One comorbidity per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.clinical_context_baseline.comorbidities.map((item: string, index: number) => (
+                        <ViewListItem key={index}>{item}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
               
-              {patientData.clinical_context_baseline.key_baseline_labs && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Key Baseline Labs:</strong><br/>
-                  {patientData.clinical_context_baseline.key_baseline_labs}
-                </ViewText>
+              {displayData.clinical_context_baseline?.key_baseline_labs && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Key Baseline Labs:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.clinical_context_baseline.key_baseline_labs}
+                      onChange={(e) => updateField(['clinical_context_baseline', 'key_baseline_labs'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.clinical_context_baseline.key_baseline_labs}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.clinical_context_baseline.social_history && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Social History:</strong><br/>
-                  {patientData.clinical_context_baseline.social_history}
-                </ViewText>
+              {displayData.clinical_context_baseline?.social_history && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Social History:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.clinical_context_baseline.social_history}
+                      onChange={(e) => updateField(['clinical_context_baseline', 'social_history'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.clinical_context_baseline.social_history}</ViewText>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
 
           {/* Suspect Drug Timeline */}
-          {patientData.suspect_drug_timeline && (
+          {displayData?.suspect_drug_timeline && (
             <ViewSection>
               <ViewSectionTitle>
                 <Pill />
                 Suspect Drug Timeline
               </ViewSectionTitle>
               
-              {patientData.suspect_drug_timeline.chief_complaint && (
-                <ViewText>
-                  <strong>Chief Complaint:</strong><br/>
-                  {patientData.suspect_drug_timeline.chief_complaint}
-                </ViewText>
-              )}
-              
-              {patientData.suspect_drug_timeline.hopi_significant_points && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>History of Present Illness:</strong><br/>
-                  {patientData.suspect_drug_timeline.hopi_significant_points}
-                </ViewText>
-              )}
-              
-              {patientData.suspect_drug_timeline.chronic_medications && patientData.suspect_drug_timeline.chronic_medications.length > 0 && (
+              {displayData.suspect_drug_timeline?.chief_complaint && (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Chronic Medications:</strong></ViewText>
-                  <ViewList>
-                    {patientData.suspect_drug_timeline.chronic_medications.map((med, index) => (
-                      <ViewListItem key={index}>{med}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  <ViewText><strong>Chief Complaint:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.suspect_drug_timeline.chief_complaint}
+                      onChange={(e) => updateField(['suspect_drug_timeline', 'chief_complaint'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.suspect_drug_timeline.chief_complaint}</ViewText>
+                  )}
                 </>
               )}
               
-              {patientData.suspect_drug_timeline.acute_medication_onset && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Acute Medication Onset:</strong><br/>
-                  {patientData.suspect_drug_timeline.acute_medication_onset}
-                </ViewText>
+              {displayData.suspect_drug_timeline?.hopi_significant_points && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>History of Present Illness:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.suspect_drug_timeline.hopi_significant_points}
+                      onChange={(e) => updateField(['suspect_drug_timeline', 'hopi_significant_points'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.suspect_drug_timeline.hopi_significant_points}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.suspect_drug_timeline.possibilities_for_dili && patientData.suspect_drug_timeline.possibilities_for_dili.length > 0 && (
+              {displayData.suspect_drug_timeline?.chronic_medications && displayData.suspect_drug_timeline.chronic_medications.length > 0 && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Chronic Medications:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.suspect_drug_timeline.chronic_medications.join('\n')}
+                      onChange={(e) => updateField(['suspect_drug_timeline', 'chronic_medications'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One medication per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.suspect_drug_timeline.chronic_medications.map((med: string, index: number) => (
+                        <ViewListItem key={index}>{med}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
+                </>
+              )}
+              
+              {displayData.suspect_drug_timeline?.acute_medication_onset && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Acute Medication Onset:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.suspect_drug_timeline.acute_medication_onset}
+                      onChange={(e) => updateField(['suspect_drug_timeline', 'acute_medication_onset'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.suspect_drug_timeline.acute_medication_onset}</ViewText>
+                  )}
+                </>
+              )}
+              
+              {displayData.suspect_drug_timeline?.possibilities_for_dili && displayData.suspect_drug_timeline.possibilities_for_dili.length > 0 && (
                 <>
                   <ViewText style={{ marginTop: '12px' }}><strong>Possibilities for DILI:</strong></ViewText>
-                  <ViewList>
-                    {patientData.suspect_drug_timeline.possibilities_for_dili.map((item, index) => (
-                      <ViewListItem key={index}>{item}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.suspect_drug_timeline.possibilities_for_dili.join('\n')}
+                      onChange={(e) => updateField(['suspect_drug_timeline', 'possibilities_for_dili'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One possibility per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.suspect_drug_timeline.possibilities_for_dili.map((item: string, index: number) => (
+                        <ViewListItem key={index}>{item}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
             </ViewSection>
           )}
 
           {/* Rule Out Complete */}
-          {patientData.rule_out_complete && (
+          {displayData?.rule_out_complete && (
             <ViewSection>
               <ViewSectionTitle>
                 <AlertCircle />
                 Rule Out Assessment
               </ViewSectionTitle>
               
-              {patientData.rule_out_complete.viral_hepatitis && (
-                <ViewText>
-                  <strong>Viral Hepatitis:</strong><br/>
-                  {patientData.rule_out_complete.viral_hepatitis}
-                </ViewText>
+              {displayData.rule_out_complete?.viral_hepatitis && (
+                <>
+                  <ViewText><strong>Viral Hepatitis:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.rule_out_complete.viral_hepatitis}
+                      onChange={(e) => updateField(['rule_out_complete', 'viral_hepatitis'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.rule_out_complete.viral_hepatitis}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.rule_out_complete.autoimmune && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Autoimmune:</strong><br/>
-                  {patientData.rule_out_complete.autoimmune}
-                </ViewText>
+              {displayData.rule_out_complete?.autoimmune && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Autoimmune:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.rule_out_complete.autoimmune}
+                      onChange={(e) => updateField(['rule_out_complete', 'autoimmune'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.rule_out_complete.autoimmune}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.rule_out_complete.other_competing_dx_ruled_out && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Other Competing Diagnoses:</strong><br/>
-                  {patientData.rule_out_complete.other_competing_dx_ruled_out}
-                </ViewText>
+              {displayData.rule_out_complete?.other_competing_dx_ruled_out && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Other Competing Diagnoses:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.rule_out_complete.other_competing_dx_ruled_out}
+                      onChange={(e) => updateField(['rule_out_complete', 'other_competing_dx_ruled_out'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.rule_out_complete.other_competing_dx_ruled_out}</ViewText>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
 
           {/* Severity & Prognosis */}
-          {patientData.severity_prognosis && (
+          {displayData?.severity_prognosis && (
             <ViewSection>
               <ViewSectionTitle>
                 <TrendingUp />
                 Severity & Prognosis
               </ViewSectionTitle>
               
-              {patientData.severity_prognosis.severity_features && patientData.severity_prognosis.severity_features.length > 0 && (
+              {displayData.severity_prognosis?.severity_features && displayData.severity_prognosis.severity_features.length > 0 && (
                 <>
                   <ViewText><strong>Severity Features:</strong></ViewText>
-                  <ViewList>
-                    {patientData.severity_prognosis.severity_features.map((feature, index) => (
-                      <ViewListItem key={index}>{feature}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.severity_prognosis.severity_features.join('\n')}
+                      onChange={(e) => updateField(['severity_prognosis', 'severity_features'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One feature per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.severity_prognosis.severity_features.map((feature: string, index: number) => (
+                        <ViewListItem key={index}>{feature}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
               
-              {patientData.severity_prognosis.prognosis_statement && (
+              {displayData.severity_prognosis?.prognosis_statement && (
                 <HighlightBox style={{ marginTop: '12px' }}>
-                  <ViewText>
-                    <strong>Prognosis:</strong><br/>
-                    {patientData.severity_prognosis.prognosis_statement}
-                  </ViewText>
+                  <ViewText><strong>Prognosis:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.severity_prognosis.prognosis_statement}
+                      onChange={(e) => updateField(['severity_prognosis', 'prognosis_statement'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.severity_prognosis.prognosis_statement}</ViewText>
+                  )}
                 </HighlightBox>
               )}
             </ViewSection>
@@ -528,208 +751,363 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
         {/* RIGHT COLUMN */}
         <RightColumn>
           {/* Injury Pattern & Trends */}
-          {patientData.injury_pattern_trends && (
+          {displayData?.injury_pattern_trends && (
             <ViewSection>
               <ViewSectionTitle>
                 <Beaker />
                 Injury Pattern & Trends
               </ViewSectionTitle>
               
-              {patientData.injury_pattern_trends.pattern && (
-                <ViewText>
-                  <strong>Pattern:</strong><br/>
-                  {patientData.injury_pattern_trends.pattern}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.hys_law && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Hy's Law:</strong><br/>
-                  {patientData.injury_pattern_trends.hys_law}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.meld_na && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>MELD-Na:</strong><br/>
-                  {patientData.injury_pattern_trends.meld_na}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.lft_data_peak_onset && (
+              {displayData.injury_pattern_trends?.pattern && (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Peak Laboratory Values:</strong></ViewText>
-                  <LabGrid>
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.ALT && (
-                      <LabCard>
-                        <LabLabel>ALT</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.ALT}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.AST && (
-                      <LabCard>
-                        <LabLabel>AST</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.AST}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos && (
-                      <LabCard>
-                        <LabLabel>Alk Phos</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.T_Bili && (
-                      <LabCard>
-                        <LabLabel>Total Bilirubin</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.T_Bili}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.INR && (
-                      <LabCard>
-                        <LabLabel>INR</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.INR}</LabValue>
-                      </LabCard>
-                    )}
-                  </LabGrid>
+                  <ViewText><strong>Pattern:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.injury_pattern_trends.pattern}
+                      onChange={(e) => updateField(['injury_pattern_trends', 'pattern'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.injury_pattern_trends.pattern}</ViewText>
+                  )}
                 </>
               )}
               
-              {patientData.injury_pattern_trends.lft_sparklines_trends && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>LFT Trends:</strong><br/>
-                  {patientData.injury_pattern_trends.lft_sparklines_trends}
-                </ViewText>
+              {displayData.injury_pattern_trends?.hys_law && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Hy's Law:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.injury_pattern_trends.hys_law}
+                      onChange={(e) => updateField(['injury_pattern_trends', 'hys_law'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.injury_pattern_trends.hys_law}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.injury_pattern_trends.complications && patientData.injury_pattern_trends.complications.length > 0 && (
+              {displayData.injury_pattern_trends?.meld_na && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>MELD-Na:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableInput
+                      value={displayData.injury_pattern_trends.meld_na}
+                      onChange={(e) => updateField(['injury_pattern_trends', 'meld_na'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.injury_pattern_trends.meld_na}</ViewText>
+                  )}
+                </>
+              )}
+              
+              {displayData.injury_pattern_trends?.lft_data_peak_onset && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Peak Laboratory Values:</strong></ViewText>
+                  {isEditing ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+                      <div>
+                        <strong>ALT:</strong>
+                        <EditableInput
+                          value={displayData.injury_pattern_trends.lft_data_peak_onset.ALT || ''}
+                          onChange={(e) => updateField(['injury_pattern_trends', 'lft_data_peak_onset', 'ALT'], e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <strong>AST:</strong>
+                        <EditableInput
+                          value={displayData.injury_pattern_trends.lft_data_peak_onset.AST || ''}
+                          onChange={(e) => updateField(['injury_pattern_trends', 'lft_data_peak_onset', 'AST'], e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <strong>Alk Phos:</strong>
+                        <EditableInput
+                          value={displayData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos || ''}
+                          onChange={(e) => updateField(['injury_pattern_trends', 'lft_data_peak_onset', 'Alk_Phos'], e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <strong>Total Bilirubin:</strong>
+                        <EditableInput
+                          value={displayData.injury_pattern_trends.lft_data_peak_onset.T_Bili || ''}
+                          onChange={(e) => updateField(['injury_pattern_trends', 'lft_data_peak_onset', 'T_Bili'], e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <strong>INR:</strong>
+                        <EditableInput
+                          value={displayData.injury_pattern_trends.lft_data_peak_onset.INR || ''}
+                          onChange={(e) => updateField(['injury_pattern_trends', 'lft_data_peak_onset', 'INR'], e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <LabGrid>
+                      {displayData.injury_pattern_trends.lft_data_peak_onset.ALT && (
+                        <LabCard>
+                          <LabLabel>ALT</LabLabel>
+                          <LabValue>{displayData.injury_pattern_trends.lft_data_peak_onset.ALT}</LabValue>
+                        </LabCard>
+                      )}
+                      {displayData.injury_pattern_trends.lft_data_peak_onset.AST && (
+                        <LabCard>
+                          <LabLabel>AST</LabLabel>
+                          <LabValue>{displayData.injury_pattern_trends.lft_data_peak_onset.AST}</LabValue>
+                        </LabCard>
+                      )}
+                      {displayData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos && (
+                        <LabCard>
+                          <LabLabel>Alk Phos</LabLabel>
+                          <LabValue>{displayData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos}</LabValue>
+                        </LabCard>
+                      )}
+                      {displayData.injury_pattern_trends.lft_data_peak_onset.T_Bili && (
+                        <LabCard>
+                          <LabLabel>Total Bilirubin</LabLabel>
+                          <LabValue>{displayData.injury_pattern_trends.lft_data_peak_onset.T_Bili}</LabValue>
+                        </LabCard>
+                      )}
+                      {displayData.injury_pattern_trends.lft_data_peak_onset.INR && (
+                        <LabCard>
+                          <LabLabel>INR</LabLabel>
+                          <LabValue>{displayData.injury_pattern_trends.lft_data_peak_onset.INR}</LabValue>
+                        </LabCard>
+                      )}
+                    </LabGrid>
+                  )}
+                </>
+              )}
+              
+              {displayData.injury_pattern_trends?.lft_sparklines_trends && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>LFT Trends:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.injury_pattern_trends.lft_sparklines_trends}
+                      onChange={(e) => updateField(['injury_pattern_trends', 'lft_sparklines_trends'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.injury_pattern_trends.lft_sparklines_trends}</ViewText>
+                  )}
+                </>
+              )}
+              
+              {displayData.injury_pattern_trends?.complications && displayData.injury_pattern_trends.complications.length > 0 && (
                 <>
                   <ViewText style={{ marginTop: '12px' }}><strong>Complications:</strong></ViewText>
-                  <ViewList>
-                    {patientData.injury_pattern_trends.complications.map((comp, index) => (
-                      <ViewListItem key={index}>{comp}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.injury_pattern_trends.complications.join('\n')}
+                      onChange={(e) => updateField(['injury_pattern_trends', 'complications'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One complication per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.injury_pattern_trends.complications.map((comp: string, index: number) => (
+                        <ViewListItem key={index}>{comp}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
             </ViewSection>
           )}
 
           {/* Key Diagnostics */}
-          {patientData.key_diagnostics && (
+          {displayData?.key_diagnostics && (
             <ViewSection>
               <ViewSectionTitle>
                 <Activity />
                 Key Diagnostics
               </ViewSectionTitle>
               
-              {patientData.key_diagnostics.imaging_performed && (
-                <ViewText>
-                  <strong>Imaging:</strong><br/>
-                  {patientData.key_diagnostics.imaging_performed}
-                </ViewText>
+              {displayData.key_diagnostics?.imaging_performed && (
+                <>
+                  <ViewText><strong>Imaging:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.key_diagnostics.imaging_performed}
+                      onChange={(e) => updateField(['key_diagnostics', 'imaging_performed'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.key_diagnostics.imaging_performed}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.key_diagnostics.biopsy && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Biopsy:</strong><br/>
-                  {patientData.key_diagnostics.biopsy}
-                </ViewText>
+              {displayData.key_diagnostics?.biopsy && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Biopsy:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.key_diagnostics.biopsy}
+                      onChange={(e) => updateField(['key_diagnostics', 'biopsy'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.key_diagnostics.biopsy}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.key_diagnostics.methotrexate_level && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Methotrexate Level:</strong><br/>
-                  {patientData.key_diagnostics.methotrexate_level}
-                </ViewText>
+              {displayData.key_diagnostics?.methotrexate_level && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Methotrexate Level:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableInput
+                      value={displayData.key_diagnostics.methotrexate_level}
+                      onChange={(e) => updateField(['key_diagnostics', 'methotrexate_level'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.key_diagnostics.methotrexate_level}</ViewText>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
 
           {/* Management & Monitoring */}
-          {patientData.management_monitoring && (
+          {displayData?.management_monitoring && (
             <ViewSection>
               <ViewSectionTitle>
                 <ClipboardList />
                 Management & Monitoring
               </ViewSectionTitle>
               
-              {patientData.management_monitoring.causality_rucam && (
+              {displayData.management_monitoring?.causality_rucam && (
                 <HighlightBox>
-                  <ViewText>
-                    <strong>Causality Assessment:</strong><br/>
-                    {patientData.management_monitoring.causality_rucam}
-                  </ViewText>
+                  <ViewText><strong>Causality Assessment:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.causality_rucam}
+                      onChange={(e) => updateField(['management_monitoring', 'causality_rucam'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.management_monitoring.causality_rucam}</ViewText>
+                  )}
                 </HighlightBox>
               )}
               
-              {patientData.management_monitoring.stopped_culprit_drugs && patientData.management_monitoring.stopped_culprit_drugs.length > 0 && (
+              {displayData.management_monitoring?.stopped_culprit_drugs && displayData.management_monitoring.stopped_culprit_drugs.length > 0 && (
                 <>
                   <ViewText style={{ marginTop: '12px' }}><strong>Stopped Culprit Drugs:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.stopped_culprit_drugs.map((drug, index) => (
-                      <ViewListItem key={index}>{drug}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.stopped_culprit_drugs.join('\n')}
+                      onChange={(e) => updateField(['management_monitoring', 'stopped_culprit_drugs'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One drug per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.management_monitoring.stopped_culprit_drugs.map((drug: string, index: number) => (
+                        <ViewListItem key={index}>{drug}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
               
-              {patientData.management_monitoring.active_treatments && patientData.management_monitoring.active_treatments.length > 0 && (
+              {displayData.management_monitoring?.active_treatments && displayData.management_monitoring.active_treatments.length > 0 && (
                 <>
                   <ViewText style={{ marginTop: '12px' }}><strong>Active Treatments:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.active_treatments.map((treatment, index) => (
-                      <ViewListItem key={index}>{treatment}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.active_treatments.join('\n')}
+                      onChange={(e) => updateField(['management_monitoring', 'active_treatments'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One treatment per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.management_monitoring.active_treatments.map((treatment: string, index: number) => (
+                        <ViewListItem key={index}>{treatment}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
               
-              {patientData.management_monitoring.consults_initiated && patientData.management_monitoring.consults_initiated.length > 0 && (
+              {displayData.management_monitoring?.consults_initiated && displayData.management_monitoring.consults_initiated.length > 0 && (
                 <>
                   <ViewText style={{ marginTop: '12px' }}><strong>Consults Initiated:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.consults_initiated.map((consult, index) => (
-                      <ViewListItem key={index}>{consult}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.consults_initiated.join('\n')}
+                      onChange={(e) => updateField(['management_monitoring', 'consults_initiated'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One consult per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.management_monitoring.consults_initiated.map((consult: string, index: number) => (
+                        <ViewListItem key={index}>{consult}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
               
-              {patientData.management_monitoring.nutrition && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Nutrition:</strong><br/>
-                  {patientData.management_monitoring.nutrition}
-                </ViewText>
+              {displayData.management_monitoring?.nutrition && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>Nutrition:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.nutrition}
+                      onChange={(e) => updateField(['management_monitoring', 'nutrition'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.management_monitoring.nutrition}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.management_monitoring.vte_ppx && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>VTE Prophylaxis:</strong><br/>
-                  {patientData.management_monitoring.vte_ppx}
-                </ViewText>
+              {displayData.management_monitoring?.vte_ppx && (
+                <>
+                  <ViewText style={{ marginTop: '12px' }}><strong>VTE Prophylaxis:</strong></ViewText>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.vte_ppx}
+                      onChange={(e) => updateField(['management_monitoring', 'vte_ppx'], e.target.value)}
+                    />
+                  ) : (
+                    <ViewText>{displayData.management_monitoring.vte_ppx}</ViewText>
+                  )}
+                </>
               )}
               
-              {patientData.management_monitoring.monitoring_plan && patientData.management_monitoring.monitoring_plan.length > 0 && (
+              {displayData.management_monitoring?.monitoring_plan && displayData.management_monitoring.monitoring_plan.length > 0 && (
                 <>
                   <ViewText style={{ marginTop: '12px' }}><strong>Monitoring Plan:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.monitoring_plan.map((plan, index) => (
-                      <ViewListItem key={index}>{plan}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {isEditing ? (
+                    <EditableTextarea
+                      value={displayData.management_monitoring.monitoring_plan.join('\n')}
+                      onChange={(e) => updateField(['management_monitoring', 'monitoring_plan'], e.target.value.split('\n').filter(Boolean))}
+                      placeholder="One plan item per line"
+                    />
+                  ) : (
+                    <ViewList>
+                      {displayData.management_monitoring.monitoring_plan.map((plan: string, index: number) => (
+                        <ViewListItem key={index}>{plan}</ViewListItem>
+                      ))}
+                    </ViewList>
+                  )}
                 </>
               )}
             </ViewSection>
           )}
 
           {/* Current Status */}
-          {patientData.current_status_last_48h && (
+          {displayData?.current_status_last_48h && (
             <ViewSection>
               <ViewSectionTitle>
                 <Activity />
                 Current Status (Last 48h)
               </ViewSectionTitle>
-              <ViewText>{patientData.current_status_last_48h}</ViewText>
+              {isEditing ? (
+                <EditableTextarea
+                  value={displayData.current_status_last_48h}
+                  onChange={(e) => updateField(['current_status_last_48h'], e.target.value)}
+                />
+              ) : (
+                <ViewText>{displayData.current_status_last_48h}</ViewText>
+              )}
             </ViewSection>
           )}
         </RightColumn>

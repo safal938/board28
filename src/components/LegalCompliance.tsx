@@ -1,18 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { CheckCircle, XCircle, AlertCircle, FileText, Shield, Brain, MessageSquare, BookOpen, Flag, Stethoscope, Users, FileCheck, AlertTriangle, ChevronDown, ChevronUp, Download, Printer } from 'lucide-react';
+import { CheckCircle, XCircle, AlertCircle, FileText, Shield, Brain, MessageSquare, BookOpen, Flag, Stethoscope, Users, FileCheck, AlertTriangle, ChevronDown, ChevronUp, Edit, Save, X } from 'lucide-react';
 import formQuestions from '../data/legal_form_question.json';
-
-// Dynamic imports for print libraries
-let jsPDF: any = null;
-let html2canvas: any = null;
-
-try {
-  jsPDF = require('jspdf').jsPDF;
-  html2canvas = require('html2canvas');
-} catch (e) {
-  console.log('Print libraries not installed. Run: npm install jspdf html2canvas');
-}
 
 const Container = styled.div`
   width: 100%;
@@ -51,11 +40,11 @@ const ActionButtons = styled.div`
   gap: 8px;
 `;
 
-const ActionButton = styled.button<{ variant?: string }>`
+const ActionButton = styled.button<{ variant?: 'primary' | 'danger' }>`
   padding: 6px 14px;
-  border: 1px solid ${props => props.variant === 'primary' ? '#1E88E5' : '#dadce0'};
-  background: ${props => props.variant === 'primary' ? '#1E88E5' : 'white'};
-  color: ${props => props.variant === 'primary' ? 'white' : '#5f6368'};
+  border: 1px solid ${props => props.variant === 'primary' ? '#667eea' : props.variant === 'danger' ? '#ef4444' : '#dadce0'};
+  background: ${props => props.variant === 'primary' ? '#667eea' : props.variant === 'danger' ? '#ef4444' : 'white'};
+  color: ${props => props.variant === 'primary' || props.variant === 'danger' ? 'white' : '#5f6368'};
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
@@ -66,7 +55,7 @@ const ActionButton = styled.button<{ variant?: string }>`
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.variant === 'primary' ? '#1976D2' : '#f8f9fa'};
+    background: ${props => props.variant === 'primary' ? '#5568d3' : props.variant === 'danger' ? '#dc2626' : '#f8f9fa'};
   }
 
   svg {
@@ -74,6 +63,8 @@ const ActionButton = styled.button<{ variant?: string }>`
     height: 14px;
   }
 `;
+
+
 
 const PatientInfoSection = styled.div`
   background: white;
@@ -244,6 +235,43 @@ const Notes = styled.div`
   white-space: pre-wrap;
 `;
 
+const EditableInput = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #2d3748;
+  font-family: inherit;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+`;
+
+const EditableTextarea = styled.textarea`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #2d3748;
+  font-family: inherit;
+  line-height: 1.8;
+  min-height: 80px;
+  resize: vertical;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+`;
+
 const FlagItem = styled.div`
   display: flex;
   align-items: flex-start;
@@ -331,11 +359,13 @@ const SignatureValue = styled.div`
   font-family: 'Brush Script MT', cursive;
 `;
 
+
 interface LegalComplianceProps {
   data: any;
+  onSave?: (updatedData: any) => void;
 }
 
-const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
+const LegalCompliance: React.FC<LegalComplianceProps> = ({ data, onSave }) => {
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
     identification_verification: true,
     compliant_consent: true,
@@ -352,6 +382,15 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
   });
 
   const documentRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState(data);
+
+  // Sync editedData when data prop changes (e.g., after save)
+  useEffect(() => {
+    if (!isEditing) {
+      setEditedData(data);
+    }
+  }, [data, isEditing]);
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections(prev => ({
@@ -360,53 +399,34 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
     }));
   };
 
-  const handleDownload = async () => {
-    if (!jsPDF || !html2canvas) {
-      alert('PDF libraries not installed. Please run: npm install jspdf html2canvas');
-      return;
-    }
-
-    const element = documentRef.current;
-    if (!element) return;
-
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-      });
-
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      let position = 0;
-
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
-      const timestamp = new Date().toISOString().split('T')[0];
-      const patientName = data.identification_verification?.patient_name?.replace(/\s+/g, '_') || 'Patient';
-      pdf.save(`Legal_Compliance_${patientName}_${timestamp}.pdf`);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
-    }
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedData(data);
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleSave = () => {
+    if (onSave && editedData) {
+      onSave(editedData);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedData(data);
+  };
+
+  const updateField = (path: string[], value: any) => {
+    setEditedData((prev: any) => {
+      if (!prev) return prev;
+      const newData = JSON.parse(JSON.stringify(prev));
+      let current: any = newData;
+      for (let i = 0; i < path.length - 1; i++) {
+        current = current[path[i]];
+      }
+      current[path[path.length - 1]] = value;
+      return newData;
+    });
   };
 
   const getSectionIcon = (sectionKey: string) => {
@@ -455,6 +475,8 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
     return (formQuestions as any)[formId] || formId;
   };
 
+  const displayData = isEditing ? editedData : data;
+
   const renderSection = (sectionKey: string, sectionData: any) => {
     if (sectionKey === 'red_flags_diagnosis') {
       return (
@@ -471,8 +493,33 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
               <FlagItem key={index}>
                 <CheckCircle size={20} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                 <FlagContent>
-                  <FlagTitle>{flag.flag}</FlagTitle>
-                  <FlagNotes>{flag.notes}</FlagNotes>
+                  {isEditing ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <EditableInput
+                        value={flag.flag || ''}
+                        onChange={(e) => {
+                          const updated = [...(sectionData.flag_list || [])];
+                          updated[index] = { ...updated[index], flag: e.target.value };
+                          updateField([sectionKey, 'flag_list'], updated);
+                        }}
+                        placeholder="Flag title"
+                      />
+                      <EditableTextarea
+                        value={flag.notes || ''}
+                        onChange={(e) => {
+                          const updated = [...(sectionData.flag_list || [])];
+                          updated[index] = { ...updated[index], notes: e.target.value };
+                          updateField([sectionKey, 'flag_list'], updated);
+                        }}
+                        placeholder="Flag notes"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <FlagTitle>{flag.flag}</FlagTitle>
+                      <FlagNotes>{flag.notes}</FlagNotes>
+                    </>
+                  )}
                 </FlagContent>
               </FlagItem>
             ))}
@@ -480,7 +527,15 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
             {sectionData.diagnosis && (
               <DiagnosisBox>
                 <DiagnosisLabel>Final Diagnosis</DiagnosisLabel>
-                <DiagnosisText>{sectionData.diagnosis}</DiagnosisText>
+                {isEditing ? (
+                  <EditableTextarea
+                    value={sectionData.diagnosis || ''}
+                    onChange={(e) => updateField([sectionKey, 'diagnosis'], e.target.value)}
+                    placeholder="Final diagnosis"
+                  />
+                ) : (
+                  <DiagnosisText>{sectionData.diagnosis}</DiagnosisText>
+                )}
               </DiagnosisBox>
             )}
           </SectionContent>
@@ -548,7 +603,19 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
                   </StatusBadge>
                 )}
               </FormHeader>
-              {form.notes && <Notes>{form.notes}</Notes>}
+              {isEditing ? (
+                <EditableTextarea
+                  value={form.notes || ''}
+                  onChange={(e) => {
+                    const updated = [...forms];
+                    updated[index] = { ...updated[index], notes: e.target.value };
+                    updateField([sectionKey, 'forms'], updated);
+                  }}
+                  placeholder="Notes"
+                />
+              ) : (
+                form.notes && <Notes>{form.notes}</Notes>
+              )}
             </FormItem>
           ))}
         </SectionContent>
@@ -583,35 +650,74 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
           Legal Compliance Report
         </Title>
         <ActionButtons>
-          <ActionButton onClick={handleDownload}>
-            <Download />
-            Download
-          </ActionButton>
-          <ActionButton onClick={handlePrint}>
-            <Printer />
-            Print
-          </ActionButton>
+          {isEditing ? (
+            <>
+              <ActionButton variant="primary" onClick={handleSave}>
+                <Save />
+                Save
+              </ActionButton>
+              <ActionButton variant="danger" onClick={handleCancel}>
+                <X />
+                Cancel
+              </ActionButton>
+            </>
+          ) : (
+            <>
+              <ActionButton onClick={handleEdit}>
+                <Edit />
+                Edit
+              </ActionButton>
+            </>
+          )}
         </ActionButtons>
       </Header>
 
-      {data.identification_verification && (
+      {displayData.identification_verification && (
         <PatientInfoSection>
           <PatientInfoGrid>
             <InfoItem>
               <strong>Patient ID</strong>
-              {data.identification_verification.patient_id}
+              {isEditing ? (
+                <EditableInput
+                  value={displayData.identification_verification?.patient_id || ''}
+                  onChange={(e) => updateField(['identification_verification', 'patient_id'], e.target.value)}
+                />
+              ) : (
+                displayData.identification_verification?.patient_id
+              )}
             </InfoItem>
             <InfoItem>
               <strong>Patient Name</strong>
-              {data.identification_verification.patient_name}
+              {isEditing ? (
+                <EditableInput
+                  value={displayData.identification_verification?.patient_name || ''}
+                  onChange={(e) => updateField(['identification_verification', 'patient_name'], e.target.value)}
+                />
+              ) : (
+                displayData.identification_verification?.patient_name
+              )}
             </InfoItem>
             <InfoItem>
               <strong>Date of Birth</strong>
-              {data.identification_verification.dob}
+              {isEditing ? (
+                <EditableInput
+                  value={displayData.identification_verification?.dob || ''}
+                  onChange={(e) => updateField(['identification_verification', 'dob'], e.target.value)}
+                />
+              ) : (
+                displayData.identification_verification?.dob
+              )}
             </InfoItem>
             <InfoItem>
               <strong>MRN</strong>
-              {data.identification_verification.mrn}
+              {isEditing ? (
+                <EditableInput
+                  value={displayData.identification_verification?.mrn || ''}
+                  onChange={(e) => updateField(['identification_verification', 'mrn'], e.target.value)}
+                />
+              ) : (
+                displayData.identification_verification?.mrn
+              )}
             </InfoItem>
           </PatientInfoGrid>
         </PatientInfoSection>
@@ -620,8 +726,8 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
       <TwoColumnLayout>
         <LeftColumn>
           {leftColumnSections.map(sectionKey => {
-            if (data[sectionKey]) {
-              return renderSection(sectionKey, data[sectionKey]);
+            if (displayData[sectionKey]) {
+              return renderSection(sectionKey, displayData[sectionKey]);
             }
             return null;
           })}
@@ -629,23 +735,37 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
 
         <RightColumn>
           {rightColumnSections.map(sectionKey => {
-            if (data[sectionKey]) {
-              return renderSection(sectionKey, data[sectionKey]);
+            if (displayData[sectionKey]) {
+              return renderSection(sectionKey, displayData[sectionKey]);
             }
             return null;
           })}
         </RightColumn>
       </TwoColumnLayout>
 
-      {data.signature && (
+      {displayData.signature && (
         <SignatureSection>
           <SignatureBox>
             <SignatureLabel>Patient Signature</SignatureLabel>
-            <SignatureValue>{data.signature.patient_signature}</SignatureValue>
+            {isEditing ? (
+              <EditableInput
+                value={displayData.signature?.patient_signature || ''}
+                onChange={(e) => updateField(['signature', 'patient_signature'], e.target.value)}
+              />
+            ) : (
+              <SignatureValue>{displayData.signature?.patient_signature}</SignatureValue>
+            )}
           </SignatureBox>
           <SignatureBox>
             <SignatureLabel>Practitioner Signature</SignatureLabel>
-            <SignatureValue>{data.signature.practitioner_signature}</SignatureValue>
+            {isEditing ? (
+              <EditableInput
+                value={displayData.signature?.practitioner_signature || ''}
+                onChange={(e) => updateField(['signature', 'practitioner_signature'], e.target.value)}
+              />
+            ) : (
+              <SignatureValue>{displayData.signature?.practitioner_signature}</SignatureValue>
+            )}
           </SignatureBox>
         </SignatureSection>
       )}

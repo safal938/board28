@@ -847,7 +847,9 @@ function Canvas2() {
       updates.height !== undefined ||
       updates.noteData !== undefined ||
       updates.content !== undefined ||
-      updates.patientData !== undefined
+      updates.patientData !== undefined ||
+      updates.legalData !== undefined ||
+      updates.diagnosticData !== undefined
     ) {
       fetch(`${API_BASE_URL}/api/board-items/${id}`, {
         method: 'PUT',

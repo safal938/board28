@@ -1000,6 +1000,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
           }}>
             <PatientReport
               patientData={item.patientData || {}}
+              onSave={(newData) => onUpdate(item.id, { patientData: newData })}
             />
           </div>
         );
@@ -1015,6 +1016,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
           }}>
             <LegalCompliance
               data={item.legalData || {}}
+              onSave={(newData) => onUpdate(item.id, { legalData: newData })}
             />
           </div>
         );
@@ -1030,6 +1032,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
           }}>
             <DiagnosticReport
               diagnosticData={item.diagnosticData || {}}
+              onSave={(newData) => onUpdate(item.id, { diagnosticData: newData })}
             />
           </div>
         );

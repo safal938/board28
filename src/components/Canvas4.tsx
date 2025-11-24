@@ -18,6 +18,7 @@ import 'reactflow/dist/style.css';
 import { FileText, Database, Settings, Users } from 'lucide-react';
 import MedicationTimeline2 from './dashboard/MedicationTimeline2';
 import LabTimeline from './dashboard/LabTimeline';
+import { EncounterTrack, useTimelineScale, MasterGrid, TimelineAxis } from './chronomed-2/timeline';
 
 const ReactFlowWrapper = styled.div`
   width: 100%;
@@ -131,6 +132,7 @@ const NodeTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  
 `;
 
 const NodeContent = styled.div`
@@ -219,7 +221,6 @@ const WelcomeHint = styled.div`
 
 // Timeline Node Component
 const TimelineNodeContainer = styled.div`
-  width: 1600px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
@@ -229,10 +230,33 @@ const TimelineNodeContainer = styled.div`
 `;
 
 function TimelineNode({ data }: NodeProps) {
+  // Configuration matching Dashboard.tsx
+  const SLOT_WIDTH = 300;
+  const PADDING = 160;
+  const encounters = data.encounters || [];
+  
+  const width = Math.max(
+    1400,
+    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
+  );
+  
+  const scale = useTimelineScale(encounters, width, PADDING);
+
   return (
-    <TimelineNodeContainer>
+    <TimelineNodeContainer style={{ width: width }}>
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Bottom} />
+      
+      <MasterGrid encounters={encounters} scale={scale} height="100%" />
+      
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+          <TimelineAxis encounters={encounters} scale={scale} />
+      </div>
+
+      <div className="relative z-20 pt-2 flex flex-col gap-1">
+        <EncounterTrack encounters={data.encounters} scale={scale} />
+      </div>
+      
       <MedicationTimeline2 
         encounters={data.encounters} 
         MedicationTimeLine1={data.medicationTimeline}

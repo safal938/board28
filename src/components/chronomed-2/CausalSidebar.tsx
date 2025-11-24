@@ -1,11 +1,13 @@
 import React from 'react';
+import { Handle, Position } from 'reactflow';
 import { CausalNode } from './types';
 
 interface CausalSidebarProps {
   nodes: CausalNode[];
+  showHandles?: boolean;
 }
 
-export const CausalSidebar: React.FC<CausalSidebarProps> = ({ nodes }) => {
+export const CausalSidebar: React.FC<CausalSidebarProps> = ({ nodes, showHandles = false }) => {
   if (!nodes || nodes.length === 0) return null;
 
   // Determine status/color based on content keywords
@@ -50,7 +52,7 @@ export const CausalSidebar: React.FC<CausalSidebarProps> = ({ nodes }) => {
   };
 
   return (
-    <aside className="w-96 bg-white border-l border-gray-200 flex flex-col min-h-full overflow-y-auto shrink-0 z-40 shadow-[-2px_0_10px_rgba(0,0,0,0.05)]">
+    <aside className="h-full bg-white border-l border-gray-200 flex flex-col overflow-y-auto shrink-0 z-40 shadow-[-2px_0_10px_rgba(0,0,0,0.05)] nowheel">
       {/* Header Section */}
       <div className="p-6 border-b border-gray-200 bg-gradient-to-b from-white to-slate-50/50 sticky top-0 z-10">
         <div className="flex items-center gap-3">
@@ -79,9 +81,26 @@ export const CausalSidebar: React.FC<CausalSidebarProps> = ({ nodes }) => {
 
               return (
                 <div key={i} className="relative flex items-start gap-4 group">
-                  {/* Step Indicator */}
-                 
+                  {/* React Flow Handle */}
+                  {showHandles && (
+                      <Handle
+                          type="source"
+                          position={Position.Left}
+                          id={`causal-node-${i}`}
+                          style={{
+                              left: -24,
+                              top: 20, // Align with the circle
+                              width: 8,
+                              height: 8,
+                              background: '#64748b',
+                              border: 'none',
+                              zIndex: 50
+                          }}
+                      />
+                  )}
 
+                  {/* Step Indicator */}
+                  
                   {/* Card */}
                   <div className={`
                     flex-1 p-4 rounded-xl border bg-white shadow-sm transition-all duration-300
@@ -102,7 +121,7 @@ export const CausalSidebar: React.FC<CausalSidebarProps> = ({ nodes }) => {
                   </div>
                    <div className={`
                     w-10 h-10 rounded-full border-4 border-white shadow-md flex items-center justify-center text-xs font-bold text-white shrink-0
-                    ${style.accent} transition-transform duration-300 group-hover:scale-110 z-10
+                    ${style.accent} transition-transform duration-300 group-hover:scale-110 z-10 order-first
                   `}>
                     {i + 1}
                   </div>
