@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import  INITIAL_DATA  from '../../data/new_med_timeline.json';
-import { TimelineAxis, EncounterTrack, MedicationTrack, LabTrack, KeyEventsTrack, RiskTrack, useTimelineScale, MasterGrid } from './TimelineComponents';
+import { TimelineAxis, EncounterTrack, MedicationTrack, LabTrack, KeyEventsTrack, RiskTrack, useTimelineScale, MasterGrid } from './timeline';
 import { Sidebar } from './Sidebar';
 import { CausalSidebar } from './CausalSidebar';
 import { MedicalData, PatientData } from './types';

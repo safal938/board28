@@ -1,18 +1,8 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { CheckCircle, XCircle, AlertCircle, FileText, Shield, Brain, MessageSquare, BookOpen, Flag, Stethoscope, Users, FileCheck, AlertTriangle, ChevronDown, ChevronUp, Download, Printer } from 'lucide-react';
+import { Edit2, CheckCircle, XCircle, AlertCircle, FileText, Shield, Brain, MessageSquare, BookOpen, Flag, Stethoscope, Users, FileCheck, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
 import formQuestions from '../data/legal_form_question.json';
-
-// Dynamic imports for print libraries
-let jsPDF: any = null;
-let html2canvas: any = null;
-
-try {
-  jsPDF = require('jspdf').jsPDF;
-  html2canvas = require('html2canvas');
-} catch (e) {
-  console.log('Print libraries not installed. Run: npm install jspdf html2canvas');
-}
+import { Save, X } from 'lucide-react';
 
 const Container = styled.div`
   width: 100%;
@@ -331,11 +321,71 @@ const SignatureValue = styled.div`
   font-family: 'Brush Script MT', cursive;
 `;
 
+
 interface LegalComplianceProps {
   data: any;
+  onEdit?: () => void;
+  onSave?: (data: any) => void;
 }
 
-const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
+const Input = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  margin-bottom: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const Label = styled.label`
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  background-color: white;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const LegalCompliance: React.FC<LegalComplianceProps> = ({ data, onEdit, onSave }) => {
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
     identification_verification: true,
     compliant_consent: true,
@@ -352,61 +402,74 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
   });
 
   const documentRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<any>(data || {});
+
+  // Update formData when data changes from props
+  React.useEffect(() => {
+    if (data) {
+      setFormData(data);
+    }
+  }, [data]);
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    if (onEdit) onEdit();
+  };
+
+  const handleSaveClick = () => {
+    if (onSave) {
+      onSave(formData);
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    setFormData(data || {});
+    setIsEditing(false);
+  };
+
+  const handleChange = (path: string, value: any) => {
+    setFormData((prev: any) => {
+      const newData = { ...prev };
+      const parts = path.split('.');
+      let current = newData;
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (!current[parts[i]]) current[parts[i]] = {};
+        current = current[parts[i]];
+      }
+      current[parts[parts.length - 1]] = value;
+      return newData;
+    });
+  };
+
+  const handleFormChange = (sectionKey: string, index: number, field: string, value: any) => {
+     setFormData((prev: any) => {
+      const newData = { ...prev };
+      if (!newData[sectionKey]) newData[sectionKey] = {};
+      if (!newData[sectionKey].forms) newData[sectionKey].forms = [];
+      if (!newData[sectionKey].forms[index]) newData[sectionKey].forms[index] = {};
+      newData[sectionKey].forms[index][field] = value;
+      return newData;
+    });
+  };
+
+  const handleFlagChange = (index: number, field: string, value: any) => {
+    setFormData((prev: any) => {
+      const newData = { ...prev };
+      if (!newData.red_flags_diagnosis) newData.red_flags_diagnosis = {};
+      if (!newData.red_flags_diagnosis.flag_list) newData.red_flags_diagnosis.flag_list = [];
+      if (!newData.red_flags_diagnosis.flag_list[index]) newData.red_flags_diagnosis.flag_list[index] = {};
+      newData.red_flags_diagnosis.flag_list[index][field] = value;
+      return newData;
+    });
+  };
 
   const toggleSection = (sectionKey: string) => {
     setExpandedSections(prev => ({
       ...prev,
       [sectionKey]: !prev[sectionKey],
     }));
-  };
-
-  const handleDownload = async () => {
-    if (!jsPDF || !html2canvas) {
-      alert('PDF libraries not installed. Please run: npm install jspdf html2canvas');
-      return;
-    }
-
-    const element = documentRef.current;
-    if (!element) return;
-
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-      });
-
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      let position = 0;
-
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
-      const timestamp = new Date().toISOString().split('T')[0];
-      const patientName = data.identification_verification?.patient_name?.replace(/\s+/g, '_') || 'Patient';
-      pdf.save(`Legal_Compliance_${patientName}_${timestamp}.pdf`);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
-    }
-  };
-
-  const handlePrint = () => {
-    window.print();
   };
 
   const getSectionIcon = (sectionKey: string) => {
@@ -471,16 +534,40 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
               <FlagItem key={index}>
                 <CheckCircle size={20} color="#10b981" style={{ flexShrink: 0, marginTop: 2 }} />
                 <FlagContent>
-                  <FlagTitle>{flag.flag}</FlagTitle>
-                  <FlagNotes>{flag.notes}</FlagNotes>
+                  {isEditing ? (
+                    <>
+                      <Label>Flag</Label>
+                      <Input 
+                        value={formData.red_flags_diagnosis?.flag_list?.[index]?.flag || ''} 
+                        onChange={(e) => handleFlagChange(index, 'flag', e.target.value)} 
+                      />
+                      <Label>Notes</Label>
+                      <TextArea 
+                        value={formData.red_flags_diagnosis?.flag_list?.[index]?.notes || ''} 
+                        onChange={(e) => handleFlagChange(index, 'notes', e.target.value)} 
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <FlagTitle>{flag.flag}</FlagTitle>
+                      <FlagNotes>{flag.notes}</FlagNotes>
+                    </>
+                  )}
                 </FlagContent>
               </FlagItem>
             ))}
             
-            {sectionData.diagnosis && (
+            {(sectionData.diagnosis || isEditing) && (
               <DiagnosisBox>
                 <DiagnosisLabel>Final Diagnosis</DiagnosisLabel>
-                <DiagnosisText>{sectionData.diagnosis}</DiagnosisText>
+                {isEditing ? (
+                  <TextArea 
+                    value={formData.red_flags_diagnosis?.diagnosis || ''} 
+                    onChange={(e) => handleChange('red_flags_diagnosis.diagnosis', e.target.value)} 
+                  />
+                ) : (
+                  <DiagnosisText>{sectionData.diagnosis}</DiagnosisText>
+                )}
               </DiagnosisBox>
             )}
           </SectionContent>
@@ -492,7 +579,7 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
       return null; // Handled separately
     }
 
-    if (sectionKey === 'attendance' && sectionData.checks !== undefined) {
+    if (sectionKey === 'attendance' && (sectionData.checks !== undefined || isEditing)) {
       return (
         <Section key={sectionKey} isExpanded={expandedSections[sectionKey]}>
           <SectionHeader onClick={() => toggleSection(sectionKey)}>
@@ -501,10 +588,26 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
               {getSectionTitle(sectionKey)}
             </SectionTitle>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <StatusBadge status={sectionData.checks}>
-                {renderStatusIcon(sectionData.checks)}
-                {sectionData.checks ? 'Verified' : 'Not Verified'}
-              </StatusBadge>
+              {isEditing ? (
+                <Select 
+                  value={formData[sectionKey]?.checks === true ? 'true' : formData[sectionKey]?.checks === false ? 'false' : ''}
+                  onChange={(e) => {
+                    const val = e.target.value === 'true' ? true : e.target.value === 'false' ? false : null;
+                    handleChange(`${sectionKey}.checks`, val);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ width: 'auto', marginBottom: 0 }}
+                >
+                  <option value="">Pending</option>
+                  <option value="true">Verified</option>
+                  <option value="false">Not Verified</option>
+                </Select>
+              ) : (
+                <StatusBadge status={sectionData.checks}>
+                  {renderStatusIcon(sectionData.checks)}
+                  {sectionData.checks ? 'Verified' : 'Not Verified'}
+                </StatusBadge>
+              )}
               {expandedSections[sectionKey] ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </div>
           </SectionHeader>
@@ -516,7 +619,7 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
     }
 
     const forms = sectionData.forms || [];
-    if (forms.length === 0) return null;
+    if (forms.length === 0 && !isEditing) return null;
 
     return (
       <Section key={sectionKey} isExpanded={expandedSections[sectionKey]}>
@@ -528,7 +631,7 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
           {expandedSections[sectionKey] ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </SectionHeader>
         <SectionContent isExpanded={expandedSections[sectionKey]}>
-          {forms.map((form: any, index: number) => (
+          {(isEditing ? (formData[sectionKey]?.forms || []) : forms).map((form: any, index: number) => (
             <FormItem key={index} isHighlighted={form.checks === false}>
               <FormHeader>
                 <FormTitleWrapper>
@@ -541,14 +644,37 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
                   {!form.form_id && form.appointment && <FormId>{form.appointment}</FormId>}
                   {!form.form_id && !form.appointment && <FormId>Item {index + 1}</FormId>}
                 </FormTitleWrapper>
-                {form.checks !== undefined && (
-                  <StatusBadge status={form.checks}>
-                    {renderStatusIcon(form.checks)}
-                    {form.checks === true ? 'Compliant' : form.checks === false ? 'Non-Compliant' : 'Pending'}
-                  </StatusBadge>
+                {isEditing ? (
+                  <Select 
+                    value={form.checks === true ? 'true' : form.checks === false ? 'false' : ''}
+                    onChange={(e) => {
+                      const val = e.target.value === 'true' ? true : e.target.value === 'false' ? false : null;
+                      handleFormChange(sectionKey, index, 'checks', val);
+                    }}
+                    style={{ width: 'auto', marginBottom: 0 }}
+                  >
+                    <option value="">Pending</option>
+                    <option value="true">Compliant</option>
+                    <option value="false">Non-Compliant</option>
+                  </Select>
+                ) : (
+                  form.checks !== undefined && (
+                    <StatusBadge status={form.checks}>
+                      {renderStatusIcon(form.checks)}
+                      {form.checks === true ? 'Compliant' : form.checks === false ? 'Non-Compliant' : 'Pending'}
+                    </StatusBadge>
+                  )
                 )}
               </FormHeader>
-              {form.notes && <Notes>{form.notes}</Notes>}
+              {isEditing ? (
+                <TextArea 
+                  value={form.notes || ''} 
+                  onChange={(e) => handleFormChange(sectionKey, index, 'notes', e.target.value)} 
+                  placeholder="Notes..."
+                />
+              ) : (
+                form.notes && <Notes>{form.notes}</Notes>
+              )}
             </FormItem>
           ))}
         </SectionContent>
@@ -583,35 +709,72 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
           Legal Compliance Report
         </Title>
         <ActionButtons>
-          <ActionButton onClick={handleDownload}>
-            <Download />
-            Download
-          </ActionButton>
-          <ActionButton onClick={handlePrint}>
-            <Printer />
-            Print
-          </ActionButton>
+          {isEditing ? (
+            <>
+              <ActionButton onClick={handleCancelClick}>
+                <X />
+                Cancel
+              </ActionButton>
+              <ActionButton variant="primary" onClick={handleSaveClick}>
+                <Save />
+                Save
+              </ActionButton>
+            </>
+          ) : (
+            <ActionButton onClick={onEdit}>
+              <Edit2 />
+              Edit
+            </ActionButton>
+          )}
         </ActionButtons>
       </Header>
 
-      {data.identification_verification && (
+      {(formData.identification_verification || isEditing) && (
         <PatientInfoSection>
           <PatientInfoGrid>
             <InfoItem>
               <strong>Patient ID</strong>
-              {data.identification_verification.patient_id}
+              {isEditing ? (
+                <Input 
+                  value={formData.identification_verification?.patient_id || ''} 
+                  onChange={(e) => handleChange('identification_verification.patient_id', e.target.value)} 
+                />
+              ) : (
+                formData.identification_verification?.patient_id
+              )}
             </InfoItem>
             <InfoItem>
               <strong>Patient Name</strong>
-              {data.identification_verification.patient_name}
+              {isEditing ? (
+                <Input 
+                  value={formData.identification_verification?.patient_name || ''} 
+                  onChange={(e) => handleChange('identification_verification.patient_name', e.target.value)} 
+                />
+              ) : (
+                formData.identification_verification?.patient_name
+              )}
             </InfoItem>
             <InfoItem>
               <strong>Date of Birth</strong>
-              {data.identification_verification.dob}
+              {isEditing ? (
+                <Input 
+                  value={formData.identification_verification?.dob || ''} 
+                  onChange={(e) => handleChange('identification_verification.dob', e.target.value)} 
+                />
+              ) : (
+                formData.identification_verification?.dob
+              )}
             </InfoItem>
             <InfoItem>
               <strong>MRN</strong>
-              {data.identification_verification.mrn}
+              {isEditing ? (
+                <Input 
+                  value={formData.identification_verification?.mrn || ''} 
+                  onChange={(e) => handleChange('identification_verification.mrn', e.target.value)} 
+                />
+              ) : (
+                formData.identification_verification?.mrn
+              )}
             </InfoItem>
           </PatientInfoGrid>
         </PatientInfoSection>
@@ -620,8 +783,8 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
       <TwoColumnLayout>
         <LeftColumn>
           {leftColumnSections.map(sectionKey => {
-            if (data[sectionKey]) {
-              return renderSection(sectionKey, data[sectionKey]);
+            if (formData[sectionKey] || isEditing) {
+              return renderSection(sectionKey, formData[sectionKey] || {});
             }
             return null;
           })}
@@ -629,23 +792,37 @@ const LegalCompliance: React.FC<LegalComplianceProps> = ({ data }) => {
 
         <RightColumn>
           {rightColumnSections.map(sectionKey => {
-            if (data[sectionKey]) {
-              return renderSection(sectionKey, data[sectionKey]);
+            if (formData[sectionKey] || isEditing) {
+              return renderSection(sectionKey, formData[sectionKey] || {});
             }
             return null;
           })}
         </RightColumn>
       </TwoColumnLayout>
 
-      {data.signature && (
+      {(formData.signature || isEditing) && (
         <SignatureSection>
           <SignatureBox>
             <SignatureLabel>Patient Signature</SignatureLabel>
-            <SignatureValue>{data.signature.patient_signature}</SignatureValue>
+            {isEditing ? (
+              <Input 
+                value={formData.signature?.patient_signature || ''} 
+                onChange={(e) => handleChange('signature.patient_signature', e.target.value)} 
+              />
+            ) : (
+              <SignatureValue>{formData.signature?.patient_signature}</SignatureValue>
+            )}
           </SignatureBox>
           <SignatureBox>
             <SignatureLabel>Practitioner Signature</SignatureLabel>
-            <SignatureValue>{data.signature.practitioner_signature}</SignatureValue>
+            {isEditing ? (
+              <Input 
+                value={formData.signature?.practitioner_signature || ''} 
+                onChange={(e) => handleChange('signature.practitioner_signature', e.target.value)} 
+              />
+            ) : (
+              <SignatureValue>{formData.signature?.practitioner_signature}</SignatureValue>
+            )}
           </SignatureBox>
         </SignatureSection>
       )}

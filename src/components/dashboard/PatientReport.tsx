@@ -1,22 +1,10 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { Edit2, Save, X, Download, Printer, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, Heart } from 'lucide-react';
-
-// Dynamic imports for print libraries
-let jsPDF: any = null;
-let html2canvas: any = null;
-
-try {
-  jsPDF = require('jspdf').jsPDF;
-  html2canvas = require('html2canvas');
-} catch (e) {
-  console.log('Print libraries not installed. Run: npm install jspdf html2canvas');
-}
+import { Edit2, Save, X, User, Activity, AlertCircle, Pill, FileText, Stethoscope, ClipboardList, TrendingUp, Beaker, Heart } from 'lucide-react';
 
 // View Mode Styles
 const ViewContainer = styled.div`
-  width: 100%;
-  min-height: 100%;
+  
   background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
   border-radius: 12px;
   padding: 32px 48px;
@@ -96,7 +84,7 @@ const TwoColumnLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
-  max-width: 2000px;
+  width: 100%;
   margin: 0 auto;
 `;
 
@@ -209,6 +197,8 @@ const LabValue = styled.div`
 `;
 
 interface PatientReportProps {
+  onEdit?: () => void;
+  onSave?: (data: any) => void;
   patientData?: {
     name?: string;
     mrn?: string;
@@ -269,60 +259,101 @@ interface PatientReportProps {
   };
 }
 
-const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
+const Input = styled.input`
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const TextArea = styled.textarea`
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
+  margin-bottom: 8px;
+  font-family: inherit;
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  }
+`;
+
+const Label = styled.label`
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+`;
+
+const PatientReport: React.FC<PatientReportProps> = ({ patientData, onEdit, onSave }) => {
   const documentRef = useRef<HTMLDivElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState<any>(patientData || {});
 
-  const handleDownload = async () => {
-    if (!jsPDF || !html2canvas) {
-      alert('PDF libraries not installed. Please run: npm install jspdf html2canvas');
-      return;
+  // Update formData when patientData changes from props (e.g. from backend update)
+  React.useEffect(() => {
+    if (patientData) {
+      setFormData(patientData);
     }
+  }, [patientData]);
 
-    const element = documentRef.current;
-    if (!element) return;
+  const handleEditClick = () => {
+    setIsEditing(true);
+    if (onEdit) onEdit();
+  };
 
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-      });
+  const handleSaveClick = () => {
+    if (onSave) {
+      onSave(formData);
+    }
+    setIsEditing(false);
+  };
 
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
+  const handleCancelClick = () => {
+    setFormData(patientData || {});
+    setIsEditing(false);
+  };
 
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      let position = 0;
-
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+  const handleChange = (path: string, value: any) => {
+    setFormData((prev: any) => {
+      const newData = { ...prev };
+      const parts = path.split('.');
+      let current = newData;
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (!current[parts[i]]) current[parts[i]] = {};
+        current = current[parts[i]];
       }
-
-      const timestamp = new Date().toISOString().split('T')[0];
-      const filename = `Patient_Report_${patientData?.name?.replace(/\s+/g, '_')}_${timestamp}.pdf`;
-      
-      pdf.save(filename);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
-    }
+      current[parts[parts.length - 1]] = value;
+      return newData;
+    });
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleArrayChange = (path: string, value: string) => {
+    // Split by newline to create array
+    const array = value.split('\n').filter(item => item.trim() !== '');
+    handleChange(path, array);
   };
 
-  if (!patientData) {
+  if (!patientData && !isEditing) {
     return <div>No patient data available</div>;
   }
 
@@ -334,14 +365,23 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
           Patient Summary Report
         </ViewTitle>
         <ActionButtons>
-          <ActionButton onClick={handleDownload}>
-            <Download />
-            Download
-          </ActionButton>
-          <ActionButton onClick={handlePrint}>
-            <Printer />
-            Print
-          </ActionButton>
+          {isEditing ? (
+            <>
+              <ActionButton onClick={handleCancelClick}>
+                <X />
+                Cancel
+              </ActionButton>
+              <ActionButton variant="primary" onClick={handleSaveClick}>
+                <Save />
+                Save
+              </ActionButton>
+            </>
+          ) : (
+            <ActionButton onClick={handleEditClick}>
+              <Edit2 />
+              Edit
+            </ActionButton>
+          )}
         </ActionButtons>
       </ViewHeader>
 
@@ -354,172 +394,285 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
               <User />
               Patient Demographics
             </ViewSectionTitle>
-            <ViewText>
-              <strong>Name:</strong> {patientData.name}<br/>
-              <strong>MRN:</strong> {patientData.mrn}<br/>
-              <strong>Age/Sex:</strong> {patientData.age_sex}<br/>
-              <strong>Date of Summary:</strong> {patientData.date_of_summary}
-            </ViewText>
+            {isEditing ? (
+              <>
+                <Label>Name</Label>
+                <Input value={formData.name || ''} onChange={(e) => handleChange('name', e.target.value)} />
+                <Label>MRN</Label>
+                <Input value={formData.mrn || ''} onChange={(e) => handleChange('mrn', e.target.value)} />
+                <Label>Age/Sex</Label>
+                <Input value={formData.age_sex || ''} onChange={(e) => handleChange('age_sex', e.target.value)} />
+                <Label>Date of Summary</Label>
+                <Input value={formData.date_of_summary || ''} onChange={(e) => handleChange('date_of_summary', e.target.value)} />
+              </>
+            ) : (
+              <ViewText>
+                <strong>Name:</strong> {formData.name}<br/>
+                <strong>MRN:</strong> {formData.mrn}<br/>
+                <strong>Age/Sex:</strong> {formData.age_sex}<br/>
+                <strong>Date of Summary:</strong> {formData.date_of_summary}
+              </ViewText>
+            )}
           </ViewSection>
 
           {/* One Sentence Impression */}
-          {patientData.one_sentence_impression && (
+          {(formData.one_sentence_impression || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <Stethoscope />
                 Clinical Impression
               </ViewSectionTitle>
-              <HighlightBox>
-                <ViewText>{patientData.one_sentence_impression}</ViewText>
-              </HighlightBox>
+              {isEditing ? (
+                <TextArea 
+                  value={formData.one_sentence_impression || ''} 
+                  onChange={(e) => handleChange('one_sentence_impression', e.target.value)} 
+                />
+              ) : (
+                <HighlightBox>
+                  <ViewText>{formData.one_sentence_impression}</ViewText>
+                </HighlightBox>
+              )}
             </ViewSection>
           )}
 
           {/* Clinical Context Baseline */}
-          {patientData.clinical_context_baseline && (
+          {(formData.clinical_context_baseline || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <Heart />
                 Clinical Context - Baseline
               </ViewSectionTitle>
               
-              {patientData.clinical_context_baseline.comorbidities && patientData.clinical_context_baseline.comorbidities.length > 0 && (
+              {isEditing ? (
                 <>
-                  <ViewText><strong>Comorbidities:</strong></ViewText>
-                  <ViewList>
-                    {patientData.clinical_context_baseline.comorbidities.map((item, index) => (
-                      <ViewListItem key={index}>{item}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  <Label>Comorbidities (one per line)</Label>
+                  <TextArea 
+                    value={(formData.clinical_context_baseline?.comorbidities || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('clinical_context_baseline.comorbidities', e.target.value)} 
+                  />
+                  <Label>Key Baseline Labs</Label>
+                  <TextArea 
+                    value={formData.clinical_context_baseline?.key_baseline_labs || ''} 
+                    onChange={(e) => handleChange('clinical_context_baseline.key_baseline_labs', e.target.value)} 
+                  />
+                  <Label>Social History</Label>
+                  <TextArea 
+                    value={formData.clinical_context_baseline?.social_history || ''} 
+                    onChange={(e) => handleChange('clinical_context_baseline.social_history', e.target.value)} 
+                  />
                 </>
-              )}
-              
-              {patientData.clinical_context_baseline.key_baseline_labs && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Key Baseline Labs:</strong><br/>
-                  {patientData.clinical_context_baseline.key_baseline_labs}
-                </ViewText>
-              )}
-              
-              {patientData.clinical_context_baseline.social_history && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Social History:</strong><br/>
-                  {patientData.clinical_context_baseline.social_history}
-                </ViewText>
+              ) : (
+                <>
+                  {formData.clinical_context_baseline?.comorbidities && formData.clinical_context_baseline.comorbidities.length > 0 && (
+                    <>
+                      <ViewText><strong>Comorbidities:</strong></ViewText>
+                      <ViewList>
+                        {formData.clinical_context_baseline.comorbidities.map((item: string, index: number) => (
+                          <ViewListItem key={index}>{item}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
+                  
+                  {formData.clinical_context_baseline?.key_baseline_labs && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Key Baseline Labs:</strong><br/>
+                      {formData.clinical_context_baseline.key_baseline_labs}
+                    </ViewText>
+                  )}
+                  
+                  {formData.clinical_context_baseline?.social_history && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Social History:</strong><br/>
+                      {formData.clinical_context_baseline.social_history}
+                    </ViewText>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
 
           {/* Suspect Drug Timeline */}
-          {patientData.suspect_drug_timeline && (
+          {(formData.suspect_drug_timeline || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <Pill />
                 Suspect Drug Timeline
               </ViewSectionTitle>
               
-              {patientData.suspect_drug_timeline.chief_complaint && (
-                <ViewText>
-                  <strong>Chief Complaint:</strong><br/>
-                  {patientData.suspect_drug_timeline.chief_complaint}
-                </ViewText>
-              )}
-              
-              {patientData.suspect_drug_timeline.hopi_significant_points && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>History of Present Illness:</strong><br/>
-                  {patientData.suspect_drug_timeline.hopi_significant_points}
-                </ViewText>
-              )}
-              
-              {patientData.suspect_drug_timeline.chronic_medications && patientData.suspect_drug_timeline.chronic_medications.length > 0 && (
+              {isEditing ? (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Chronic Medications:</strong></ViewText>
-                  <ViewList>
-                    {patientData.suspect_drug_timeline.chronic_medications.map((med, index) => (
-                      <ViewListItem key={index}>{med}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  <Label>Chief Complaint</Label>
+                  <TextArea 
+                    value={formData.suspect_drug_timeline?.chief_complaint || ''} 
+                    onChange={(e) => handleChange('suspect_drug_timeline.chief_complaint', e.target.value)} 
+                  />
+                  <Label>History of Present Illness</Label>
+                  <TextArea 
+                    value={formData.suspect_drug_timeline?.hopi_significant_points || ''} 
+                    onChange={(e) => handleChange('suspect_drug_timeline.hopi_significant_points', e.target.value)} 
+                  />
+                  <Label>Chronic Medications (one per line)</Label>
+                  <TextArea 
+                    value={(formData.suspect_drug_timeline?.chronic_medications || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('suspect_drug_timeline.chronic_medications', e.target.value)} 
+                  />
+                  <Label>Acute Medication Onset</Label>
+                  <TextArea 
+                    value={formData.suspect_drug_timeline?.acute_medication_onset || ''} 
+                    onChange={(e) => handleChange('suspect_drug_timeline.acute_medication_onset', e.target.value)} 
+                  />
+                  <Label>Possibilities for DILI (one per line)</Label>
+                  <TextArea 
+                    value={(formData.suspect_drug_timeline?.possibilities_for_dili || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('suspect_drug_timeline.possibilities_for_dili', e.target.value)} 
+                  />
                 </>
-              )}
-              
-              {patientData.suspect_drug_timeline.acute_medication_onset && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Acute Medication Onset:</strong><br/>
-                  {patientData.suspect_drug_timeline.acute_medication_onset}
-                </ViewText>
-              )}
-              
-              {patientData.suspect_drug_timeline.possibilities_for_dili && patientData.suspect_drug_timeline.possibilities_for_dili.length > 0 && (
+              ) : (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Possibilities for DILI:</strong></ViewText>
-                  <ViewList>
-                    {patientData.suspect_drug_timeline.possibilities_for_dili.map((item, index) => (
-                      <ViewListItem key={index}>{item}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {formData.suspect_drug_timeline?.chief_complaint && (
+                    <ViewText>
+                      <strong>Chief Complaint:</strong><br/>
+                      {formData.suspect_drug_timeline.chief_complaint}
+                    </ViewText>
+                  )}
+                  
+                  {formData.suspect_drug_timeline?.hopi_significant_points && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>History of Present Illness:</strong><br/>
+                      {formData.suspect_drug_timeline.hopi_significant_points}
+                    </ViewText>
+                  )}
+                  
+                  {formData.suspect_drug_timeline?.chronic_medications && formData.suspect_drug_timeline.chronic_medications.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Chronic Medications:</strong></ViewText>
+                      <ViewList>
+                        {formData.suspect_drug_timeline.chronic_medications.map((med: string, index: number) => (
+                          <ViewListItem key={index}>{med}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
+                  
+                  {formData.suspect_drug_timeline?.acute_medication_onset && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Acute Medication Onset:</strong><br/>
+                      {formData.suspect_drug_timeline.acute_medication_onset}
+                    </ViewText>
+                  )}
+                  
+                  {formData.suspect_drug_timeline?.possibilities_for_dili && formData.suspect_drug_timeline.possibilities_for_dili.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Possibilities for DILI:</strong></ViewText>
+                      <ViewList>
+                        {formData.suspect_drug_timeline.possibilities_for_dili.map((item: string, index: number) => (
+                          <ViewListItem key={index}>{item}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
                 </>
               )}
             </ViewSection>
           )}
 
           {/* Rule Out Complete */}
-          {patientData.rule_out_complete && (
+          {(formData.rule_out_complete || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <AlertCircle />
                 Rule Out Assessment
               </ViewSectionTitle>
               
-              {patientData.rule_out_complete.viral_hepatitis && (
-                <ViewText>
-                  <strong>Viral Hepatitis:</strong><br/>
-                  {patientData.rule_out_complete.viral_hepatitis}
-                </ViewText>
-              )}
-              
-              {patientData.rule_out_complete.autoimmune && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Autoimmune:</strong><br/>
-                  {patientData.rule_out_complete.autoimmune}
-                </ViewText>
-              )}
-              
-              {patientData.rule_out_complete.other_competing_dx_ruled_out && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Other Competing Diagnoses:</strong><br/>
-                  {patientData.rule_out_complete.other_competing_dx_ruled_out}
-                </ViewText>
+              {isEditing ? (
+                <>
+                  <Label>Viral Hepatitis</Label>
+                  <TextArea 
+                    value={formData.rule_out_complete?.viral_hepatitis || ''} 
+                    onChange={(e) => handleChange('rule_out_complete.viral_hepatitis', e.target.value)} 
+                  />
+                  <Label>Autoimmune</Label>
+                  <TextArea 
+                    value={formData.rule_out_complete?.autoimmune || ''} 
+                    onChange={(e) => handleChange('rule_out_complete.autoimmune', e.target.value)} 
+                  />
+                  <Label>Other Competing Diagnoses</Label>
+                  <TextArea 
+                    value={formData.rule_out_complete?.other_competing_dx_ruled_out || ''} 
+                    onChange={(e) => handleChange('rule_out_complete.other_competing_dx_ruled_out', e.target.value)} 
+                  />
+                </>
+              ) : (
+                <>
+                  {formData.rule_out_complete?.viral_hepatitis && (
+                    <ViewText>
+                      <strong>Viral Hepatitis:</strong><br/>
+                      {formData.rule_out_complete.viral_hepatitis}
+                    </ViewText>
+                  )}
+                  
+                  {formData.rule_out_complete?.autoimmune && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Autoimmune:</strong><br/>
+                      {formData.rule_out_complete.autoimmune}
+                    </ViewText>
+                  )}
+                  
+                  {formData.rule_out_complete?.other_competing_dx_ruled_out && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Other Competing Diagnoses:</strong><br/>
+                      {formData.rule_out_complete.other_competing_dx_ruled_out}
+                    </ViewText>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
 
           {/* Severity & Prognosis */}
-          {patientData.severity_prognosis && (
+          {(formData.severity_prognosis || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <TrendingUp />
                 Severity & Prognosis
               </ViewSectionTitle>
               
-              {patientData.severity_prognosis.severity_features && patientData.severity_prognosis.severity_features.length > 0 && (
+              {isEditing ? (
                 <>
-                  <ViewText><strong>Severity Features:</strong></ViewText>
-                  <ViewList>
-                    {patientData.severity_prognosis.severity_features.map((feature, index) => (
-                      <ViewListItem key={index}>{feature}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  <Label>Severity Features (one per line)</Label>
+                  <TextArea 
+                    value={(formData.severity_prognosis?.severity_features || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('severity_prognosis.severity_features', e.target.value)} 
+                  />
+                  <Label>Prognosis Statement</Label>
+                  <TextArea 
+                    value={formData.severity_prognosis?.prognosis_statement || ''} 
+                    onChange={(e) => handleChange('severity_prognosis.prognosis_statement', e.target.value)} 
+                  />
                 </>
-              )}
-              
-              {patientData.severity_prognosis.prognosis_statement && (
-                <HighlightBox style={{ marginTop: '12px' }}>
-                  <ViewText>
-                    <strong>Prognosis:</strong><br/>
-                    {patientData.severity_prognosis.prognosis_statement}
-                  </ViewText>
-                </HighlightBox>
+              ) : (
+                <>
+                  {formData.severity_prognosis?.severity_features && formData.severity_prognosis.severity_features.length > 0 && (
+                    <>
+                      <ViewText><strong>Severity Features:</strong></ViewText>
+                      <ViewList>
+                        {formData.severity_prognosis.severity_features.map((feature: string, index: number) => (
+                          <ViewListItem key={index}>{feature}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
+                  
+                  {formData.severity_prognosis?.prognosis_statement && (
+                    <HighlightBox style={{ marginTop: '12px' }}>
+                      <ViewText>
+                        <strong>Prognosis:</strong><br/>
+                        {formData.severity_prognosis.prognosis_statement}
+                      </ViewText>
+                    </HighlightBox>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
@@ -528,208 +681,336 @@ const PatientReport: React.FC<PatientReportProps> = ({ patientData }) => {
         {/* RIGHT COLUMN */}
         <RightColumn>
           {/* Injury Pattern & Trends */}
-          {patientData.injury_pattern_trends && (
+          {(formData.injury_pattern_trends || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <Beaker />
                 Injury Pattern & Trends
               </ViewSectionTitle>
               
-              {patientData.injury_pattern_trends.pattern && (
-                <ViewText>
-                  <strong>Pattern:</strong><br/>
-                  {patientData.injury_pattern_trends.pattern}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.hys_law && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Hy's Law:</strong><br/>
-                  {patientData.injury_pattern_trends.hys_law}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.meld_na && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>MELD-Na:</strong><br/>
-                  {patientData.injury_pattern_trends.meld_na}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.lft_data_peak_onset && (
+              {isEditing ? (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Peak Laboratory Values:</strong></ViewText>
-                  <LabGrid>
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.ALT && (
-                      <LabCard>
-                        <LabLabel>ALT</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.ALT}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.AST && (
-                      <LabCard>
-                        <LabLabel>AST</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.AST}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos && (
-                      <LabCard>
-                        <LabLabel>Alk Phos</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.T_Bili && (
-                      <LabCard>
-                        <LabLabel>Total Bilirubin</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.T_Bili}</LabValue>
-                      </LabCard>
-                    )}
-                    {patientData.injury_pattern_trends.lft_data_peak_onset.INR && (
-                      <LabCard>
-                        <LabLabel>INR</LabLabel>
-                        <LabValue>{patientData.injury_pattern_trends.lft_data_peak_onset.INR}</LabValue>
-                      </LabCard>
-                    )}
-                  </LabGrid>
+                  <Label>Pattern</Label>
+                  <TextArea 
+                    value={formData.injury_pattern_trends?.pattern || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.pattern', e.target.value)} 
+                  />
+                  <Label>Hy's Law</Label>
+                  <TextArea 
+                    value={formData.injury_pattern_trends?.hys_law || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.hys_law', e.target.value)} 
+                  />
+                  <Label>MELD-Na</Label>
+                  <TextArea 
+                    value={formData.injury_pattern_trends?.meld_na || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.meld_na', e.target.value)} 
+                  />
+                  <Label>Peak Labs - ALT</Label>
+                  <Input 
+                    value={formData.injury_pattern_trends?.lft_data_peak_onset?.ALT || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.lft_data_peak_onset.ALT', e.target.value)} 
+                  />
+                  <Label>Peak Labs - AST</Label>
+                  <Input 
+                    value={formData.injury_pattern_trends?.lft_data_peak_onset?.AST || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.lft_data_peak_onset.AST', e.target.value)} 
+                  />
+                  <Label>Peak Labs - Alk Phos</Label>
+                  <Input 
+                    value={formData.injury_pattern_trends?.lft_data_peak_onset?.Alk_Phos || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.lft_data_peak_onset.Alk_Phos', e.target.value)} 
+                  />
+                  <Label>Peak Labs - Total Bilirubin</Label>
+                  <Input 
+                    value={formData.injury_pattern_trends?.lft_data_peak_onset?.T_Bili || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.lft_data_peak_onset.T_Bili', e.target.value)} 
+                  />
+                  <Label>Peak Labs - INR</Label>
+                  <Input 
+                    value={formData.injury_pattern_trends?.lft_data_peak_onset?.INR || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.lft_data_peak_onset.INR', e.target.value)} 
+                  />
+                  <Label>LFT Trends</Label>
+                  <TextArea 
+                    value={formData.injury_pattern_trends?.lft_sparklines_trends || ''} 
+                    onChange={(e) => handleChange('injury_pattern_trends.lft_sparklines_trends', e.target.value)} 
+                  />
+                  <Label>Complications (one per line)</Label>
+                  <TextArea 
+                    value={(formData.injury_pattern_trends?.complications || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('injury_pattern_trends.complications', e.target.value)} 
+                  />
                 </>
-              )}
-              
-              {patientData.injury_pattern_trends.lft_sparklines_trends && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>LFT Trends:</strong><br/>
-                  {patientData.injury_pattern_trends.lft_sparklines_trends}
-                </ViewText>
-              )}
-              
-              {patientData.injury_pattern_trends.complications && patientData.injury_pattern_trends.complications.length > 0 && (
+              ) : (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Complications:</strong></ViewText>
-                  <ViewList>
-                    {patientData.injury_pattern_trends.complications.map((comp, index) => (
-                      <ViewListItem key={index}>{comp}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {formData.injury_pattern_trends?.pattern && (
+                    <ViewText>
+                      <strong>Pattern:</strong><br/>
+                      {formData.injury_pattern_trends.pattern}
+                    </ViewText>
+                  )}
+                  
+                  {formData.injury_pattern_trends?.hys_law && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Hy's Law:</strong><br/>
+                      {formData.injury_pattern_trends.hys_law}
+                    </ViewText>
+                  )}
+                  
+                  {formData.injury_pattern_trends?.meld_na && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>MELD-Na:</strong><br/>
+                      {formData.injury_pattern_trends.meld_na}
+                    </ViewText>
+                  )}
+                  
+                  {formData.injury_pattern_trends?.lft_data_peak_onset && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Peak Laboratory Values:</strong></ViewText>
+                      <LabGrid>
+                        {formData.injury_pattern_trends.lft_data_peak_onset.ALT && (
+                          <LabCard>
+                            <LabLabel>ALT</LabLabel>
+                            <LabValue>{formData.injury_pattern_trends.lft_data_peak_onset.ALT}</LabValue>
+                          </LabCard>
+                        )}
+                        {formData.injury_pattern_trends.lft_data_peak_onset.AST && (
+                          <LabCard>
+                            <LabLabel>AST</LabLabel>
+                            <LabValue>{formData.injury_pattern_trends.lft_data_peak_onset.AST}</LabValue>
+                          </LabCard>
+                        )}
+                        {formData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos && (
+                          <LabCard>
+                            <LabLabel>Alk Phos</LabLabel>
+                            <LabValue>{formData.injury_pattern_trends.lft_data_peak_onset.Alk_Phos}</LabValue>
+                          </LabCard>
+                        )}
+                        {formData.injury_pattern_trends.lft_data_peak_onset.T_Bili && (
+                          <LabCard>
+                            <LabLabel>Total Bilirubin</LabLabel>
+                            <LabValue>{formData.injury_pattern_trends.lft_data_peak_onset.T_Bili}</LabValue>
+                          </LabCard>
+                        )}
+                        {formData.injury_pattern_trends.lft_data_peak_onset.INR && (
+                          <LabCard>
+                            <LabLabel>INR</LabLabel>
+                            <LabValue>{formData.injury_pattern_trends.lft_data_peak_onset.INR}</LabValue>
+                          </LabCard>
+                        )}
+                      </LabGrid>
+                    </>
+                  )}
+                  
+                  {formData.injury_pattern_trends?.lft_sparklines_trends && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>LFT Trends:</strong><br/>
+                      {formData.injury_pattern_trends.lft_sparklines_trends}
+                    </ViewText>
+                  )}
+                  
+                  {formData.injury_pattern_trends?.complications && formData.injury_pattern_trends.complications.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Complications:</strong></ViewText>
+                      <ViewList>
+                        {formData.injury_pattern_trends.complications.map((comp: string, index: number) => (
+                          <ViewListItem key={index}>{comp}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
                 </>
               )}
             </ViewSection>
           )}
 
           {/* Key Diagnostics */}
-          {patientData.key_diagnostics && (
+          {(formData.key_diagnostics || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <Activity />
                 Key Diagnostics
               </ViewSectionTitle>
               
-              {patientData.key_diagnostics.imaging_performed && (
-                <ViewText>
-                  <strong>Imaging:</strong><br/>
-                  {patientData.key_diagnostics.imaging_performed}
-                </ViewText>
-              )}
-              
-              {patientData.key_diagnostics.biopsy && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Biopsy:</strong><br/>
-                  {patientData.key_diagnostics.biopsy}
-                </ViewText>
-              )}
-              
-              {patientData.key_diagnostics.methotrexate_level && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Methotrexate Level:</strong><br/>
-                  {patientData.key_diagnostics.methotrexate_level}
-                </ViewText>
+              {isEditing ? (
+                <>
+                  <Label>Imaging Performed</Label>
+                  <TextArea 
+                    value={formData.key_diagnostics?.imaging_performed || ''} 
+                    onChange={(e) => handleChange('key_diagnostics.imaging_performed', e.target.value)} 
+                  />
+                  <Label>Biopsy</Label>
+                  <TextArea 
+                    value={formData.key_diagnostics?.biopsy || ''} 
+                    onChange={(e) => handleChange('key_diagnostics.biopsy', e.target.value)} 
+                  />
+                  <Label>Methotrexate Level</Label>
+                  <TextArea 
+                    value={formData.key_diagnostics?.methotrexate_level || ''} 
+                    onChange={(e) => handleChange('key_diagnostics.methotrexate_level', e.target.value)} 
+                  />
+                </>
+              ) : (
+                <>
+                  {formData.key_diagnostics?.imaging_performed && (
+                    <ViewText>
+                      <strong>Imaging:</strong><br/>
+                      {formData.key_diagnostics.imaging_performed}
+                    </ViewText>
+                  )}
+                  
+                  {formData.key_diagnostics?.biopsy && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Biopsy:</strong><br/>
+                      {formData.key_diagnostics.biopsy}
+                    </ViewText>
+                  )}
+                  
+                  {formData.key_diagnostics?.methotrexate_level && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Methotrexate Level:</strong><br/>
+                      {formData.key_diagnostics.methotrexate_level}
+                    </ViewText>
+                  )}
+                </>
               )}
             </ViewSection>
           )}
 
           {/* Management & Monitoring */}
-          {patientData.management_monitoring && (
+          {(formData.management_monitoring || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <ClipboardList />
                 Management & Monitoring
               </ViewSectionTitle>
               
-              {patientData.management_monitoring.causality_rucam && (
-                <HighlightBox>
-                  <ViewText>
-                    <strong>Causality Assessment:</strong><br/>
-                    {patientData.management_monitoring.causality_rucam}
-                  </ViewText>
-                </HighlightBox>
-              )}
-              
-              {patientData.management_monitoring.stopped_culprit_drugs && patientData.management_monitoring.stopped_culprit_drugs.length > 0 && (
+              {isEditing ? (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Stopped Culprit Drugs:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.stopped_culprit_drugs.map((drug, index) => (
-                      <ViewListItem key={index}>{drug}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  <Label>Causality Assessment (RUCAM)</Label>
+                  <TextArea 
+                    value={formData.management_monitoring?.causality_rucam || ''} 
+                    onChange={(e) => handleChange('management_monitoring.causality_rucam', e.target.value)} 
+                  />
+                  <Label>Stopped Culprit Drugs (one per line)</Label>
+                  <TextArea 
+                    value={(formData.management_monitoring?.stopped_culprit_drugs || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('management_monitoring.stopped_culprit_drugs', e.target.value)} 
+                  />
+                  <Label>Active Treatments (one per line)</Label>
+                  <TextArea 
+                    value={(formData.management_monitoring?.active_treatments || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('management_monitoring.active_treatments', e.target.value)} 
+                  />
+                  <Label>Consults Initiated (one per line)</Label>
+                  <TextArea 
+                    value={(formData.management_monitoring?.consults_initiated || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('management_monitoring.consults_initiated', e.target.value)} 
+                  />
+                  <Label>Nutrition</Label>
+                  <TextArea 
+                    value={formData.management_monitoring?.nutrition || ''} 
+                    onChange={(e) => handleChange('management_monitoring.nutrition', e.target.value)} 
+                  />
+                  <Label>VTE Prophylaxis</Label>
+                  <TextArea 
+                    value={formData.management_monitoring?.vte_ppx || ''} 
+                    onChange={(e) => handleChange('management_monitoring.vte_ppx', e.target.value)} 
+                  />
+                  <Label>Monitoring Plan (one per line)</Label>
+                  <TextArea 
+                    value={(formData.management_monitoring?.monitoring_plan || []).join('\n')} 
+                    onChange={(e) => handleArrayChange('management_monitoring.monitoring_plan', e.target.value)} 
+                  />
                 </>
-              )}
-              
-              {patientData.management_monitoring.active_treatments && patientData.management_monitoring.active_treatments.length > 0 && (
+              ) : (
                 <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Active Treatments:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.active_treatments.map((treatment, index) => (
-                      <ViewListItem key={index}>{treatment}</ViewListItem>
-                    ))}
-                  </ViewList>
-                </>
-              )}
-              
-              {patientData.management_monitoring.consults_initiated && patientData.management_monitoring.consults_initiated.length > 0 && (
-                <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Consults Initiated:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.consults_initiated.map((consult, index) => (
-                      <ViewListItem key={index}>{consult}</ViewListItem>
-                    ))}
-                  </ViewList>
-                </>
-              )}
-              
-              {patientData.management_monitoring.nutrition && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>Nutrition:</strong><br/>
-                  {patientData.management_monitoring.nutrition}
-                </ViewText>
-              )}
-              
-              {patientData.management_monitoring.vte_ppx && (
-                <ViewText style={{ marginTop: '12px' }}>
-                  <strong>VTE Prophylaxis:</strong><br/>
-                  {patientData.management_monitoring.vte_ppx}
-                </ViewText>
-              )}
-              
-              {patientData.management_monitoring.monitoring_plan && patientData.management_monitoring.monitoring_plan.length > 0 && (
-                <>
-                  <ViewText style={{ marginTop: '12px' }}><strong>Monitoring Plan:</strong></ViewText>
-                  <ViewList>
-                    {patientData.management_monitoring.monitoring_plan.map((plan, index) => (
-                      <ViewListItem key={index}>{plan}</ViewListItem>
-                    ))}
-                  </ViewList>
+                  {formData.management_monitoring?.causality_rucam && (
+                    <HighlightBox>
+                      <ViewText>
+                        <strong>Causality Assessment:</strong><br/>
+                        {formData.management_monitoring.causality_rucam}
+                      </ViewText>
+                    </HighlightBox>
+                  )}
+                  
+                  {formData.management_monitoring?.stopped_culprit_drugs && formData.management_monitoring.stopped_culprit_drugs.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Stopped Culprit Drugs:</strong></ViewText>
+                      <ViewList>
+                        {formData.management_monitoring.stopped_culprit_drugs.map((drug: string, index: number) => (
+                          <ViewListItem key={index}>{drug}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
+                  
+                  {formData.management_monitoring?.active_treatments && formData.management_monitoring.active_treatments.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Active Treatments:</strong></ViewText>
+                      <ViewList>
+                        {formData.management_monitoring.active_treatments.map((treatment: string, index: number) => (
+                          <ViewListItem key={index}>{treatment}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
+                  
+                  {formData.management_monitoring?.consults_initiated && formData.management_monitoring.consults_initiated.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Consults Initiated:</strong></ViewText>
+                      <ViewList>
+                        {formData.management_monitoring.consults_initiated.map((consult: string, index: number) => (
+                          <ViewListItem key={index}>{consult}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
+                  
+                  {formData.management_monitoring?.nutrition && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>Nutrition:</strong><br/>
+                      {formData.management_monitoring.nutrition}
+                    </ViewText>
+                  )}
+                  
+                  {formData.management_monitoring?.vte_ppx && (
+                    <ViewText style={{ marginTop: '12px' }}>
+                      <strong>VTE Prophylaxis:</strong><br/>
+                      {formData.management_monitoring.vte_ppx}
+                    </ViewText>
+                  )}
+                  
+                  {formData.management_monitoring?.monitoring_plan && formData.management_monitoring.monitoring_plan.length > 0 && (
+                    <>
+                      <ViewText style={{ marginTop: '12px' }}><strong>Monitoring Plan:</strong></ViewText>
+                      <ViewList>
+                        {formData.management_monitoring.monitoring_plan.map((plan: string, index: number) => (
+                          <ViewListItem key={index}>{plan}</ViewListItem>
+                        ))}
+                      </ViewList>
+                    </>
+                  )}
                 </>
               )}
             </ViewSection>
           )}
 
           {/* Current Status */}
-          {patientData.current_status_last_48h && (
+          {(formData.current_status_last_48h || isEditing) && (
             <ViewSection>
               <ViewSectionTitle>
                 <Activity />
                 Current Status (Last 48h)
               </ViewSectionTitle>
-              <ViewText>{patientData.current_status_last_48h}</ViewText>
+              {isEditing ? (
+                <TextArea 
+                  value={formData.current_status_last_48h || ''} 
+                  onChange={(e) => handleChange('current_status_last_48h', e.target.value)} 
+                />
+              ) : (
+                <ViewText>{formData.current_status_last_48h}</ViewText>
+              )}
             </ViewSection>
           )}
         </RightColumn>
