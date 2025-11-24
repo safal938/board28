@@ -70,12 +70,7 @@ export const EncounterTrack: React.FC<EncounterTrackProps> = ({ encounters, scal
             const hasDifferentials = differentials.length > 1;
             const secondaryDifferentials = differentials.slice(1);
 
-            // Debug logging
-            console.log(`Encounter ${enc.encounter_no}:`, {
-                has_chief_complaint: !!enc.chief_complaint,
-                chief_complaint: enc.chief_complaint,
-                date: enc.date
-            });
+        
 
             return (
             <div 
@@ -147,23 +142,42 @@ export const EncounterTrack: React.FC<EncounterTrackProps> = ({ encounters, scal
                 {/* Connector Dot */}
                 <div className="absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-2.5 h-2.5 bg-blue-500 rounded-full border-2 border-white shadow-sm"></div>
 
-                {/* React Flow Handle */}
+                {/* React Flow Handles - Overlaid at same position */}
                 {showHandles && (
-                    <Handle
-                        type="source"
-                        position={Position.Bottom}
-                        id={`enc-${enc.encounter_no}`}
-                        style={{
-                            left: '50%',
-                            bottom: -6,
-                            transform: 'translateX(-50%)',
-                            width: 10,
-                            height: 10,
-                            background: 'transparent',
-                            border: 'none',
-                            zIndex: 50
-                        }}
-                    />
+                    <>
+                        <Handle
+                            type="target"
+                            position={Position.Bottom}
+                            id={`enc-${enc.encounter_no}-target`}
+                            style={{
+                                left: '50%',
+                                bottom: -8,
+                                transform: 'translateX(-50%)',
+                                width: 12,
+                                height: 12,
+                                background: '#667eea',
+                                border: '2px solid white',
+                                borderRadius: '50%',
+                                boxShadow: '0 2px 8px rgba(102, 126, 234, 0.4)',
+                                zIndex: 50
+                            }}
+                        />
+                        <Handle
+                            type="source"
+                            position={Position.Bottom}
+                            id={`enc-${enc.encounter_no}-source`}
+                            style={{
+                                left: '50%',
+                                bottom: -8,
+                                transform: 'translateX(-50%)',
+                                width: 12,
+                                height: 12,
+                                background: 'transparent',
+                                border: 'none',
+                                zIndex: 51
+                            }}
+                        />
+                    </>
                 )}
             </div>
             );

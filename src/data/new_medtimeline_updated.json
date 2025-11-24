@@ -1,0 +1,487 @@
+{
+    "id": "dashboard-item-1759906076097-medication-timeline",
+    "type": "component",
+    "x": 1750,
+    "y": 100,
+    "width": 1600,
+    "height": "auto",
+    "componentType": "MedicationTimeline",
+    "color": "#ffffff",
+    "description": "Medication Timeline and Clinical Dashboard for patient Sarah Miller (DOB: 1981-06-03, MRN: SM43850603) documenting the progression of Severe Drug-Induced Liver Injury (DILI) secondary to Methotrexate (MTX) toxicity superimposed on Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD). The timeline tracks the clinical course from March 2024 to August 2024, highlighting a critical prescribing error where MTX was continued (reduced from 7.5mg to 5mg) despite an ALT spike to 185 U/L (4.6x ULN) in July. This led to an acute crisis in August 2024 characterized by massive hepatocellular necrosis (Peak ALT 490 U/L, AST 350 U/L) and severe cholestasis (Total Bilirubin peaking at 190 µmol/L) requiring hospitalization and N-acetylcysteine (NAC) infusion. The object contains longitudinal data for medications (Metformin, Ramipril, Methotrexate, Folic Acid, NAC, UDCA), specific lab biomarker trends (ALT, AST, Bilirubin, INR, HbA1c), and risk analysis showing the correlation between MTX exposure and liver enzyme derangement while noting preserved synthetic function (INR 1.1).",
+    "content": {
+        "title": "Medication Timeline",
+        "component": "MedicationTimeline",
+        "patientData": {
+            "patient": {
+                "name": "Sarah Miller",
+                "date_of_birth": "1981-06-03",
+                "age": 43,
+                "sex": "Female",
+                "age_at_first_encounter": 43,
+                "identifiers": {
+                    "mrn": "SM43850603"
+                }
+            },
+            "riskLevel": "high",
+            "primaryDiagnosis": "Severe Drug-Induced Liver Injury (Methotrexate-related) on MASLD background",
+            "problem_list": [
+                {
+                    "name": "Type 2 Diabetes Mellitus",
+                    "status": "active"
+                },
+                {
+                    "name": "Essential Hypertension",
+                    "status": "active"
+                },
+                {
+                    "name": "Rheumatoid Arthritis",
+                    "status": "active"
+                },
+                {
+                    "name": "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD)",
+                    "status": "active"
+                },
+                {
+                    "name": "Severe Methotrexate-induced Drug-Induced Liver Injury (DILI)",
+                    "status": "active"
+                },
+                {
+                    "name": "Class I Obesity (BMI 32.0)",
+                    "status": "active"
+                }
+            ]
+        },
+        "props": {
+            "encounters": [
+                {
+                    "encounter_no": 1,
+                    "date": "2024-03-05",
+                    "type": "General Practice",
+                    "provider": "Dr. P. Stevens",
+                    "chief_complaint": "Increased fatigue over the past 4-5 months.",
+                    "medications": [
+                        "Metformin 1000mg BD",
+                        "Ramipril 5mg OD",
+                        "Ibuprofen 4-5x/week"
+                    ],
+                    "impression": "Suboptimal control of T2DM/HTN, Chronic Fatigue Syndrome possibly related to MASLD. Mild effusion in right MCP joint.",
+                    "differential_diagnosis": [
+                        "Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD)",
+                        "Uncontrolled T2DM",
+                        "Rheumatoid Arthritis (conservatively managed)"
+                    ],
+                    "notes": "Baseline ALT 78 U/L detected. Patient reports debilitating fatigue. Advised 5% weight loss target.",
+                    "casual_reason": "Elevated ALT (78 U/L) and fatigue attributed to underlying Metabolic Dysfunction-associated Steatotic Liver Disease (MASLD) driven by Class I obesity (BMI 32.0) and suboptimal T2DM control."
+                },
+                {
+                    "encounter_no": 2,
+                    "date": "2024-04-01",
+                    "type": "General Practice",
+                    "provider": "Dr. P. Stevens",
+                    "chief_complaint": "Review of abnormal liver function tests and planning for rheumatoid arthritis treatment.",
+                    "medications": [
+                        "Metformin 1000mg BD",
+                        "Ramipril 5mg OD"
+                    ],
+                    "impression": "Review of abnormal LFTs. Suspicion of MASLD. Decision to defer Methotrexate initiation pending liver safety workup.",
+                    "differential_diagnosis": [
+                        "MASLD (likely)",
+                        "Viral Hepatitis (to be excluded)",
+                        "Autoimmune Hepatitis (to be excluded)"
+                    ],
+                    "notes": "ALT 78 U/L. Explicitly advised against NSAID use. Ordered comprehensive hepatitis and autoimmune panel.",
+                    "casual_reason": "Persistent ALT elevation (78 U/L) confirms ongoing hepatocellular inflammation, likely due to unmanaged MASLD, necessitating deferral of hepatotoxic medication (MTX)."
+                },
+                {
+                    "encounter_no": 3,
+                    "date": "2024-05-06",
+                    "type": "General Practice",
+                    "provider": "Dr. P. Stevens",
+                    "chief_complaint": "Follow-up regarding the normalization of liver function tests (LFTs) and potential initiation of Methotrexate.",
+                    "medications": [
+                        "Metformin 1000mg BD",
+                        "Ramipril 5mg OD"
+                    ],
+                    "impression": "Normalization of LFTs (ALT 35 U/L). Hepatitis/Autoimmune workup negative. Clearance granted for Methotrexate initiation.",
+                    "differential_diagnosis": [
+                        "Transient liver enzyme elevation (resolved)",
+                        "MASLD (stable)"
+                    ],
+                    "notes": "Full normalization confirmed. Patient cleared for MTX start on 2024-06-03. Strict monitoring schedule established.",
+                    "casual_reason": "Normalization of ALT (35 U/L) attributed to successful lifestyle modifications (dietary changes, weight loss) and resolution of the transient MASLD flare."
+                },
+                {
+                    "encounter_no": 4,
+                    "date": "2024-06-03",
+                    "type": "General Practice",
+                    "provider": "Dr. P. Stevens",
+                    "chief_complaint": "Initiation of Disease-Modifying Anti-Rheumatic Drug (DMARD) - Methotrexate (MTX) for Rheumatoid Arthritis (RA) management.",
+                    "medications": [
+                        "Methotrexate 7.5mg weekly (Start)",
+                        "Folic Acid 5mg weekly (Start)"
+                    ],
+                    "impression": "Initiation of DMARD therapy for RA. Patient educated on hepatotoxicity risks and monitoring requirements.",
+                    "differential_diagnosis": [
+                        "Rheumatoid Arthritis (Active)"
+                    ],
+                    "notes": "MTX started at 7.5mg. Baseline LFTs normal. Next check scheduled for July 15.",
+                    "casual_reason": "Baseline stability established; no biomarker derangement yet as Methotrexate therapy is just commencing."
+                },
+                {
+                    "encounter_no": 5,
+                    "date": "2024-07-15",
+                    "type": "General Practice",
+                    "provider": "Dr. P. Stevens",
+                    "chief_complaint": "Routine Methotrexate (MTX) monitoring. Reports of new intermittent nausea and increased fatigue.",
+                    "medications": [
+                        "Methotrexate 5mg weekly (Reduced Dose)",
+                        "Folic Acid 5mg weekly"
+                    ],
+                    "impression": "Significant elevation in ALT to 185 U/L (4.6x ULN). Intermittent nausea reported. RA symptoms improved.",
+                    "differential_diagnosis": [
+                        "Methotrexate-induced DILI",
+                        "MASLD flare"
+                    ],
+                    "notes": "CRITICAL DECISION: MTX reduced to 5mg rather than discontinued despite ALT >3x ULN. Hepatology referral initiated (Routine).",
+                    "casual_reason": "Sharp rise in ALT to 185 U/L (4.6x ULN) indicates acute hepatocellular injury caused by Methotrexate toxicity, exacerbated by the underlying steatotic liver substrate."
+                },
+                {
+                    "encounter_no": 6,
+                    "date": "2024-08-12",
+                    "type": "Emergency Department",
+                    "provider": "Dr. P. Stevens / ED Registrar",
+                    "chief_complaint": "Urgent review for new onset jaundice, dark urine, and constant, severe nausea leading to anorexia.",
+                    "medications": [
+                        "N-acetylcysteine (NAC) Infusion (Started)"
+                    ],
+                    "impression": "Severe Acute Drug-Induced Liver Injury (DILI) with developing cholestasis. Jaundice and dark urine present.",
+                    "differential_diagnosis": [
+                        "Severe hepatocellular DILI (MTX-related)",
+                        "Biliary obstruction (ruled out by USG)"
+                    ],
+                    "notes": "Crisis point: ALT 490 U/L, Bilirubin 110 µmol/L. MTX stopped immediately. Admitted for NAC protocol.",
+                    "casual_reason": "Massive spike in ALT (490 U/L) and onset of jaundice (Bilirubin 110 µmol/L) caused by cumulative Methotrexate toxicity following the failure to discontinue the drug during the July warning signs."
+                },
+                {
+                    "encounter_no": 7,
+                    "date": "2024-08-15",
+                    "type": "Inpatient Hepatology",
+                    "provider": "Dr. R. Sharma",
+                    "chief_complaint": "Inpatient review for Severe Drug-Induced Liver Injury (DILI) stabilization.",
+                    "medications": [
+                        "Ursodeoxycholic Acid (UDCA) 500mg BD",
+                        "NAC Protocol (Completing Aug 17)"
+                    ],
+                    "impression": "Severe cholestatic DILI on background of MASH. RUCAM score 9/10. Synthetic function preserved (INR 1.1).",
+                    "differential_diagnosis": [
+                        "Severe DILI (Cholestatic phase)",
+                        "MASH"
+                    ],
+                    "notes": "MTX permanently contraindicated. Bilirubin peaked at 190 µmol/L. Fibroscan ordered for 3 months post-discharge.",
+                    "casual_reason": "Rising Bilirubin (190 µmol/L) despite falling ALT reflects the 'cholestatic phase' of recovery, where bile excretion remains impaired even as active hepatocellular necrosis subsides following MTX cessation."
+                }
+            ],
+            "medicationTimeline": [
+                {
+                    "name": "Methotrexate",
+                    "startDate": "2024-06-03",
+                    "endDate": "2024-07-15",
+                    "dose": "7.5mg weekly",
+                    "indication": "RA"
+                },
+                {
+                    "name": "Methotrexate",
+                    "startDate": "2024-07-15",
+                    "endDate": "2024-08-12",
+                    "dose": "5mg weekly",
+                    "indication": "RA (Dose reduced due to ALT spike)"
+                },
+                {
+                    "name": "Folic Acid",
+                    "startDate": "2024-06-03",
+                    "endDate": "2024-08-17",
+                    "dose": "5mg weekly",
+                    "indication": "MTX supplementation"
+                },
+                {
+                    "name": "Ramipril",
+                    "startDate": "2020-01-01",
+                    "endDate": "2025-2-25",
+                    "dose": "5mg OD",
+                    "indication": "Hypertension"
+                },
+                {
+                    "name": "Metformin",
+                    "startDate": "2019-01-01",
+                    "endDate": "2025-2-25",
+                    "dose": "1000mg BD",
+                    "indication": "T2DM"
+                },
+                {
+                    "name": "N-acetylcysteine (NAC)",
+                    "startDate": "2024-08-12",
+                    "endDate": "2024-08-17",
+                    "dose": "IV Protocol",
+                    "indication": "Acute Liver Injury"
+                },
+                {
+                    "name": "Ursodeoxycholic Acid",
+                    "startDate": "2024-08-15",
+                    "endDate": "2025-2-25",
+                    "dose": "500mg BD",
+                    "indication": "Cholestasis"
+                }
+            ],
+            "labTimeline": [
+                {
+                    "biomarker": "ALT",
+                    "unit": "U/L",
+                    "referenceRange": {
+                        "min": 0,
+                        "max": 40
+                    },
+                    "values": [
+                        {
+                            "t": "2024-03-05T10:15:00",
+                            "value": 78
+                        },
+                        {
+                            "t": "2024-05-06T09:00:00",
+                            "value": 35
+                        },
+                        {
+                            "t": "2024-07-15T14:00:00",
+                            "value": 185
+                        },
+                        {
+                            "t": "2024-08-12T09:30:00",
+                            "value": 490
+                        },
+                        {
+                            "t": "2024-08-15T10:00:00",
+                            "value": 420
+                        }
+                    ]
+                },
+                {
+                    "biomarker": "AST",
+                    "unit": "U/L",
+                    "referenceRange": {
+                        "min": 0,
+                        "max": 35
+                    },
+                    "values": [
+                        {
+                            "t": "2024-03-05T10:15:00",
+                            "value": 55
+                        },
+                        {
+                            "t": "2024-05-06T09:00:00",
+                            "value": 30
+                        },
+                        {
+                            "t": "2024-07-15T14:00:00",
+                            "value": 130
+                        },
+                        {
+                            "t": "2024-08-12T09:30:00",
+                            "value": 350
+                        }
+                    ]
+                },
+                {
+                    "biomarker": "Total Bilirubin",
+                    "unit": "µmol/L",
+                    "referenceRange": {
+                        "min": 0,
+                        "max": 21
+                    },
+                    "values": [
+                        {
+                            "t": "2024-03-05T10:15:00",
+                            "value": 12
+                        },
+                        {
+                            "t": "2024-07-15T14:00:00",
+                            "value": 15
+                        },
+                        {
+                            "t": "2024-08-12T09:30:00",
+                            "value": 110
+                        },
+                        {
+                            "t": "2024-08-15T10:00:00",
+                            "value": 190
+                        }
+                    ]
+                },
+                {
+                    "biomarker": "INR",
+                    "unit": "ratio",
+                    "referenceRange": {
+                        "min": 0.8,
+                        "max": 1.2
+                    },
+                    "values": [
+                        {
+                            "t": "2024-03-05T10:15:00",
+                            "value": 1.0
+                        },
+                        {
+                            "t": "2024-07-15T14:00:00",
+                            "value": 1.05
+                        },
+                        {
+                            "t": "2024-08-12T09:30:00",
+                            "value": 1.1
+                        },
+                        {
+                            "t": "2024-08-15T10:00:00",
+                            "value": 1.1
+                        }
+                    ]
+                },
+                {
+                    "biomarker": "HbA1c",
+                    "unit": "mmol/mol",
+                    "referenceRange": {
+                        "min": 0,
+                        "max": 48
+                    },
+                    "values": [
+                        {
+                            "t": "2024-03-05T10:15:00",
+                            "value": 58
+                        },
+                        {
+                            "t": "2024-05-06T09:00:00",
+                            "value": 56
+                        },
+                        {
+                            "t": "2024-07-15T14:00:00",
+                            "value": 60
+                        }
+                    ]
+                }
+            ],
+            "keyEvents": [
+                {
+                    "event": "Baseline Risk Identified",
+                    "t": "2024-03-05T10:15:00",
+                    "note": "ALT 78 detected. MTX deferred. MASLD suspected."
+                },
+                {
+                    "event": "MTX Initiation",
+                    "t": "2024-06-03T11:30:00",
+                    "note": "MTX started 7.5mg/week after LFT normalization."
+                },
+                {
+                    "event": "Missed Warning Signal",
+                    "t": "2024-07-15T14:00:00",
+                    "note": "ALT spiked to 185 (4.6x ULN). MTX reduced instead of stopped."
+                },
+                {
+                    "event": "Crisis Presentation",
+                    "t": "2024-08-12T09:30:00",
+                    "note": "Jaundice, dark urine, anorexia. ALT 490. MTX stopped."
+                },
+                {
+                    "event": "Hospital Admission",
+                    "t": "2024-08-12T14:00:00",
+                    "note": "Admitted for NAC infusion. USG confirms MASLD, rules out obstruction."
+                },
+                {
+                    "event": "Peak Cholestasis",
+                    "t": "2024-08-15T10:00:00",
+                    "note": "Bilirubin peaks at 190 µmol/L. Synthetic function preserved."
+                }
+            ],
+            "riskTimeline": [
+                {
+                    "t": "2024-03-05T10:15:00",
+                    "riskScore": 0.4,
+                    "factors": [
+                        "Baseline ALT 78",
+                        "BMI 32",
+                        "T2DM",
+                        "MASLD suspected"
+                    ]
+                },
+                {
+                    "t": "2024-05-06T09:00:00",
+                    "riskScore": 0.2,
+                    "factors": [
+                        "ALT normalized (35)",
+                        "Hepatitis screen negative",
+                        "Cleared for MTX"
+                    ]
+                },
+                {
+                    "t": "2024-07-15T14:00:00",
+                    "riskScore": 0.8,
+                    "factors": [
+                        "ALT 185 (Critical)",
+                        "Nausea",
+                        "MTX continued (reduced dose)"
+                    ]
+                },
+                {
+                    "t": "2024-08-12T09:30:00",
+                    "riskScore": 9.5,
+                    "factors": [
+                        "ALT 490",
+                        "Bilirubin 110",
+                        "Jaundice",
+                        "Severe DILI"
+                    ]
+                },
+                {
+                    "t": "2024-08-15T10:00:00",
+                    "riskScore": 8.0,
+                    "factors": [
+                        "Bilirubin 190",
+                        "ALT dropping (420)",
+                        "INR stable",
+                        "On NAC"
+                    ]
+                }
+            ],
+            "causalChain": [
+                {
+                    "title": "Underlying Substrate",
+                    "description": "Obesity (BMI 32), T2DM, and MASLD created a vulnerable liver environment."
+                },
+                {
+                    "title": "MTX Initiation",
+                    "description": "Started June 3 after transient ALT normalization."
+                },
+                {
+                    "title": "Early Toxicity Signal",
+                    "description": "July 15: ALT rose to 185 U/L (4.6x ULN) with nausea."
+                },
+                {
+                    "title": "Prescribing Error",
+                    "description": "Protocol violation: MTX reduced to 5mg instead of immediate cessation when ALT >3x ULN."
+                },
+                {
+                    "title": "Cumulative Injury",
+                    "description": "Continued exposure for 4 weeks on inflamed liver led to massive necrosis."
+                },
+                {
+                    "title": "Acute Presentation",
+                    "description": "Aug 12: Jaundice, ALT 490. Diagnosis: Severe Hepatocellular DILI."
+                },
+                {
+                    "title": "Cholestatic Phase",
+                    "description": "Aug 15: Bilirubin peaked at 190 µmol/L despite falling ALT."
+                },
+                {
+                    "title": "Resolution",
+                    "description": "Synthetic function (INR) preserved. Recovering with NAC and UDCA."
+                }
+            ]
+        }
+    },
+    "createdAt": "2025-10-14T16:47:56.098Z",
+    "updatedAt": "2025-10-14T16:47:56.098Z"
+}

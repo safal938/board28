@@ -4,45 +4,82 @@ import { Encounter } from '../types';
 
 // --- Helper Hooks ---
 // Creates a Polylinear scale that maps specific encounter dates to evenly spaced X coordinates
-export const useTimelineScale = (encounters: Encounter[], width: number, padding: number) => {
+export const useTimelineScale = (encounters: Encounter[], paddingLeft: number, paddingRight: number, additionalDates: Date[] = []) => {
   return useMemo(() => {
-    // Sort encounters by date to ensure strict time ordering
-    const sortedDates = [...encounters]
-        .map(e => new Date(e.date))
-        .sort((a, b) => a.getTime() - b.getTime());
-    
-    if (sortedDates.length === 0) return d3.scaleTime();
+    // Configuration for spacing
+    const ENCOUNTER_STEP = 300;
+    const COMPACT_STEP = 100;
 
-    // We want the encounters to be spaced evenly across the available width (minus padding)
-    const availableWidth = width - (padding * 2);
+    // Combine and sort all items
+    const items = [
+        ...encounters.map(e => ({ date: new Date(e.date), type: 'encounter' })),
+        ...additionalDates.map(d => ({ date: d, type: 'additional' }))
+    ].sort((a, b) => a.date.getTime() - b.date.getTime());
     
-    // If we have N encounters, we have N-1 segments between them.
-    // Step size is constant visual distance.
-    const step = availableWidth / (sortedDates.length > 1 ? sortedDates.length - 1 : 1);
-    
-    // Create the main domain and range for the encounters
-    // Domain: [Date1, Date2, Date3, ...] 
-    // Range:  [Pad, Pad+Step, Pad+2Step, ...]
-    const domain = sortedDates;
-    const range = sortedDates.map((_, i) => padding + (i * step));
+    if (items.length === 0) return { scale: d3.scaleTime(), width: 1400 };
 
-    // To handle data points (like meds/labs) that fall *before* the first encounter 
-    // or *after* the last one, we add extension points to the scale.
-    // We project a "virtual" step backward and forward.
-    // We use an arbitrary time buffer (e.g., 1 year) to map to that step distance.
+    // Calculate positions cumulatively
+    const domain: Date[] = [];
+    const range: number[] = [];
     
-    const firstDate = sortedDates[0];
-    const lastDate = sortedDates.length > 0 ? sortedDates[sortedDates.length - 1] : new Date();
+    let currentX = paddingLeft;
     
-    const preDate = d3.timeYear.offset(firstDate, -1); // 1 year before
-    const postDate = d3.timeYear.offset(lastDate, 1);  // 1 year after
+    items.forEach((item, i) => {
+        domain.push(item.date);
+        range.push(currentX);
+        
+        // Calculate gap to NEXT item
+        if (i < items.length - 1) {
+            // If the CURRENT item is additional, use compact step
+            // If the CURRENT item is encounter, use normal step
+            // Actually, we want the gap *before* the encounter to be normal?
+            // User said "past meds... minimal space".
+            // Let's say: if the *next* item is additional, use compact step?
+            // No, usually spacing is associated with the interval.
+            // If I have [Past1, Past2, Enc1]
+            // Gap Past1->Past2: Compact
+            // Gap Past2->Enc1: Compact (because Past2 is just a med) OR Normal (because Enc1 is big)?
+            // Let's try: Step size depends on the *target* (next) item? 
+            // Or the *source*?
+            // If I use source:
+            // Past1 -> (Compact) -> Past2 -> (Compact) -> Enc1 -> (EncounterStep) -> Enc2
+            // This means Past2 is close to Enc1. This seems right.
+            
+            let step = item.type === 'additional' ? COMPACT_STEP : ENCOUNTER_STEP;
+
+            // Increase gap between additional dates (e.g. past meds) and the first encounter
+            // This ensures that even with small start padding, there is separation before the main timeline
+            if (i < items.length - 1 && item.type === 'additional' && items[i+1].type === 'encounter') {
+                step = ENCOUNTER_STEP;
+            }
+
+            currentX += step;
+        }
+    });
+
+    // Calculate total width
+    const contentWidth = currentX + paddingRight;
+    const totalWidth = Math.max(1400, contentWidth);
+
+    // Add buffer points for the scale domain (pre/post)
+    const firstDate = items[0].date;
+    const lastDate = items[items.length - 1].date;
+    
+    const preDate = d3.timeYear.offset(firstDate, -1);
+    const postDate = d3.timeYear.offset(lastDate, 1);
 
     const fullDomain = [preDate, ...domain, postDate];
-    const fullRange = [padding - step, ...range, width - padding + step];
+    // Extend range using the same step logic for buffers
+    // Pre-buffer: subtract step of first item
+    const firstStep = items[0].type === 'additional' ? COMPACT_STEP : ENCOUNTER_STEP;
+    const lastStep = items[items.length - 1].type === 'additional' ? COMPACT_STEP : ENCOUNTER_STEP;
+    
+    const fullRange = [range[0] - firstStep, ...range, range[range.length - 1] + lastStep];
 
-    // d3.scaleTime handles the linear interpolation between these discrete points.
-    return d3.scaleTime()
+    const scale = d3.scaleTime()
       .domain(fullDomain)
       .range(fullRange);
-  }, [encounters, width, padding]);
+      
+    return { scale, width: totalWidth };
+  }, [encounters, paddingLeft, paddingRight, additionalDates]);
 };

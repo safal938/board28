@@ -6,14 +6,21 @@ interface MasterGridProps {
     encounters: Encounter[];
     scale: d3.ScaleTime<number, number>;
     height: number | string;
+    additionalDates?: Date[];
 }
 
-export const MasterGrid: React.FC<MasterGridProps> = ({ encounters, scale, height }) => {
+export const MasterGrid: React.FC<MasterGridProps> = ({ encounters, scale, height, additionalDates = [] }) => {
+    // Combine all dates
+    const allDates = [
+        ...encounters.map(e => new Date(e.date)),
+        ...additionalDates
+    ];
+
     return (
         <div className="absolute top-0 left-0 w-full pointer-events-none z-0" style={{ height }}>
             <svg width="100%" height="100%">
-                {encounters.map((enc, i) => {
-                    const x = scale(new Date(enc.date));
+                {allDates.map((date, i) => {
+                    const x = scale(date);
                     return (
                         <g key={i}>
                             {/* Dashed vertical line */}

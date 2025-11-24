@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import  INITIAL_DATA  from '../../data/new_med_timeline.json';
+import  INITIAL_DATA  from '../../data/new_medtimeline_updated.json';
 import { TimelineAxis, EncounterTrack, MedicationTrack, LabTrack, KeyEventsTrack, RiskTrack, useTimelineScale, MasterGrid } from './timeline';
 import { Sidebar } from './Sidebar';
-import { CausalSidebar } from './CausalSidebar';
 import { MedicalData, PatientData } from './types';
 
 export const Dashboard: React.FC = () => {
@@ -14,15 +13,33 @@ export const Dashboard: React.FC = () => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   
+  // Define past medications to inject
+  const pastMeds = [
+    {
+        "name": "Ramipril",
+        "startDate": "2020-01-01",
+        "dose": "5mg OD",
+        "endDate": "2025-02-15",
+        "indication": "Hypertension"
+    },
+    {
+        "name": "Metformin",
+        "startDate": "2019-01-01",
+        "dose": "1000mg BD",
+        "endDate": "2025-02-15",
+        "indication": "T2DM"
+    }
+  ];
+
+  // Merge past meds into the medication timeline
+  const allMedications = [...pastMeds, ...timelineProps.medicationTimeline];
+  
+  // Extract dates for the scale
+  const pastMedDates = pastMeds.map(m => new Date(m.startDate));
+
   // Configuration for the encounter-based layout
   const SLOT_WIDTH = 300; // Fixed width per encounter - reduced by 20%
-  const PADDING = 160;    // Start/End padding - reduced by 20%
-
-  // Calculate width directly from encounters - no responsive behavior needed
-  const width = Math.max(
-    1400, // Minimum width to ensure proper spacing - reduced by 20%
-    (timelineProps.encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
+  const PADDING = 20;    // Start/End padding - reduced to move start dates left
 
   // Debug: Log the imported data to verify chief_complaint is present
   useEffect(() => {
@@ -33,8 +50,9 @@ export const Dashboard: React.FC = () => {
     })));
   }, [timelineProps]);
 
-  // Use the polylinear scale based on encounters
-  const scale = useTimelineScale(timelineProps.encounters, width, PADDING);
+  // Use the polylinear scale based on encounters + past med dates
+  // The hook now returns the calculated width based on variable spacing
+  const { scale, width } = useTimelineScale(timelineProps.encounters, 20, 160, pastMedDates);
 
   if (loading) {
       return (
@@ -59,7 +77,7 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex bg-gray-100 text-slate-800 font-sans min-h-full" style={{ width: width + 300 + 384 }}>
+    <div className="flex bg-gray-100 text-slate-800 font-sans min-h-full" style={{ width: width + 300 }}>
       {/* Left Sidebar */}
       {patientData && <Sidebar patientData={patientData} />}
 
@@ -85,16 +103,16 @@ export const Dashboard: React.FC = () => {
         {/* Timeline Area */}
         <main className="bg-slate-50/50 relative" ref={containerRef} style={{ width: width }}>
             <div style={{ width: width }} className="bg-white shadow-sm relative">
-                <MasterGrid encounters={timelineProps.encounters} scale={scale} height="100%" />
+                <MasterGrid encounters={timelineProps.encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
                 
                 <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-                    <TimelineAxis encounters={timelineProps.encounters} scale={scale} />
+                    <TimelineAxis encounters={timelineProps.encounters} scale={scale} additionalDates={pastMedDates} />
                 </div>
                 
                 {/* Reduced gap for compact view */}
                 <div className="relative z-20 pt-2 flex flex-col gap-1">
                     <EncounterTrack encounters={timelineProps.encounters} scale={scale} />
-                    <MedicationTrack medications={timelineProps.medicationTimeline} scale={scale} />
+                    <MedicationTrack medications={allMedications} scale={scale} />
                     <LabTrack labs={timelineProps.labTimeline} scale={scale} />
                     {/* Risk Track Component */}
                     {timelineProps.riskTimeline && timelineProps.riskTimeline.length > 0 && (
@@ -105,11 +123,7 @@ export const Dashboard: React.FC = () => {
             </div>
         </main>
       </div>
-
-      {/* Right Sidebar - Causal Pathway Analysis */}
-      {timelineProps.causalChain && timelineProps.causalChain.length > 0 && (
-        <CausalSidebar nodes={timelineProps.causalChain} />
-      )}
+      
     </div>
   );
 };

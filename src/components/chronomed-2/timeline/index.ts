@@ -4,5 +4,6 @@ export * from './TimelineAxis';
 export * from './EncounterTrack';
 export * from './MedicationTrack';
 export * from './LabTrack';
+export * from './IndividualLabChart';
 export * from './RiskTrack';
 export * from './KeyEventsTrack';

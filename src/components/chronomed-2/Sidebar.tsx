@@ -10,7 +10,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ patientData }) => {
   const { patient, problem_list } = patientData;
 
   return (
-    <aside className="w-80 bg-white border-r border-gray-200 flex flex-col min-h-full overflow-y-auto shrink-0 z-40 shadow-[2px_0_10px_rgba(0,0,0,0.05)]">
+    <aside className="w-70 bg-white border-r border-gray-200 flex flex-col min-h-full overflow-y-auto shrink-0 z-40 shadow-[2px_0_10px_rgba(0,0,0,0.05)]">
       {/* Patient Header */}
       <div className="p-6 border-b border-gray-100 bg-gradient-to-b from-white to-slate-50/50">
         <div className="flex items-center gap-4 mb-4">

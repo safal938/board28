@@ -95,9 +95,10 @@ interface LabResult {
 
 interface LabTableProps {
   encounters: any[];
+  labResults?: LabResult[];
 }
 
-const LabTable: React.FC<LabTableProps> = ({ encounters }) => {
+const LabTable: React.FC<LabTableProps> = ({ encounters, labResults }) => {
   
   // Generate lab results based on encounter data and clinical context
   const generateLabResults = (): LabResult[] => {
@@ -176,7 +177,7 @@ const LabTable: React.FC<LabTableProps> = ({ encounters }) => {
     return baseResults;
   };
 
-  const labResults = generateLabResults();
+  const resultsToRender = labResults || generateLabResults();
 
   const getTrend = (current: number, previous?: number) => {
     if (!previous) return 'stable';
@@ -207,7 +208,7 @@ const LabTable: React.FC<LabTableProps> = ({ encounters }) => {
           </TableRow>
         </TableHead>
         <tbody>
-          {labResults.map((lab, index) => (
+          {resultsToRender.map((lab, index) => (
             <TableRow key={index}>
               <TableCell>
                 <strong>{lab.name}</strong>

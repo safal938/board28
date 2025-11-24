@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState } from 'react';
 import ReactFlow, {
   Controls,
   Background,
@@ -7,19 +7,39 @@ import ReactFlow, {
   BackgroundVariant,
   Node,
   NodeProps,
-  Handle,
-  Position,
   Panel,
+  MarkerType,
+  EdgeProps,
+  getBezierPath,
+  getStraightPath,
 } from 'reactflow';
 import styled from 'styled-components';
 import 'reactflow/dist/style.css';
 import { Dashboard } from './chronomed/Dashboard';
 import { Dashboard as Dashboard2 } from './chronomed-2/Dashboard';
 import { EncounterTrack, MedicationTrack, LabTrack, RiskTrack, KeyEventsTrack, useTimelineScale, MasterGrid, TimelineAxis } from './chronomed-2/timeline';
-import { CausalSidebar } from './chronomed-2/CausalSidebar';
 import { Sidebar } from './chronomed/Sidebar';
 
-import INITIAL_DATA from '../data/new_med_timeline.json';
+import INITIAL_DATA from '../data/new_medtimeline_updated.json';
+
+const pastMeds = [
+    {
+        "name": "Ramipril",
+        "startDate": "2020-01-01",
+        "endDate": "2025-02-15",
+        "dose": "5mg OD",
+        "indication": "Hypertension"
+    },
+    {
+        "name": "Metformin",
+        "startDate": "2019-01-01",
+        "endDate": "2025-02-15",
+        "dose": "1000mg BD",
+        "indication": "T2DM"
+    }
+];
+
+const pastMedDates = pastMeds.map(m => new Date(m.startDate));
 
 const ReactFlowWrapper = styled.div`
   width: 100%;
@@ -51,7 +71,7 @@ const DashboardNodeContainer = styled.div`
   z-index: 1;
 `;
 
-function DashboardNode({ data }: NodeProps) {
+function DashboardNode() {
   return (
     <DashboardNodeContainer>
       <Dashboard />
@@ -59,7 +79,7 @@ function DashboardNode({ data }: NodeProps) {
   );
 }
 
-function Dashboard2Node({ data }: NodeProps) {
+function Dashboard2Node() {
   return (
     <DashboardNodeContainer>
       <Dashboard2 />
@@ -67,85 +87,25 @@ function Dashboard2Node({ data }: NodeProps) {
   );
 }
 
-// ... (imports remain the same)
-
-function UnifiedDashboardNode({ data }: NodeProps) {
+function EncounterTrackNode({ data }: NodeProps) {
   // Configuration matching Dashboard.tsx
   const SLOT_WIDTH = 300;
-  const PADDING = 160;
-  
-  const patientData = data.patientData;
-  const encounters = data.encounters || [];
-  const medications = data.medications || [];
-  const labs = data.labs || [];
-  const risks = data.risks || [];
-  const events = data.events || [];
-  const causalNodes = data.causalNodes || [];
-  const showHandles = data.showHandles;
-  
-  const timelineWidth = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, timelineWidth, PADDING);
-
-  return (
-    <div className="flex h-full bg-white rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.1)] overflow-hidden">
-        {/* Left Sidebar */}
-        <div className="w-80 shrink-0 border-r border-gray-200">
-            <Sidebar patientData={patientData} />
-        </div>
-
-        {/* Center Timeline */}
-        <div style={{ width: timelineWidth }} className="relative bg-white">
-            <MasterGrid encounters={encounters} scale={scale} height="100%" />
-            
-            <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-                    <TimelineAxis encounters={encounters} scale={scale} />
-            </div>
-
-            <div className="relative z-20 pt-2 pb-4 flex flex-col gap-1">
-                <EncounterTrack encounters={encounters} scale={scale} showHandles={showHandles} />
-                <MedicationTrack medications={medications} scale={scale} showHandles={showHandles} />
-                <LabTrack labs={labs} scale={scale} showHandles={showHandles} />
-                <RiskTrack data={risks} scale={scale} showHandles={showHandles} />
-                <KeyEventsTrack events={events} scale={scale} showHandles={showHandles} />
-            </div>
-        </div>
-
-        {/* Right Sidebar */}
-        <div className="w-96 shrink-0 border-l border-gray-200">
-            <CausalSidebar nodes={causalNodes} showHandles={showHandles} />
-        </div>
-    </div>
-  );
-}
-
-
-function EncounterTrackNode({ data }: NodeProps) {
-  const SLOT_WIDTH = 300;
-  const PADDING = 160;
+  const PADDING = 40;
   const encounters = data.encounters || [];
   const showHandles = data.showHandles;
   
-  const width = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, width, PADDING);
+  const totalItems = encounters.length + pastMeds.length;
+  const { scale, width } = useTimelineScale(encounters, 40, 160, pastMedDates);
 
   return (
     <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
-       <MasterGrid encounters={encounters} scale={scale} height="100%" />
+       <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
        
        <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-            <TimelineAxis encounters={encounters} scale={scale} />
+            <TimelineAxis encounters={encounters} scale={scale} additionalDates={pastMedDates} />
        </div>
 
-      <div className="relative z-20 pt-2 pb-4 flex flex-col gap-1">
-        <h3 className="text-lg font-bold px-4 pt-2">Encounter Track Standalone</h3>
+      <div className="relative z-20 pt-2 pb-4">
         <EncounterTrack encounters={encounters} scale={scale} showHandles={showHandles} />
       </div>
     </div>
@@ -153,25 +113,19 @@ function EncounterTrackNode({ data }: NodeProps) {
 }
 
 function MedicationTrackNode({ data }: NodeProps) {
-  const SLOT_WIDTH = 300;
-  const PADDING = 160;
+  // Configuration matching Dashboard.tsx
+  const PADDING = 20;
   const encounters = data.encounters || [];
   const medications = data.medications || [];
   const showHandles = data.showHandles;
   
-  const width = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, width, PADDING);
+  const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
   return (
     <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
-      <MasterGrid encounters={encounters} scale={scale} height="100%" />
+      <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
       
-      <div className="relative z-20 p-5">
-        <h3 className="text-lg font-bold mb-4">Medication Track Standalone</h3>
+      <div className="relative z-20 pt-5 pb-5">
         <MedicationTrack medications={medications} scale={scale} showHandles={showHandles} />
       </div>
     </div>
@@ -179,25 +133,19 @@ function MedicationTrackNode({ data }: NodeProps) {
 }
 
 function LabTrackNode({ data }: NodeProps) {
-  const SLOT_WIDTH = 300;
-  const PADDING = 160;
+  // Configuration matching Dashboard.tsx
+  const PADDING = 20;
   const encounters = data.encounters || [];
   const labs = data.labs || [];
   const showHandles = data.showHandles;
   
-  const width = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, width, PADDING);
+  const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
   return (
     <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
-      <MasterGrid encounters={encounters} scale={scale} height="100%" />
+      <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
       
-      <div className="relative z-20 p-5">
-        <h3 className="text-lg font-bold mb-4">Lab Track Standalone</h3>
+      <div className="relative z-20 pt-5 pb-5">
         <LabTrack labs={labs} scale={scale} showHandles={showHandles} />
       </div>
     </div>
@@ -205,25 +153,19 @@ function LabTrackNode({ data }: NodeProps) {
 }
 
 function RiskTrackNode({ data }: NodeProps) {
-  const SLOT_WIDTH = 300;
-  const PADDING = 160;
+  // Configuration matching Dashboard.tsx
+  const PADDING = 20;
   const encounters = data.encounters || [];
   const risks = data.risks || [];
   const showHandles = data.showHandles;
   
-  const width = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, width, PADDING);
+  const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
   return (
     <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
-      <MasterGrid encounters={encounters} scale={scale} height="100%" />
+      <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
       
-      <div className="relative z-20 p-5">
-        <h3 className="text-lg font-bold mb-4">Risk Track Standalone</h3>
+      <div className="relative z-20 pt-5 pb-5">
         <RiskTrack data={risks} scale={scale} showHandles={showHandles} />
       </div>
     </div>
@@ -231,25 +173,19 @@ function RiskTrackNode({ data }: NodeProps) {
 }
 
 function KeyEventsTrackNode({ data }: NodeProps) {
-  const SLOT_WIDTH = 300;
-  const PADDING = 160;
+  // Configuration matching Dashboard.tsx
+  const PADDING = 20;
   const encounters = data.encounters || [];
   const events = data.events || [];
   const showHandles = data.showHandles;
   
-  const width = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, width, PADDING);
+  const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
   return (
     <div style={{ width: width, background: 'white', padding: 0, borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'visible', position: 'relative' }}>
-      <MasterGrid encounters={encounters} scale={scale} height="100%" />
+      <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
       
-      <div className="relative z-20 p-5">
-        <h3 className="text-lg font-bold mb-4">Key Events Track Standalone</h3>
+      <div className="relative z-20 pt-5 pb-5">
         <KeyEventsTrack events={events} scale={scale} showHandles={showHandles} />
       </div>
     </div>
@@ -259,21 +195,13 @@ function KeyEventsTrackNode({ data }: NodeProps) {
 function SidebarNode({ data }: NodeProps) {
     const patientData = data.patientData;
     return (
-        <div style={{ width: 320, height: 1200, background: 'white', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+        <div style={{ width: 320, height: 2400, background: 'white', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
             <Sidebar patientData={patientData} />
         </div>
     );
 }
 
-function CausalNode({ data }: NodeProps) {
-    const nodes = data.nodes || [];
-    const showHandles = data.showHandles;
-    return (
-        <div style={{ width: 400, height: 2400, background: 'white', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
-            <CausalSidebar nodes={nodes} showHandles={showHandles} />
-        </div>
-    );
-}
+
 
 function Canvas3() {
   const [showConnections, setShowConnections] = useState(true);
@@ -285,155 +213,72 @@ function Canvas3() {
     }
 
     const encounters = INITIAL_DATA.content.props.encounters;
-    const medications = INITIAL_DATA.content.props.medicationTimeline;
+    const medications = [...pastMeds, ...INITIAL_DATA.content.props.medicationTimeline];
     const labs = INITIAL_DATA.content.props.labTimeline;
     const risks = INITIAL_DATA.content.props.riskTimeline;
     const keyEvents = INITIAL_DATA.content.props.keyEvents;
-    
-    // Note: Causal nodes are now inside the dashboard, but we might still want to connect TO them if they have handles.
-    // However, the previous logic connected a separate Causal Node to the Risk Node.
-    // Now both are inside the same Unified Node. 
-    // React Flow edges CANNOT connect elements INSIDE the same node to each other using standard edges.
-    // But here we are connecting external "Info Cards" to the Unified Node.
-    
-    const SLOT_WIDTH = 300;
-    const PADDING = 160;
-    const width = Math.max(1400, (encounters.length * SLOT_WIDTH) + (PADDING * 2));
-    
-    // Re-implement scale logic for positioning (simplified)
-    const sortedDates = [...encounters].map(e => new Date(e.date)).sort((a, b) => a.getTime() - b.getTime());
-    const availableWidth = width - (PADDING * 2);
-    const step = availableWidth / (sortedDates.length > 1 ? sortedDates.length - 1 : 1);
-    
-    // Map date string to X
-    const getX = (dateStr: string) => {
-        const d = new Date(dateStr);
-        const index = sortedDates.findIndex(sd => sd.getTime() === d.getTime());
-        if (index === -1) return 0;
-        return PADDING + (index * step);
-    };
 
-    const unifiedNodeId = 'unified-dashboard-1';
-    
-    // Offsets for the unified node structure
-    const SIDEBAR_WIDTH = 320;
-    const trackStartX = 100 + SIDEBAR_WIDTH; // Shift everything right by sidebar width
-    const trackStartY = 100;
-    
-    const encounterY = trackStartY + 100;
-    const medY = trackStartY + 400;
-    const labY = trackStartY + 800;
-    const riskY = trackStartY + 1200;
-    const keyEventY = trackStartY + 1600;
+    const encounterNodeId = 'encounter-track-1';
+    const medNodeId = 'medication-track-1';
+    const labNodeId = 'lab-track-1';
+    const riskNodeId = 'risk-track-1';
+    const keyEventNodeId = 'key-events-track-1';
 
     const newNodes: Node[] = [];
     const newEdges: any[] = [];
 
-    // Encounter Dynamic Nodes (Bottom)
-    encounters.forEach((enc) => {
-        const x = getX(enc.date);
-        const nodeId = `detail-${enc.encounter_no}`;
-        
-        newNodes.push({
-            id: nodeId,
-            type: 'default', // Standard node
-            position: { x: trackStartX + x - 75, y: encounterY + 2000 }, // Position way below
-            data: { label: `Detail: ${enc.type}` },
-            style: { width: 150, background: '#eff6ff', border: '1px solid #3b82f6' }
-        });
-
-        newEdges.push({
-            id: `e-${unifiedNodeId}-${nodeId}`,
-            source: unifiedNodeId,
-            sourceHandle: `enc-${enc.encounter_no}`,
-            target: nodeId,
-            animated: true,
-            style: { stroke: '#3b82f6' }
-        });
-    });
-
-    // Medication Dynamic Nodes (Left)
-    const groupedMeds: Record<string, any[]> = {};
-    medications.forEach((med: any) => {
-        if (!groupedMeds[med.name]) {
-            groupedMeds[med.name] = [];
-        }
-        groupedMeds[med.name].push(med);
-    });
+    // Edge: Methotrexate → ALT spike (2024-07-15)
+    const mtxHandleId = 'med-group-methotrexate-source';
+    const altLabIdx = labs.findIndex((l: any) => l.biomarker === 'ALT');
+    const altSpikePointIdx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-07-15T14:00:00');
     
-    const medNames = Object.keys(groupedMeds);
+    if (altLabIdx !== -1 && altSpikePointIdx !== -1) {
+        newEdges.push({
+            id: 'e-mtx-to-alt-spike',
+            source: medNodeId,
+            sourceHandle: mtxHandleId,
+            target: labNodeId,
+            targetHandle: `lab-${altLabIdx}-point-${altSpikePointIdx}-target`,
+            animated: false,
+            label: '6 weeks of MTX → ALT 185',
+            style: { stroke: '#f59e0b', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#f59e0b',
+            },
+            labelStyle: { fill: '#f59e0b', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fffbeb', fillOpacity: 0.9 }
+        });
+    }
+
+    // Edge: Methotrexate → AST spike (2024-07-15)
+    const astLabIdx = labs.findIndex((l: any) => l.biomarker === 'AST');
+    const astSpikePointIdx = labs[astLabIdx]?.values.findIndex((v: any) => v.t === '2024-07-15T14:00:00');
     
-    medNames.forEach((name, idx) => {
-        const nodeId = `med-info-${name.replace(/\s+/g, '-').toLowerCase()}`;
-        const handleId = `med-group-${name.replace(/\s+/g, '-').toLowerCase()}`;
-        
-        newNodes.push({
-            id: nodeId,
-            type: 'default',
-            position: { x: trackStartX - 250, y: medY + (idx * 30) }, // Left of the track
-            data: { label: `${name} Info` },
-            style: { width: 200, background: '#ecfdf5', border: '1px solid #10b981' }
-        });
-
+    if (astLabIdx !== -1 && astSpikePointIdx !== -1) {
         newEdges.push({
-            id: `e-${nodeId}-${unifiedNodeId}`,
-            source: nodeId,
-            target: unifiedNodeId,
-            targetHandle: handleId,
-            animated: true,
-            style: { stroke: '#10b981' }
+            id: 'e-mtx-to-ast-spike',
+            source: medNodeId,
+            sourceHandle: mtxHandleId,
+            target: labNodeId,
+            targetHandle: `lab-${astLabIdx}-point-${astSpikePointIdx}-target`,
+            animated: false,
+            label: 'AST 130',
+            style: { stroke: '#f59e0b', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#f59e0b',
+            },
+            labelStyle: { fill: '#f59e0b', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fffbeb', fillOpacity: 0.9 }
         });
-    });
+    }
 
-    // Lab Dynamic Nodes (Left)
-    labs.forEach((metric: any, idx: number) => {
-        const nodeId = `lab-info-${idx}`;
-        const metricName = metric.biomarker;
-
-        newNodes.push({
-            id: nodeId,
-            type: 'default',
-            position: { x: trackStartX - 250, y: labY + (idx * 150) }, // Spaced out vertically
-            data: { label: `${metricName} Analysis` },
-            style: { width: 200, background: '#f0f9ff', border: '1px solid #0ea5e9' }
-        });
-
-        // Create edges to ALL data points for this metric
-        metric.values.forEach((val: any, valIdx: number) => {
-            newEdges.push({
-                id: `e-${nodeId}-${unifiedNodeId}-${valIdx}`,
-                source: nodeId,
-                target: unifiedNodeId,
-                targetHandle: `lab-${idx}-point-${valIdx}`,
-                animated: true,
-                style: { stroke: '#0ea5e9', strokeDasharray: '5,5' }
-            });
-        });
-    });
-
-    // Risk Dynamic Nodes (Left)
-    const riskAnalysisNodeId = 'risk-analysis-node';
-    newNodes.push({
-        id: riskAnalysisNodeId,
-        type: 'default',
-        position: { x: trackStartX - 250, y: riskY },
-        data: { label: 'Risk Analysis' },
-        style: { width: 200, background: '#fef2f2', border: '1px solid #ef4444' }
-    });
-
-    // Connect to ALL risk points
-    risks.forEach((point: any, idx: number) => {
-        newEdges.push({
-            id: `e-${riskAnalysisNodeId}-${unifiedNodeId}-${idx}`,
-            source: riskAnalysisNodeId,
-            target: unifiedNodeId,
-            targetHandle: `risk-point-${idx}`,
-            animated: true,
-            style: { stroke: '#ef4444', strokeDasharray: '5,5' }
-        });
-    });
-
-    // Key Events Dynamic Nodes (Left)
+    // Find the key event for July 15, 2024 (Missed Warning Signal)
     const groupedEvents: Record<string, any[]> = {};
     keyEvents.forEach((evt: any) => {
         const dateKey = new Date(evt.t).toDateString();
@@ -443,127 +288,262 @@ function Canvas3() {
         groupedEvents[dateKey].push(evt);
     });
     const eventGroups = Object.values(groupedEvents).sort((a, b) => new Date(a[0].t).getTime() - new Date(b[0].t).getTime());
+    const july15EventIdx = eventGroups.findIndex(group => new Date(group[0].t).toDateString() === new Date('2024-07-15T14:00:00').toDateString());
 
-    eventGroups.forEach((group, idx) => {
-        const nodeId = `key-event-info-${idx}`;
-        const dateStr = new Date(group[0].t).toLocaleDateString();
-
-        newNodes.push({
-            id: nodeId,
-            type: 'default',
-            position: { x: trackStartX - 250, y: keyEventY + (idx * 100) },
-            data: { label: `Event: ${dateStr}` },
-            style: { width: 200, background: '#fef2f2', border: '1px solid #ef4444' }
-        });
-
+    // Edge: ALT spike → Key Event (July 15)
+    if (altLabIdx !== -1 && altSpikePointIdx !== -1 && july15EventIdx !== -1) {
         newEdges.push({
-            id: `e-${nodeId}-${unifiedNodeId}`,
-            source: nodeId,
-            target: unifiedNodeId,
-            targetHandle: `key-event-${idx}`,
-            animated: true,
-            style: { stroke: '#ef4444' }
+            id: 'e-alt-to-july15-event',
+            source: labNodeId,
+            sourceHandle: `lab-${altLabIdx}-point-${altSpikePointIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${july15EventIdx}-target`,
+            animated: false,
+            label: 'ALT 185 triggers warning',
+            style: { stroke: '#ef4444', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#ef4444',
+            },
+            labelStyle: { fill: '#ef4444', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.9 }
         });
-    });
+    }
+
+    // Edge: AST spike → Key Event (July 15)
+    if (astLabIdx !== -1 && astSpikePointIdx !== -1 && july15EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-ast-to-july15-event',
+            source: labNodeId,
+            sourceHandle: `lab-${astLabIdx}-point-${astSpikePointIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${july15EventIdx}-target`,
+            animated: false,
+            label: 'AST 130 confirms injury',
+            style: { stroke: '#ef4444', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#ef4444',
+            },
+            labelStyle: { fill: '#ef4444', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.9 }
+        });
+    }
+
+    // Find August 12 crisis event
+    const aug12EventIdx = eventGroups.findIndex(group => new Date(group[0].t).toDateString() === new Date('2024-08-12T09:30:00').toDateString());
+    
+    // Edge 1: Lab cluster (ALT 490, AST 350, Bilirubin 110) → Crisis Presentation
+    const altCrisisIdx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-12T09:30:00');
+    const astCrisisIdx = labs[astLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-12T09:30:00');
+    const bilirubinLabIdx = labs.findIndex((l: any) => l.biomarker === 'Total Bilirubin');
+    const bilirubinCrisisIdx = labs[bilirubinLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-12T09:30:00');
+    
+    if (altLabIdx !== -1 && altCrisisIdx !== -1 && aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-alt-crisis-to-event',
+            source: labNodeId,
+            sourceHandle: `lab-${altLabIdx}-point-${altCrisisIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug12EventIdx}-target`,
+            animated: false,
+            label: 'ALT 490 → crisis',
+            style: { stroke: '#dc2626', strokeWidth: 3 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 22,
+                height: 22,
+                color: '#dc2626',
+            },
+            labelStyle: { fill: '#dc2626', fontWeight: 700, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.95 }
+        });
+    }
+
+    if (astLabIdx !== -1 && astCrisisIdx !== -1 && aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-ast-crisis-to-event',
+            source: labNodeId,
+            sourceHandle: `lab-${astLabIdx}-point-${astCrisisIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug12EventIdx}-target`,
+            animated: false,
+            label: 'AST 350',
+            style: { stroke: '#dc2626', strokeWidth: 3 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 22,
+                height: 22,
+                color: '#dc2626',
+            },
+            labelStyle: { fill: '#dc2626', fontWeight: 700, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.95 }
+        });
+    }
+
+    if (bilirubinLabIdx !== -1 && bilirubinCrisisIdx !== -1 && aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-bilirubin-crisis-to-event',
+            source: labNodeId,
+            sourceHandle: `lab-${bilirubinLabIdx}-point-${bilirubinCrisisIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug12EventIdx}-target`,
+            animated: false,
+            label: 'Bilirubin 110',
+            style: { stroke: '#dc2626', strokeWidth: 3 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 22,
+                height: 22,
+                color: '#dc2626',
+            },
+            labelStyle: { fill: '#dc2626', fontWeight: 700, fontSize: 11 },
+            labelBgStyle: { fill: '#fef2f2', fillOpacity: 0.95 }
+        });
+    }
+
+    // Edge 2: Crisis Presentation → NAC medication
+    const nacHandleId = 'med-group-n-acetylcysteine-(nac)-target';
+    if (aug12EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-crisis-to-nac',
+            source: keyEventNodeId,
+            sourceHandle: `key-event-${aug12EventIdx}-source`,
+            target: medNodeId,
+            targetHandle: nacHandleId,
+            animated: false,
+            label: 'NAC infusion started after crisis',
+            style: { stroke: '#10b981', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#10b981',
+            },
+            labelStyle: { fill: '#10b981', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#f0fdf4', fillOpacity: 0.9 }
+        });
+    }
+
+    // Edge 3: NAC → ALT begins to fall (Aug 15)
+    const altAug15Idx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-15T10:00:00');
+    const nacSourceHandleId = 'med-group-n-acetylcysteine-(nac)-source';
+    if (altLabIdx !== -1 && altAug15Idx !== -1) {
+        newEdges.push({
+            id: 'e-nac-to-alt-fall',
+            source: medNodeId,
+            sourceHandle: nacSourceHandleId,
+            target: labNodeId,
+            targetHandle: `lab-${altLabIdx}-point-${altAug15Idx}-target`,
+            animated: false,
+            label: 'MTX stopped + NAC → ALT begins to fall',
+            style: { stroke: '#10b981', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#10b981',
+            },
+            labelStyle: { fill: '#10b981', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#f0fdf4', fillOpacity: 0.9 }
+        });
+    }
+
+    // Edge 4: Bilirubin peak → Peak Cholestasis event
+    const aug15EventIdx = eventGroups.findIndex(group => new Date(group[0].t).toDateString() === new Date('2024-08-15T10:00:00').toDateString());
+    const bilirubinPeakIdx = labs[bilirubinLabIdx]?.values.findIndex((v: any) => v.t === '2024-08-15T10:00:00');
+    
+    if (bilirubinLabIdx !== -1 && bilirubinPeakIdx !== -1 && aug15EventIdx !== -1) {
+        newEdges.push({
+            id: 'e-bilirubin-peak-to-cholestasis',
+            source: labNodeId,
+            sourceHandle: `lab-${bilirubinLabIdx}-point-${bilirubinPeakIdx}-source`,
+            target: keyEventNodeId,
+            targetHandle: `key-event-${aug15EventIdx}-target`,
+            animated: false,
+            label: 'Bilirubin 190 → peak cholestasis',
+            style: { stroke: '#f59e0b', strokeWidth: 2.5 },
+            markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 20,
+                height: 20,
+                color: '#f59e0b',
+            },
+            labelStyle: { fill: '#f59e0b', fontWeight: 600, fontSize: 11 },
+            labelBgStyle: { fill: '#fffbeb', fillOpacity: 0.9 }
+        });
+    }
 
     return { nodes: newNodes, edges: newEdges };
   }, [showConnections]);
 
   const initialNodes: Node[] = useMemo(() => [
     {
-      id: 'dashboard-2',
-      type: 'dashboard2',
-      position: { x: 100, y: 2200 },
-      data: { label: 'Chronomed Dashboard 2' },
-      draggable: true,
-    },
-    {
-      id: 'unified-dashboard-1',
-      type: 'unifiedDashboard',
-      position: { x: 100, y: 100 },
-      data: { 
-          patientData: INITIAL_DATA.content.patientData,
-          encounters: INITIAL_DATA.content.props.encounters,
-          medications: INITIAL_DATA.content.props.medicationTimeline,
-          labs: INITIAL_DATA.content.props.labTimeline,
-          risks: INITIAL_DATA.content.props.riskTimeline,
-          events: INITIAL_DATA.content.props.keyEvents,
-          causalNodes: INITIAL_DATA.content.props.causalChain,
-          showHandles: showConnections 
-      },
-      draggable: true,
-    },
-    // Standalone Components (Positioned to the right)
-    {
-      id: 'sidebar-standalone',
+      id: 'sidebar-1',
       type: 'sidebar',
-      position: { x: 2500, y: 100 },
+      position: { x: -750, y: 100 },
       data: { 
           patientData: INITIAL_DATA.content.patientData
       },
       draggable: true,
     },
+    
     {
-      id: 'encounter-track-standalone',
+      id: 'encounter-track-1',
       type: 'encounterTrack',
-      position: { x: 2900, y: 100 },
+      position: { x: 100, y: 100 },
       data: { encounters: INITIAL_DATA.content.props.encounters, showHandles: showConnections },
       draggable: true,
     },
     {
-      id: 'medication-track-standalone',
+      id: 'medication-track-1',
       type: 'medicationTrack',
-      position: { x: 2900, y: 600 },
+      position: { x: 100, y: 700 },
       data: { 
-          encounters: INITIAL_DATA.content.props.encounters,
-          medications: INITIAL_DATA.content.props.medicationTimeline,
+          encounters: INITIAL_DATA.content.props.encounters, // Needed for scale
+          medications: [...pastMeds, ...INITIAL_DATA.content.props.medicationTimeline],
           showHandles: showConnections
       },
       draggable: true,
     },
     {
-      id: 'lab-track-standalone',
+      id: 'lab-track-1',
       type: 'labTrack',
-      position: { x: 2900, y: 1000 },
+      position: { x: 100, y: 1000 },
       data: { 
-          encounters: INITIAL_DATA.content.props.encounters,
+          encounters: INITIAL_DATA.content.props.encounters, // Needed for scale
           labs: INITIAL_DATA.content.props.labTimeline,
           showHandles: showConnections
       },
       draggable: true,
     },
     {
-      id: 'risk-track-standalone',
+      id: 'risk-track-1',
       type: 'riskTrack',
-      position: { x: 2900, y: 1400 },
+      position: { x: 100, y: 2300 },
       data: { 
-          encounters: INITIAL_DATA.content.props.encounters,
+          encounters: INITIAL_DATA.content.props.encounters, // Needed for scale
           risks: INITIAL_DATA.content.props.riskTimeline,
           showHandles: showConnections
       },
       draggable: true,
     },
     {
-      id: 'key-events-track-standalone',
+      id: 'key-events-track-1',
       type: 'keyEventsTrack',
-      position: { x: 2900, y: 1800 },
+      position: { x: 100, y: 2600 },
       data: { 
-          encounters: INITIAL_DATA.content.props.encounters,
+          encounters: INITIAL_DATA.content.props.encounters, // Needed for scale
           events: INITIAL_DATA.content.props.keyEvents,
           showHandles: showConnections
       },
       draggable: true,
     },
-    {
-      id: 'causal-sidebar-standalone',
-      type: 'causalNode',
-      position: { x: 4500, y: 100 },
-      data: { 
-          nodes: INITIAL_DATA.content.props.causalChain,
-          showHandles: showConnections
-      },
-      draggable: true,
-    },
+   
     ...dynamicNodes
   ], [dynamicNodes, showConnections]);
 
@@ -579,13 +559,11 @@ function Canvas3() {
   const nodeTypes = useMemo(() => ({
     dashboard: DashboardNode,
     dashboard2: Dashboard2Node,
-    unifiedDashboard: UnifiedDashboardNode,
     encounterTrack: EncounterTrackNode,
     medicationTrack: MedicationTrackNode,
     labTrack: LabTrackNode,
     riskTrack: RiskTrackNode,
     keyEventsTrack: KeyEventsTrackNode,
-    causalNode: CausalNode,
     sidebar: SidebarNode,
   }), []);
 
