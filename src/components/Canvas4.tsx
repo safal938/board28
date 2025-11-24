@@ -229,28 +229,40 @@ const TimelineNodeContainer = styled.div`
   z-index: 1;
 `;
 
+// Past medications data
+const pastMeds = [
+    {
+        "name": "Ramipril",
+        "startDate": "2020-01-01",
+        "dose": "5mg OD",
+        "indication": "Hypertension"
+    },
+    {
+        "name": "Metformin",
+        "startDate": "2019-01-01",
+        "dose": "1000mg BD",
+        "indication": "T2DM"
+    }
+];
+
+const pastMedDates = pastMeds.map(m => new Date(m.startDate));
+
 function TimelineNode({ data }: NodeProps) {
   // Configuration matching Dashboard.tsx
-  const SLOT_WIDTH = 300;
-  const PADDING = 160;
+  const PADDING = 20;
   const encounters = data.encounters || [];
   
-  const width = Math.max(
-    1400,
-    (encounters.length * SLOT_WIDTH) + (PADDING * 2)
-  );
-  
-  const scale = useTimelineScale(encounters, width, PADDING);
+  const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
   return (
     <TimelineNodeContainer style={{ width: width }}>
       <Handle type="target" position={Position.Top} />
       <Handle type="source" position={Position.Bottom} />
       
-      <MasterGrid encounters={encounters} scale={scale} height="100%" />
+      <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
       
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-          <TimelineAxis encounters={encounters} scale={scale} />
+          <TimelineAxis encounters={encounters} scale={scale} additionalDates={pastMedDates} />
       </div>
 
       <div className="relative z-20 pt-2 flex flex-col gap-1">

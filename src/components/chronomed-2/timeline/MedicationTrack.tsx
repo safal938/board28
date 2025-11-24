@@ -34,20 +34,22 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
         {groupKeys.map((medName, groupIdx) => {
             const groupMeds = groupedMedications[medName];
             
-            let barClass = "bg-emerald-100 border-emerald-300 text-emerald-800";
-            let dotClass = "bg-emerald-500";
-            const nameLower = medName.toLowerCase();
-            
-            if (nameLower.includes("methotrexate")) {
-                barClass = "bg-purple-100 border-purple-300 text-purple-900";
-                dotClass = "bg-purple-500";
-            } else if (nameLower.includes("lisinopril")) {
-                barClass = "bg-orange-100 border-orange-300 text-orange-900";
-                dotClass = "bg-orange-500";
-            } else if (nameLower.includes("trimethoprim")) {
-                barClass = "bg-red-100 border-red-300 text-red-900";
-                dotClass = "bg-red-500";
-            }
+            // Color Palette
+            const colors = [
+                { bar: "bg-emerald-100 border-emerald-300 text-emerald-800", dot: "bg-emerald-500" },
+                { bar: "bg-blue-100 border-blue-300 text-blue-800", dot: "bg-blue-500" },
+                { bar: "bg-purple-100 border-purple-300 text-purple-800", dot: "bg-purple-500" },
+                { bar: "bg-amber-100 border-amber-300 text-amber-800", dot: "bg-amber-500" },
+                { bar: "bg-rose-100 border-rose-300 text-rose-800", dot: "bg-rose-500" },
+                { bar: "bg-indigo-100 border-indigo-300 text-indigo-800", dot: "bg-indigo-500" },
+                { bar: "bg-cyan-100 border-cyan-300 text-cyan-800", dot: "bg-cyan-500" },
+                { bar: "bg-fuchsia-100 border-fuchsia-300 text-fuchsia-800", dot: "bg-fuchsia-500" },
+                { bar: "bg-lime-100 border-lime-300 text-lime-800", dot: "bg-lime-500" },
+                { bar: "bg-sky-100 border-sky-300 text-sky-800", dot: "bg-sky-500" },
+            ];
+
+            const colorIndex = groupIdx % colors.length;
+            const { bar: barClass, dot: dotClass } = colors[colorIndex];
 
             // Find the earliest start position for the handle
             const minStart = Math.min(...groupMeds.map(m => scale(new Date(m.startDate))));
@@ -61,13 +63,15 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
                             position={Position.Left}
                             id={`med-group-${medName.replace(/\s+/g, '-').toLowerCase()}`}
                             style={{
-                                left: minStart - 6, // Position just before the bar
+                                left: minStart - 8,
                                 top: '50%',
                                 transform: 'translateY(-50%)',
-                                width: 8,
-                                height: 8,
-                                background: '#10b981', // emerald-500
-                                border: 'none',
+                                width: 12,
+                                height: 12,
+                                background: '#10b981',
+                                border: '2px solid white',
+                                borderRadius: '50%',
+                                boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
                                 zIndex: 50
                             }}
                         />

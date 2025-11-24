@@ -150,17 +150,19 @@ export const EncounterTrack: React.FC<EncounterTrackProps> = ({ encounters, scal
                 {/* React Flow Handle */}
                 {showHandles && (
                     <Handle
-                        type="source"
+                        type="target"
                         position={Position.Bottom}
                         id={`enc-${enc.encounter_no}`}
                         style={{
                             left: '50%',
-                            bottom: -6,
+                            bottom: -8,
                             transform: 'translateX(-50%)',
-                            width: 10,
-                            height: 10,
-                            background: 'transparent',
-                            border: 'none',
+                            width: 12,
+                            height: 12,
+                            background: '#667eea',
+                            border: '2px solid white',
+                            borderRadius: '50%',
+                            boxShadow: '0 2px 8px rgba(102, 126, 234, 0.4)',
                             zIndex: 50
                         }}
                     />

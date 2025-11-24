@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import  INITIAL_DATA  from '../../data/new_med_timeline.json';
+import  INITIAL_DATA  from '../../data/new_medtimeline_updated.json';
 import { TimelineAxis, EncounterTrack, MedicationTrack, LabTrack, KeyEventsTrack, RiskTrack, CausalPathways, useTimelineScale, MasterGrid } from './TimelineComponents';
 import { Sidebar } from './Sidebar';
 import * as d3 from 'd3';
@@ -16,7 +16,7 @@ export const Dashboard: React.FC = () => {
   
   // Configuration for the encounter-based layout
   const SLOT_WIDTH = 300; // Fixed width per encounter - reduced by 20%
-  const PADDING = 160;    // Start/End padding - reduced by 20%
+  const PADDING = 20;    // Start/End padding - reduced by 20%
 
   // Calculate width directly from encounters - no responsive behavior needed
   const width = Math.max(

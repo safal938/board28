@@ -233,6 +233,32 @@ interface LabTrackProps {
 }
 
 export const LabTrack: React.FC<LabTrackProps> = ({ labs, scale, height = 140, showHandles = false }) => {
+  // Function to calculate abnormality severity for a lab metric
+  const getAbnormalitySeverity = (metric: LabMetric): number => {
+    if (!metric.referenceRange || metric.values.length === 0) return 0;
+    
+    const lastValue = metric.values[metric.values.length - 1].value;
+    const { min, max } = metric.referenceRange;
+    
+    // Calculate how far outside the normal range (as percentage)
+    if (lastValue > max) {
+      return ((lastValue - max) / max) * 100; // Percentage above max
+    } else if (lastValue < min) {
+      return ((min - lastValue) / min) * 100; // Percentage below min
+    }
+    
+    return 0; // Normal range
+  };
+
+  // Sort labs by priority: abnormal first (by severity), then normal
+  const sortedLabs = [...labs].sort((a, b) => {
+    const severityA = getAbnormalitySeverity(a);
+    const severityB = getAbnormalitySeverity(b);
+    
+    // Sort by severity descending (most abnormal first)
+    return severityB - severityA;
+  });
+
   return (
     <div className="w-full border-t border-gray-200 bg-slate-50/50 pt-8 pb-6 relative z-0 flex flex-col gap-3">
          {/* Section Header */}
@@ -241,7 +267,7 @@ export const LabTrack: React.FC<LabTrackProps> = ({ labs, scale, height = 140, s
             <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Lab Trends</span>
          </div>
          
-        {labs.map((metric, idx) => (
+        {sortedLabs.map((metric, idx) => (
             <SingleLabChart key={idx} metric={metric} scale={scale} height={height} index={idx} showHandles={showHandles} />
         ))}
     </div>
