@@ -196,22 +196,6 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
                                         opacity: displayedHandle && !isIndividualStoryMed ? 0.3 : 1,
                                         transition: 'opacity 0.3s ease'
                                     }}
-                                    onMouseEnter={() => {
-                                        const groupTargetHandleId = `med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-target`;
-                                        
-                                        if (onHandleHover) {
-                                            onHandleHover(groupTargetHandleId);
-                                        } else if (typeof (window as any).setHoveredHandle === 'function') {
-                                            (window as any).setHoveredHandle(groupTargetHandleId);
-                                        }
-                                    }}
-                                    onMouseLeave={() => {
-                                        if (onHandleHover) {
-                                            onHandleHover(null);
-                                        } else if (typeof (window as any).setHoveredHandle === 'function') {
-                                            (window as any).setHoveredHandle(null);
-                                        }
-                                    }}
                                 >
                                      <div className={`w-1 h-1 rounded-full mr-1.5 ${dotClass} shrink-0`}></div>
                                      <span className="text-[9px] font-bold mr-2">{med.name}</span>
