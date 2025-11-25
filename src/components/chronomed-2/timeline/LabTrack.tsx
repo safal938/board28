@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as d3 from 'd3';
 import { LabMetric } from '../types';
 import { Handle, Position } from 'reactflow';
+import { AlertCircle } from 'lucide-react';
 
 interface SingleLabChartProps {
     metric: LabMetric;
@@ -9,9 +10,11 @@ interface SingleLabChartProps {
     height: number;
     index: number;
     showHandles?: boolean;
+    onHandleHover?: (handleId: string | null) => void;
+    displayedHandle?: string | null;
 }
 
-const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, index, showHandles }) => {
+const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, index, showHandles, onHandleHover, displayedHandle }) => {
     const [isHovered, setIsHovered] = useState(false);
     const CHART_MARGIN = { top: 24, bottom: 20, left: 48, right: 24 };
     const values = metric.values;
@@ -78,10 +81,25 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
 
     const lastVal = values[values.length - 1];
     const isLastAbnormal = hasRefRange && (lastVal.value > refMax || lastVal.value < refMin);
+    
+    // Check if ANY point in this lab chart is part of the ACTIVE scenario
+    const activeScenarioHandles = (window as any).activeScenarioHandles || [];
+    const isLabChartInActiveScenario = values.some((v, i) => {
+        const targetHandleId = `lab-${index}-point-${i}-target`;
+        const sourceHandleId = `lab-${index}-point-${i}-source`;
+        return activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId);
+    });
+    
+    // Determine opacity for the entire chart - dim if not in active scenario
+    const chartOpacity = displayedHandle && !isLabChartInActiveScenario ? 0.3 : 1;
 
     return (
         <div 
             className="relative w-full bg-white border-y border-slate-100 group"
+            style={{ 
+                opacity: chartOpacity,
+                transition: 'opacity 0.3s ease'
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -177,7 +195,14 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
                     {values.map((v, i) => {
                         const isAbnormal = hasRefRange && (v.value > refMax || v.value < refMin);
                         const pointColor = isAbnormal ? "#EF4444" : "#10B981";
-                        // Always render the circle
+                        
+                        // Check if this point is part of a story
+                        const targetHandleId = `lab-${index}-point-${i}-target`;
+                        const sourceHandleId = `lab-${index}-point-${i}-source`;
+                        const storyHandles = (window as any).storyHandles || [];
+                        const isStoryPoint = storyHandles.includes(targetHandleId) || storyHandles.includes(sourceHandleId);
+                        
+                        // Always render the circle (opacity is handled by parent container)
                         return (
                             <g key={i} transform={`translate(${scale(new Date(v.t))}, ${yScale(v.value)})`}>
                                 <circle 
@@ -199,45 +224,129 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
                             </g>
                         );
                     })}
+                    
+                    {/* Story Point Markers - Alert icons */}
+                    {values.map((v, i) => {
+                        const targetHandleId = `lab-${index}-point-${i}-target`;
+                        const sourceHandleId = `lab-${index}-point-${i}-source`;
+                        const storyHandles = (window as any).storyHandles || [];
+                        const isStoryPoint = storyHandles.includes(targetHandleId) || storyHandles.includes(sourceHandleId);
+                        
+                        if (!isStoryPoint) return null;
+                        
+                        // Check if this marker is part of the active scenario
+                        const activeScenarioHandles = (window as any).activeScenarioHandles || [];
+                        const isInActiveScenario = activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId);
+                        const markerOpacity = displayedHandle && !isInActiveScenario ? 0.3 : 1;
+                        
+                        return (
+                            <foreignObject
+                                key={`marker-${i}`}
+                                x={scale(new Date(v.t)) + 8}
+                                y={yScale(v.value) - 12}
+                                width={24}
+                                height={24}
+                                style={{ overflow: 'visible' }}
+                                opacity={markerOpacity}
+                                onMouseEnter={() => {
+                                    const globalHandler = (window as any).setHoveredHandle;
+                                    if (globalHandler) {
+                                        globalHandler(targetHandleId);
+                                    }
+                                    onHandleHover?.(targetHandleId);
+                                }}
+                                onMouseLeave={() => {
+                                    const globalHandler = (window as any).setHoveredHandle;
+                                    if (globalHandler) {
+                                        globalHandler(null);
+                                    }
+                                    onHandleHover?.(null);
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        width: '24px',
+                                        height: '24px',
+                                        background: '#ef4444',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
+                                        border: '2px solid white',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1.2)';
+                                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.6)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1)';
+                                        e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.4)';
+                                    }}
+                                >
+                                    <AlertCircle size={14} color="white" strokeWidth={3} />
+                                </div>
+                            </foreignObject>
+                        );
+                    })}
                 </svg>
 
-                {/* Handles for React Flow - Overlaid at same position */}
-                {showHandles && values.map((v, i) => (
-                    <React.Fragment key={i}>
-                        <Handle
-                            type="target"
-                            position={Position.Left}
-                            id={`lab-${index}-point-${i}-target`}
-                            style={{
-                                left: scale(new Date(v.t)),
-                                top: yScale(v.value),
-                                transform: 'translate(-50%, -50%)',
-                                width: 10,
-                                height: 10,
-                                background: '#0ea5e9',
-                                border: '2px solid white',
-                                borderRadius: '50%',
-                                boxShadow: '0 2px 8px rgba(14, 165, 233, 0.4)',
-                                zIndex: 50
-                            }}
-                        />
-                        <Handle
-                            type="source"
-                            position={Position.Left}
-                            id={`lab-${index}-point-${i}-source`}
-                            style={{
-                                left: scale(new Date(v.t)),
-                                top: yScale(v.value),
-                                transform: 'translate(-50%, -50%)',
-                                width: 10,
-                                height: 10,
-                                background: 'transparent',
-                                border: 'none',
-                                zIndex: 51
-                            }}
-                        />
-                    </React.Fragment>
-                ))}
+                {/* Handles for React Flow - Always rendered but conditionally visible */}
+                {showHandles && values.map((v, i) => {
+                    const targetHandleId = `lab-${index}-point-${i}-target`;
+                    const sourceHandleId = `lab-${index}-point-${i}-source`;
+                    const isHandleVisible = displayedHandle && (
+                        displayedHandle === targetHandleId || 
+                        displayedHandle === sourceHandleId
+                    );
+                    
+                    return (
+                        <React.Fragment key={i}>
+                            <Handle
+                                type="target"
+                                position={Position.Left}
+                                id={targetHandleId}
+                                style={{
+                                    left: scale(new Date(v.t)),
+                                    top: yScale(v.value),
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 10,
+                                    height: 10,
+                                    background: isHandleVisible ? '#0ea5e9' : 'transparent',
+                                    border: isHandleVisible ? '2px solid white' : 'none',
+                                    borderRadius: '50%',
+                                    boxShadow: isHandleVisible ? '0 2px 8px rgba(14, 165, 233, 0.4)' : 'none',
+                                    opacity: isHandleVisible ? 1 : 0,
+                                    pointerEvents: isHandleVisible ? 'auto' : 'none',
+                                    zIndex: 50
+                                }}
+                                onMouseEnter={() => onHandleHover?.(targetHandleId)}
+                                onMouseLeave={() => onHandleHover?.(null)}
+                            />
+                            <Handle
+                                type="source"
+                                position={Position.Left}
+                                id={sourceHandleId}
+                                style={{
+                                    left: scale(new Date(v.t)),
+                                    top: yScale(v.value),
+                                    transform: 'translate(-50%, -50%)',
+                                    width: 10,
+                                    height: 10,
+                                    background: 'transparent',
+                                    border: 'none',
+                                    opacity: 0,
+                                    pointerEvents: 'none',
+                                    zIndex: 51
+                                }}
+                                onMouseEnter={() => onHandleHover?.(sourceHandleId)}
+                                onMouseLeave={() => onHandleHover?.(null)}
+                            />
+                        </React.Fragment>
+                    );
+                })}
             </div>
         </div>
     );
@@ -248,9 +357,11 @@ interface LabTrackProps {
   scale: d3.ScaleTime<number, number>;
   height?: number;
   showHandles?: boolean;
+  onHandleHover?: (handleId: string | null) => void;
+  displayedHandle?: string | null;
 }
 
-export const LabTrack: React.FC<LabTrackProps> = ({ labs, scale, height = 140, showHandles = false }) => {
+export const LabTrack: React.FC<LabTrackProps> = ({ labs, scale, height = 140, showHandles = false, onHandleHover, displayedHandle }) => {
   // Function to calculate abnormality severity for a lab metric
   const getAbnormalitySeverity = (metric: LabMetric): number => {
     if (!metric.referenceRange || metric.values.length === 0) return 0;
@@ -286,7 +397,7 @@ export const LabTrack: React.FC<LabTrackProps> = ({ labs, scale, height = 140, s
          </div>
          
         {sortedLabs.map((metric, idx) => (
-            <SingleLabChart key={idx} metric={metric} scale={scale} height={height} index={idx} showHandles={showHandles} />
+            <SingleLabChart key={idx} metric={metric} scale={scale} height={height} index={idx} showHandles={showHandles} onHandleHover={onHandleHover} displayedHandle={displayedHandle} />
         ))}
     </div>
   );

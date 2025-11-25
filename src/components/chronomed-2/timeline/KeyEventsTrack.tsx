@@ -2,14 +2,17 @@ import React, { useMemo } from 'react';
 import * as d3 from 'd3';
 import { Handle, Position } from 'reactflow';
 import { KeyEvent } from '../types';
+import { AlertCircle } from 'lucide-react';
 
 interface KeyEventsTrackProps {
   events: KeyEvent[];
   scale: d3.ScaleTime<number, number>;
   showHandles?: boolean;
+  onHandleHover?: (handleId: string | null) => void;
+  displayedHandle?: string | null;
 }
 
-export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, showHandles = false }) => {
+export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, showHandles = false, onHandleHover, displayedHandle }) => {
     // Group events by Date to prevent vertical stacking of simultaneous events
     const groupedEvents = useMemo(() => {
         const groups: Record<string, KeyEvent[]> = {};
@@ -76,6 +79,15 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
              
              {positionedGroups.map((group, i) => {
                  const topPos = 40 + (group.rowIndex * 200);
+                 const targetHandleId = `key-event-${i}-target`;
+                 const sourceHandleId = `key-event-${i}-source`;
+                 
+                 // Check if this event is part of ANY scenario (for showing marker)
+                 const storyHandles = (window as any).storyHandles || [];
+                 const isStoryEvent = storyHandles.includes(targetHandleId) || storyHandles.includes(sourceHandleId);
+                 
+                 // Check if this event is part of the ACTIVE scenario (for opacity)
+                 const activeScenarioHandles = (window as any).activeScenarioHandles || [];
                  
                  return (
                      <div 
@@ -83,43 +95,113 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
                         className="absolute flex flex-col items-center"
                         style={{ left: group.x, top: 0, transform: 'translateX(-50%)' }}
                      >
-                        {/* React Flow Handles - Overlaid at same position on top, offset to left */}
-                        {showHandles && (
-                            <>
-                                <Handle
-                                    type="target"
-                                    position={Position.Top}
-                                    id={`key-event-${i}-target`}
+                        {/* Story Point Marker - Alert icon */}
+                        {isStoryEvent && (() => {
+                            // Check if this marker is part of the active scenario
+                            const isInActiveScenario = activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId);
+                            const markerOpacity = displayedHandle && !isInActiveScenario ? 0.3 : 1;
+                            
+                            return (
+                                <div
+                                    className="absolute z-50"
                                     style={{
-                                        left: '10%',
-                                        top: topPos - 4,
-                                        transform: 'translateX(-50%)',
-                                        width: 10,
-                                        height: 10,
-                                        background: '#f59e0b',
-                                        border: '2px solid white',
-                                        borderRadius: '50%',
-                                        boxShadow: '0 2px 8px rgba(245, 158, 11, 0.4)',
-                                        zIndex: 50
+                                        left: '-35px',
+                                        top: topPos + 10,
+                                        opacity: markerOpacity,
+                                        transition: 'opacity 0.3s ease'
                                     }}
-                                />
-                                <Handle
-                                    type="source"
-                                    position={Position.Top}
-                                    id={`key-event-${i}-source`}
-                                    style={{
-                                        left: '35%',
-                                        top: topPos - 4,
-                                        transform: 'translateX(-50%)',
-                                        width: 10,
-                                        height: 10,
-                                        background: 'transparent',
-                                        border: 'none',
-                                        zIndex: 51
+                                    onMouseEnter={() => {
+                                        const globalHandler = (window as any).setHoveredHandle;
+                                        if (globalHandler) {
+                                            globalHandler(targetHandleId);
+                                        }
+                                        onHandleHover?.(targetHandleId);
                                     }}
-                                />
-                            </>
-                        )}
+                                    onMouseLeave={() => {
+                                        const globalHandler = (window as any).setHoveredHandle;
+                                        if (globalHandler) {
+                                            globalHandler(null);
+                                        }
+                                        onHandleHover?.(null);
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            background: '#ef4444',
+                                            borderRadius: '50%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer',
+                                            boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
+                                            border: '2px solid white',
+                                            transition: 'all 0.2s ease'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform = 'scale(1.2)';
+                                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.6)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform = 'scale(1)';
+                                            e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.4)';
+                                        }}
+                                    >
+                                        <AlertCircle size={14} color="white" strokeWidth={3} />
+                                    </div>
+                                </div>
+                            );
+                        })()}
+                        
+                        {/* React Flow Handles - Always rendered but conditionally visible */}
+                        {showHandles && (() => {
+                            const isHandleVisible = displayedHandle && (
+                                displayedHandle === targetHandleId || 
+                                displayedHandle === sourceHandleId
+                            );
+                            
+                            return (
+                                <>
+                                    <Handle
+                                        type="target"
+                                        position={Position.Top}
+                                        id={targetHandleId}
+                                        style={{
+                                            left: '10%',
+                                            top: topPos - 4,
+                                            transform: 'translateX(-50%)',
+                                            width: 10,
+                                            height: 10,
+                                            background: isHandleVisible ? '#f59e0b' : 'transparent',
+                                            border: isHandleVisible ? '2px solid white' : 'none',
+                                            borderRadius: '50%',
+                                            boxShadow: isHandleVisible ? '0 2px 8px rgba(245, 158, 11, 0.4)' : 'none',
+                                            opacity: isHandleVisible ? 1 : 0,
+                                            pointerEvents: isHandleVisible ? 'auto' : 'none',
+                                            zIndex: 50
+                                        }}
+                                    />
+                                    <Handle
+                                        type="source"
+                                        position={Position.Top}
+                                        id={sourceHandleId}
+                                        style={{
+                                            left: '35%',
+                                            top: topPos - 4,
+                                            transform: 'translateX(-50%)',
+                                            width: 10,
+                                            height: 10,
+                                            background: 'transparent',
+                                            border: 'none',
+                                            opacity: 0,
+                                            pointerEvents: 'none',
+                                            zIndex: 51
+                                        }}
+                                    />
+                                </>
+                            );
+                        })()}
 
                         {/* Connector Line */}
                         <div 
@@ -133,7 +215,27 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
                         {/* Card Container */}
                         <div 
                             className="relative bg-white rounded-lg shadow-md border border-red-100 hover:shadow-xl hover:border-red-300 transition-all duration-300 z-20 overflow-hidden"
-                            style={{ marginTop: topPos, width: CARD_WIDTH }}
+                            style={{ 
+                                marginTop: topPos, 
+                                width: CARD_WIDTH,
+                                opacity: displayedHandle && !isStoryEvent ? 0.3 : 1,
+                                transition: 'opacity 0.3s ease'
+                            }}
+                            onMouseEnter={() => {
+                                const handleId = `key-event-${i}-target`;
+                                if (onHandleHover) {
+                                    onHandleHover(handleId);
+                                } else if (typeof (window as any).setHoveredHandle === 'function') {
+                                    (window as any).setHoveredHandle(handleId);
+                                }
+                            }}
+                            onMouseLeave={() => {
+                                if (onHandleHover) {
+                                    onHandleHover(null);
+                                } else if (typeof (window as any).setHoveredHandle === 'function') {
+                                    (window as any).setHoveredHandle(null);
+                                }
+                            }}
                         >
                             {/* Header */}
                             <div className="bg-red-50/50 px-3 py-2 border-b border-red-100 flex justify-between items-center">

@@ -985,6 +985,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
             const encounters = componentProps.encounters || [];
             const medications = componentProps.medications || [];
             const showHandles = componentProps.showHandles;
+            const displayedHandle = (window as any).displayedHandle || null;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
@@ -993,7 +994,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                 <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
                 
                 <div className="relative z-20 pt-5 pb-5">
-                  <MedicationTrack medications={medications} scale={scale} showHandles={showHandles} />
+                  <MedicationTrack medications={medications} scale={scale} showHandles={showHandles} displayedHandle={displayedHandle} />
                 </div>
               </div>
             );
@@ -1003,6 +1004,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
             const encounters = componentProps.encounters || [];
             const labs = componentProps.labs || [];
             const showHandles = componentProps.showHandles;
+            const displayedHandle = (window as any).displayedHandle || null;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
@@ -1011,7 +1013,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                 <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
                 
                 <div className="relative z-20 pt-5 pb-5">
-                  <LabTrack labs={labs} scale={scale} showHandles={showHandles} />
+                  <LabTrack labs={labs} scale={scale} showHandles={showHandles} displayedHandle={displayedHandle} />
                 </div>
               </div>
             );
@@ -1021,6 +1023,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
             const encounters = componentProps.encounters || [];
             const risks = componentProps.risks || [];
             const showHandles = componentProps.showHandles;
+            const displayedHandle = (window as any).displayedHandle || null;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
@@ -1029,7 +1032,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                 <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
                 
                 <div className="relative z-20 pt-5 pb-5">
-                  <RiskTrack data={risks} scale={scale} showHandles={showHandles} />
+                  <RiskTrack data={risks} scale={scale} showHandles={showHandles} displayedHandle={displayedHandle} />
                 </div>
               </div>
             );
@@ -1039,6 +1042,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
             const encounters = componentProps.encounters || [];
             const events = componentProps.events || [];
             const showHandles = componentProps.showHandles;
+            const displayedHandle = (window as any).displayedHandle || null;
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const { scale, width } = useTimelineScale(encounters, 20, 160, pastMedDates);
 
@@ -1047,7 +1051,7 @@ const BoardItem = ({ item, isSelected, onUpdate, onDelete, onSelect, zoom = 1 })
                 <MasterGrid encounters={encounters} scale={scale} height="100%" additionalDates={pastMedDates} />
                 
                 <div className="relative z-20 pt-5 pb-5">
-                  <KeyEventsTrack events={events} scale={scale} showHandles={showHandles} />
+                  <KeyEventsTrack events={events} scale={scale} showHandles={showHandles} displayedHandle={displayedHandle} />
                 </div>
               </div>
             );
