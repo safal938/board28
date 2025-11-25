@@ -824,8 +824,8 @@ function Canvas2() {
     const newEdges: any[] = [];
     const allStoryHandles: string[] = [];
 
-    // Edge: Methotrexate → ALT spike (2024-07-15)
-    const mtxHandleId = 'med-methotrexate-5mg-weekly-1-source';
+    // Edge: Methotrexate 7.5mg → ALT spike (2024-07-15)
+    const mtxHandleId = 'med-methotrexate-7-5mg-weekly-0-source';
     const altLabIdx = labs.findIndex((l: any) => l.biomarker === 'ALT');
     const altSpikePointIdx = labs[altLabIdx]?.values.findIndex((v: any) => v.t === '2024-07-15T14:00:00');
     
@@ -847,7 +847,7 @@ function Canvas2() {
                 sourceHandle: mtxHandleId,
                 target: labNodeId,
                 targetHandle: altTargetHandle,
-                label: '6 weeks of MTX → ALT 185',
+                label: '6 weeks of MTX 7.5mg → ALT 185',
                 animated: true,
                 style: { 
                     stroke: '#3b82f6', 
@@ -870,7 +870,7 @@ function Canvas2() {
         }
     }
 
-    // Edge: Methotrexate → AST spike (2024-07-15)
+    // Edge: Methotrexate 7.5mg → AST spike (2024-07-15)
     const astLabIdx = labs.findIndex((l: any) => l.biomarker === 'AST');
     const astSpikePointIdx = labs[astLabIdx]?.values.findIndex((v: any) => v.t === '2024-07-15T14:00:00');
     
