@@ -2,14 +2,17 @@ import React, { useMemo } from 'react';
 import * as d3 from 'd3';
 import { Medication } from '../types';
 import { Handle, Position } from 'reactflow';
+import { AlertCircle } from 'lucide-react';
 
 interface MedicationTrackProps {
   medications: Medication[];
   scale: d3.ScaleTime<number, number>;
   showHandles?: boolean;
+  onHandleHover?: (handleId: string | null) => void;
+  displayedHandle?: string | null;
 }
 
-export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, scale, showHandles = false }) => {
+export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, scale, showHandles = false, onHandleHover, displayedHandle }) => {
   // Group medications by name to display them on the same track/line
   const groupedMedications = useMemo(() => {
     const groups: Record<string, Medication[]> = {};
@@ -53,33 +56,49 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
 
             // Find the earliest start position for the handle
             const minStart = Math.min(...groupMeds.map(m => scale(new Date(m.startDate))));
+            
+            // Check if this group's handles should be visible
+            const groupTargetHandleId = `med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-target`;
+            const groupSourceHandleId = `med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-source`;
+            const isGroupHandleVisible = displayedHandle && (
+                displayedHandle === groupTargetHandleId || 
+                displayedHandle === groupSourceHandleId
+            );
+
+            // Check if this group is part of a story
+            const storyHandles = (window as any).storyHandles || [];
+            const isStoryMed = storyHandles.includes(groupTargetHandleId) || storyHandles.includes(groupSourceHandleId);
 
             return (
                 <div key={groupIdx} className="relative h-5 w-full group">
-                    {/* React Flow Handles - Overlaid at same position */}
+                    {/* React Flow Handles - Always rendered but conditionally visible */}
                     {showHandles && (
                         <>
                             <Handle
                                 type="target"
                                 position={Position.Left}
-                                id={`med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-target`}
+                                id={groupTargetHandleId}
                                 style={{
                                     left: minStart - 8,
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                     width: 12,
                                     height: 12,
-                                    background: '#10b981',
-                                    border: '2px solid white',
+                                    background: isGroupHandleVisible ? '#10b981' : 'transparent',
+                                    border: isGroupHandleVisible ? '2px solid white' : 'none',
                                     borderRadius: '50%',
-                                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)',
+                                    boxShadow: isGroupHandleVisible ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
+                                    opacity: isGroupHandleVisible ? 1 : 0,
+                                    pointerEvents: isGroupHandleVisible ? 'auto' : 'none',
                                     zIndex: 50
                                 }}
+                                onMouseEnter={() => onHandleHover?.(groupTargetHandleId)}
+                                onMouseLeave={() => onHandleHover?.(null)}
                             />
                             <Handle
                                 type="source"
                                 position={Position.Left}
-                                id={`med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-source`}
+                                id={groupSourceHandleId}
                                 style={{
                                     left: minStart - 8,
                                     top: '50%',
@@ -88,8 +107,12 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
                                     height: 12,
                                     background: 'transparent',
                                     border: 'none',
+                                    opacity: 0,
+                                    pointerEvents: 'none',
                                     zIndex: 51
                                 }}
+                                onMouseEnter={() => onHandleHover?.(groupSourceHandleId)}
+                                onMouseLeave={() => onHandleHover?.(null)}
                             />
                         </>
                     )}
@@ -100,11 +123,95 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
                         const end = scale(endDate);
                         const width = Math.max(end - start, 10); 
 
+                        // Create unique IDs for individual medication handles
+                        const safeName = med.name.replace(/\s+/g, '-').toLowerCase();
+                        const safeDose = med.dose ? med.dose.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() : 'no-dose';
+                        // Include idx to ensure uniqueness if multiple same-dose meds exist
+                        const handleIdBase = `med-${safeName}-${safeDose}-${idx}`;
+                        
+                        // Check if this individual medication is part of the ACTIVE scenario
+                        const activeScenarioHandles = (window as any).activeScenarioHandles || [];
+                        const isIndividualStoryMed = activeScenarioHandles.includes(`${handleIdBase}-target`) || 
+                                                     activeScenarioHandles.includes(`${handleIdBase}-source`) ||
+                                                     activeScenarioHandles.includes(groupTargetHandleId) ||
+                                                     activeScenarioHandles.includes(groupSourceHandleId);
+                        
+                        // Check if this individual handle should be visible
+                        const isIndividualHandleVisible = displayedHandle && (
+                            displayedHandle === `${handleIdBase}-target` || 
+                            displayedHandle === `${handleIdBase}-source`
+                        );
+
                         return (
                             <React.Fragment key={idx}>
+                                {showHandles && (
+                                    <>
+                                        <Handle
+                                            type="target"
+                                            position={Position.Left}
+                                            id={`${handleIdBase}-target`}
+                                            style={{
+                                                left: start - 8,
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                width: 12,
+                                                height: 12,
+                                                background: isIndividualHandleVisible ? '#10b981' : 'transparent',
+                                                border: isIndividualHandleVisible ? '2px solid white' : 'none',
+                                                borderRadius: '50%',
+                                                boxShadow: isIndividualHandleVisible ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
+                                                opacity: isIndividualHandleVisible ? 1 : 0,
+                                                pointerEvents: isIndividualHandleVisible ? 'auto' : 'none',
+                                                zIndex: 55
+                                            }}
+                                            onMouseEnter={() => onHandleHover?.(`${handleIdBase}-target`)}
+                                            onMouseLeave={() => onHandleHover?.(null)}
+                                        />
+                                        <Handle
+                                            type="source"
+                                            position={Position.Left}
+                                            id={`${handleIdBase}-source`}
+                                            style={{
+                                                left: start - 8,
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                width: 12,
+                                                height: 12,
+                                                background: 'transparent',
+                                                border: 'none',
+                                                opacity: 0,
+                                                pointerEvents: 'none',
+                                                zIndex: 56
+                                            }}
+                                            onMouseEnter={() => onHandleHover?.(`${handleIdBase}-source`)}
+                                            onMouseLeave={() => onHandleHover?.(null)}
+                                        />
+                                    </>
+                                )}
                                 <div 
-                                    className={`absolute top-0.5 h-4 rounded-sm border shadow-sm flex items-center px-1.5 overflow-hidden whitespace-nowrap transition-all hover:shadow-md hover:z-20 ${barClass}`}
-                                    style={{ left: start, width: width }}
+                                    className={`absolute top-0.5 h-4 rounded-sm border shadow-sm flex items-center px-2.5 overflow-hidden whitespace-nowrap transition-all hover:shadow-md hover:z-20 ${barClass}`}
+                                    style={{ 
+                                        left: start, 
+                                        width: width,
+                                        opacity: displayedHandle && !isIndividualStoryMed ? 0.3 : 1,
+                                        transition: 'opacity 0.3s ease'
+                                    }}
+                                    onMouseEnter={() => {
+                                        const groupTargetHandleId = `med-group-${medName.replace(/\s+/g, '-').toLowerCase()}-target`;
+                                        
+                                        if (onHandleHover) {
+                                            onHandleHover(groupTargetHandleId);
+                                        } else if (typeof (window as any).setHoveredHandle === 'function') {
+                                            (window as any).setHoveredHandle(groupTargetHandleId);
+                                        }
+                                    }}
+                                    onMouseLeave={() => {
+                                        if (onHandleHover) {
+                                            onHandleHover(null);
+                                        } else if (typeof (window as any).setHoveredHandle === 'function') {
+                                            (window as any).setHoveredHandle(null);
+                                        }
+                                    }}
                                 >
                                      <div className={`w-1 h-1 rounded-full mr-1.5 ${dotClass} shrink-0`}></div>
                                      <span className="text-[9px] font-bold mr-2">{med.name}</span>

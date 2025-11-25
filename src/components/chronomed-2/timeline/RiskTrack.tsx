@@ -2,14 +2,17 @@ import React, { useState, useMemo } from 'react';
 import * as d3 from 'd3';
 import { Handle, Position } from 'reactflow';
 import { RiskPoint } from '../types';
+import { AlertCircle } from 'lucide-react';
 
 interface RiskTrackProps {
     data: RiskPoint[];
     scale: d3.ScaleTime<number, number>;
     showHandles?: boolean;
+    onHandleHover?: (handleId: string | null) => void;
+    displayedHandle?: string | null;
 }
 
-export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles = false }) => {
+export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles = false, onHandleHover, displayedHandle }) => {
     const [isHovered, setIsHovered] = useState(false);
     const height = 160;
     const margin = { top: 20, bottom: 20, left: 40 };
@@ -49,43 +52,60 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            {/* Handles for React Flow - Overlaid at same position */}
-            {showHandles && sortedData.map((point, i) => (
-                <React.Fragment key={i}>
-                    <Handle
-                        type="target"
-                        position={Position.Left}
-                        id={`risk-point-${i}-target`}
-                        style={{
-                            left: scale(new Date(point.t)),
-                            top: yScale(point.riskScore),
-                            transform: 'translate(-50%, -50%)',
-                            width: 10,
-                            height: 10,
-                            background: '#ef4444',
-                            border: '2px solid white',
-                            borderRadius: '50%',
-                            boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
-                            zIndex: 50
-                        }}
-                    />
-                    <Handle
-                        type="source"
-                        position={Position.Left}
-                        id={`risk-point-${i}-source`}
-                        style={{
-                            left: scale(new Date(point.t)),
-                            top: yScale(point.riskScore),
-                            transform: 'translate(-50%, -50%)',
-                            width: 10,
-                            height: 10,
-                            background: 'transparent',
-                            border: 'none',
-                            zIndex: 51
-                        }}
-                    />
-                </React.Fragment>
-            ))}
+            {/* Handles for React Flow - Always rendered but conditionally visible */}
+            {showHandles && sortedData.map((point, i) => {
+                const targetHandleId = `risk-point-${i}-target`;
+                const sourceHandleId = `risk-point-${i}-source`;
+                const isHandleVisible = displayedHandle && (
+                    displayedHandle === targetHandleId || 
+                    displayedHandle === sourceHandleId
+                );
+                
+                return (
+                    <React.Fragment key={i}>
+                        <Handle
+                            type="target"
+                            position={Position.Left}
+                            id={targetHandleId}
+                            style={{
+                                left: scale(new Date(point.t)),
+                                top: yScale(point.riskScore),
+                                transform: 'translate(-50%, -50%)',
+                                width: 10,
+                                height: 10,
+                                background: isHandleVisible ? '#ef4444' : 'transparent',
+                                border: isHandleVisible ? '2px solid white' : 'none',
+                                borderRadius: '50%',
+                                boxShadow: isHandleVisible ? '0 2px 8px rgba(239, 68, 68, 0.4)' : 'none',
+                                opacity: isHandleVisible ? 1 : 0,
+                                pointerEvents: isHandleVisible ? 'auto' : 'none',
+                                zIndex: 50
+                            }}
+                            onMouseEnter={() => onHandleHover?.(targetHandleId)}
+                            onMouseLeave={() => onHandleHover?.(null)}
+                        />
+                        <Handle
+                            type="source"
+                            position={Position.Left}
+                            id={sourceHandleId}
+                            style={{
+                                left: scale(new Date(point.t)),
+                                top: yScale(point.riskScore),
+                                transform: 'translate(-50%, -50%)',
+                                width: 10,
+                                height: 10,
+                                background: 'transparent',
+                                border: 'none',
+                                opacity: 0,
+                                pointerEvents: 'none',
+                                zIndex: 51
+                            }}
+                            onMouseEnter={() => onHandleHover?.(sourceHandleId)}
+                            onMouseLeave={() => onHandleHover?.(null)}
+                        />
+                    </React.Fragment>
+                );
+            })}
 
             {/* Header */}
             <div className="absolute left-4 top-1 z-10">
@@ -128,14 +148,82 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
                         let color = "#22c55e";
                         if (point.riskScore > 4) color = "#eab308";
                         if (point.riskScore > 7) color = "#ef4444";
+                        
+                        // Check if this is the 0.8 risk score point (July 15, 2024)
+                        const isJuly15Point = point.riskScore === 0.8 && new Date(point.t).toDateString() === new Date('2024-07-15T14:00:00').toDateString();
+                        
+                        // Check if this point is part of the ACTIVE scenario
+                        const targetHandleId = `risk-point-${i}-target`;
+                        const activeScenarioHandles = (window as any).activeScenarioHandles || [];
+                        const isInActiveScenario = activeScenarioHandles.includes(targetHandleId);
+                        
+                        // Determine opacity based on whether we're in the active scenario
+                        const opacity = displayedHandle && !isInActiveScenario ? 0.3 : 1;
 
                         return (
-                            <g key={i} transform={`translate(${x}, ${y})`} className="group cursor-pointer">
+                            <g key={i} transform={`translate(${x}, ${y})`} className="group cursor-pointer" opacity={opacity} style={{ transition: 'opacity 0.3s ease' }}>
                                 {/* Hit area */}
                                 <circle r={8} fill="transparent" />
                                 
                                 {/* Visual Dot */}
                                 <circle r={4} fill="white" stroke={color} strokeWidth={2} className="transition-all group-hover:r-5 group-hover:stroke-width-4" />
+                                
+                                {/* Alert Icon for 0.8 risk score */}
+                                {isJuly15Point && (
+                                    <foreignObject 
+                                        x={12} 
+                                        y={-12} 
+                                        width={24} 
+                                        height={24}
+                                        style={{ overflow: 'visible' }}
+                                        opacity={opacity}
+                                        onMouseEnter={() => {
+                                            console.log('🔴 Alert icon hovered! Handle:', `risk-point-${i}-target`);
+                                            const globalHandler = (window as any).setHoveredHandle;
+                                            if (globalHandler) {
+                                                console.log('✅ Calling global setHoveredHandle');
+                                                globalHandler(`risk-point-${i}-target`);
+                                            } else {
+                                                console.log('❌ Global setHoveredHandle not found');
+                                            }
+                                            onHandleHover?.(`risk-point-${i}-target`);
+                                        }}
+                                        onMouseLeave={() => {
+                                            console.log('🔴 Alert icon unhovered');
+                                            const globalHandler = (window as any).setHoveredHandle;
+                                            if (globalHandler) {
+                                                globalHandler(null);
+                                            }
+                                            onHandleHover?.(null);
+                                        }}
+                                    >
+                                        <div 
+                                            style={{
+                                                width: '24px',
+                                                height: '24px',
+                                                background: '#ef4444',
+                                                borderRadius: '50%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer',
+                                                boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
+                                                border: '2px solid white',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1.2)';
+                                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.6)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1)';
+                                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.4)';
+                                            }}
+                                        >
+                                            <AlertCircle size={14} color="white" strokeWidth={3} />
+                                        </div>
+                                    </foreignObject>
+                                )}
 
                                 {/* Tooltip - Custom Implementation */}
                                 <foreignObject 
