@@ -1,21 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// Utility function to calculate age from DOB and encounter date
-const calculateAge = (dob: string, encounterDate?: string): number => {
-  const birthDate = new Date(dob);
-  const referenceDate = encounterDate ? new Date(encounterDate) : new Date();
-  
-  let age = referenceDate.getFullYear() - birthDate.getFullYear();
-  const monthDiff = referenceDate.getMonth() - birthDate.getMonth();
-  
-  if (monthDiff < 0 || (monthDiff === 0 && referenceDate.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  
-  return age;
-};
-
 const PatientContextContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -222,10 +207,8 @@ const PatientContext: React.FC<PatientContextProps> = ({ patientData }) => {
   const activeMedications = getActiveMedications();
   const activeProblems = getActiveProblems();
 
-  // Calculate current age from DOB
-  const currentAge = patient.date_of_birth 
-    ? calculateAge(patient.date_of_birth)
-    : (patient.age || patient.age_at_first_encounter);
+  // Use age directly from patient data (no calculation needed)
+  const currentAge = patient.age || patient.age_at_first_encounter || 'Unknown';
 
   return (
     <PatientContextContainer id="patient-context-zone">
@@ -236,7 +219,7 @@ const PatientContext: React.FC<PatientContextProps> = ({ patientData }) => {
         <PatientInfo>
           <PatientName>{patient.name || 'Unknown Patient'}</PatientName>
           <PatientDetails>
-            43 years old • {patient.sex} • MRN: {patient.mrn || patient.identifiers?.mrn || 'N/A'}
+            {currentAge} years old • {patient.sex} • MRN: {patient.mrn || patient.identifiers?.mrn || 'N/A'}
           </PatientDetails>
         </PatientInfo>
         {riskLevel && riskLevel !== 'unknown' && (
