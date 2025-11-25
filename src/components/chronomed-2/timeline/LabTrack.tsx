@@ -91,14 +91,16 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
     });
     
     // Determine opacity for the entire chart - dim if not in active scenario
-    const chartOpacity = displayedHandle && !isLabChartInActiveScenario ? 0.3 : 1;
+    const chartOpacity = displayedHandle && !isLabChartInActiveScenario ? 0.05 : 1;
 
     return (
         <div 
             className="relative w-full bg-white border-y border-slate-100 group"
             style={{ 
                 opacity: chartOpacity,
-                transition: 'opacity 0.3s ease'
+                transition: 'opacity 0.3s ease, box-shadow 0.3s ease',
+                boxShadow: isLabChartInActiveScenario ? '0 0 0 4px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6), 0 8px 24px rgba(0, 0, 0, 0.3)' : undefined,
+                borderRadius: isLabChartInActiveScenario ? '8px' : undefined
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -237,7 +239,7 @@ const SingleLabChart: React.FC<SingleLabChartProps> = ({ metric, scale, height, 
                         // Check if this marker is part of the active scenario
                         const activeScenarioHandles = (window as any).activeScenarioHandles || [];
                         const isInActiveScenario = activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId);
-                        const markerOpacity = displayedHandle && !isInActiveScenario ? 0.3 : 1;
+                        const markerOpacity = displayedHandle && !isInActiveScenario ? 0.05 : 1;
                         
                         return (
                             <foreignObject

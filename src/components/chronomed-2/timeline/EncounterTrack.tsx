@@ -50,10 +50,18 @@ export const EncounterTrack: React.FC<EncounterTrackProps> = ({ encounters, scal
   // Reset ref array on render
   cardsRef.current = [];
 
+  // For EncounterTrack, we don't have story connections yet, so always show at full opacity
+  // But keep the structure consistent for future implementation
+  const trackOpacity = 1;
+
   return (
     <div 
         className="relative w-full transition-[height] duration-300 ease-out z-20" 
-        style={{ height: trackHeight }}
+        style={{ 
+          height: trackHeight,
+          opacity: trackOpacity,
+          transition: 'opacity 0.3s ease'
+        }}
     >
         {/* Track Label */}
         <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full pr-4 hidden">Encounters</div>

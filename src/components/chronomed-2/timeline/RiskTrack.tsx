@@ -46,9 +46,26 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
     const areaPath = areaGenerator(sortedData) || "";
     const linePath = lineGenerator(sortedData) || "";
 
+    // Check if ANY risk point in this track is part of the active scenario
+    const activeScenarioHandles = (window as any).activeScenarioHandles || [];
+    const isTrackInActiveScenario = sortedData.some((point, i) => {
+        const targetHandleId = `risk-point-${i}-target`;
+        const sourceHandleId = `risk-point-${i}-source`;
+        return activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId);
+    });
+    
+    // Determine opacity for entire track
+    const trackOpacity = displayedHandle && !isTrackInActiveScenario ? 0.05 : 1;
+
     return (
         <div 
             className="relative w-full border-t border-gray-200 bg-white mt-2 pt-4 pb-2"
+            style={{
+                opacity: trackOpacity,
+                transition: 'opacity 0.3s ease, box-shadow 0.3s ease',
+                boxShadow: isTrackInActiveScenario ? '0 0 0 4px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6), 0 8px 24px rgba(0, 0, 0, 0.3)' : undefined,
+                borderRadius: isTrackInActiveScenario ? '8px' : undefined
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
@@ -127,6 +144,17 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
                             <stop offset="50%" stopColor="#eab308" />
                             <stop offset="100%" stopColor="#ef4444" />
                         </linearGradient>
+                        {/* Blue glow filter for active scenario points */}
+                        <filter id="blueGlow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                            <feOffset dx="0" dy="0" result="offsetblur" />
+                            <feFlood floodColor="rgba(59, 130, 246, 0.6)" />
+                            <feComposite in2="offsetblur" operator="in" />
+                            <feMerge>
+                                <feMergeNode />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
                     </defs>
 
                     {/* Grid Lines */}
@@ -152,21 +180,46 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
                         // Check if this is the 0.8 risk score point (July 15, 2024)
                         const isJuly15Point = point.riskScore === 0.8 && new Date(point.t).toDateString() === new Date('2024-07-15T14:00:00').toDateString();
                         
+                        // Check if this is the 9.5 risk score point (Aug 12, 2024)
+                        const isRisk95Point = point.riskScore === 9.5 && new Date(point.t).toDateString() === new Date('2024-08-12T09:30:00').toDateString();
+                        
                         // Check if this point is part of the ACTIVE scenario
                         const targetHandleId = `risk-point-${i}-target`;
                         const activeScenarioHandles = (window as any).activeScenarioHandles || [];
                         const isInActiveScenario = activeScenarioHandles.includes(targetHandleId);
-                        
-                        // Determine opacity based on whether we're in the active scenario
-                        const opacity = displayedHandle && !isInActiveScenario ? 0.3 : 1;
 
                         return (
-                            <g key={i} transform={`translate(${x}, ${y})`} className="group cursor-pointer" opacity={opacity} style={{ transition: 'opacity 0.3s ease' }}>
+                            <g key={i} transform={`translate(${x}, ${y})`} className="group cursor-pointer">
                                 {/* Hit area */}
                                 <circle r={8} fill="transparent" />
                                 
-                                {/* Visual Dot */}
-                                <circle r={4} fill="white" stroke={color} strokeWidth={2} className="transition-all group-hover:r-5 group-hover:stroke-width-4" />
+                                {/* Blue glow ring when in active scenario */}
+                                {isInActiveScenario && (
+                                    <>
+                                        <circle 
+                                            r={12} 
+                                            fill="none" 
+                                            stroke="rgba(59, 130, 246, 0.5)" 
+                                            strokeWidth={3}
+                                        />
+                                        <circle 
+                                            r={16} 
+                                            fill="none" 
+                                            stroke="rgba(59, 130, 246, 0.2)" 
+                                            strokeWidth={2}
+                                        />
+                                    </>
+                                )}
+                                
+                                {/* Visual Dot with enhanced glow when in active scenario */}
+                                <circle 
+                                    r={4} 
+                                    fill="white" 
+                                    stroke={isInActiveScenario ? '#3b82f6' : color} 
+                                    strokeWidth={isInActiveScenario ? 3 : 2} 
+                                    className="transition-all group-hover:r-5 group-hover:stroke-width-4"
+                                    filter={isInActiveScenario ? 'url(#blueGlow)' : undefined}
+                                />
                                 
                                 {/* Alert Icon for 0.8 risk score */}
                                 {isJuly15Point && (
@@ -176,7 +229,6 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
                                         width={24} 
                                         height={24}
                                         style={{ overflow: 'visible' }}
-                                        opacity={opacity}
                                         onMouseEnter={() => {
                                             console.log('🔴 Alert icon hovered! Handle:', `risk-point-${i}-target`);
                                             const globalHandler = (window as any).setHoveredHandle;
@@ -190,6 +242,62 @@ export const RiskTrack: React.FC<RiskTrackProps> = ({ data, scale, showHandles =
                                         }}
                                         onMouseLeave={() => {
                                             console.log('🔴 Alert icon unhovered');
+                                            const globalHandler = (window as any).setHoveredHandle;
+                                            if (globalHandler) {
+                                                globalHandler(null);
+                                            }
+                                            onHandleHover?.(null);
+                                        }}
+                                    >
+                                        <div 
+                                            style={{
+                                                width: '24px',
+                                                height: '24px',
+                                                background: '#ef4444',
+                                                borderRadius: '50%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer',
+                                                boxShadow: '0 2px 8px rgba(239, 68, 68, 0.4)',
+                                                border: '2px solid white',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1.2)';
+                                                e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.6)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.transform = 'scale(1)';
+                                                e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.4)';
+                                            }}
+                                        >
+                                            <AlertCircle size={14} color="white" strokeWidth={3} />
+                                        </div>
+                                    </foreignObject>
+                                )}
+                                
+                                {/* Alert Icon for 9.5 risk score */}
+                                {isRisk95Point && (
+                                    <foreignObject 
+                                        x={12} 
+                                        y={-12} 
+                                        width={24} 
+                                        height={24}
+                                        style={{ overflow: 'visible' }}
+                                        onMouseEnter={() => {
+                                            console.log('🔴 Risk 9.5 icon hovered! Handle:', `risk-point-${i}-target`);
+                                            const globalHandler = (window as any).setHoveredHandle;
+                                            if (globalHandler) {
+                                                console.log('✅ Calling global setHoveredHandle');
+                                                globalHandler(`risk-point-${i}-target`);
+                                            } else {
+                                                console.log('❌ Global setHoveredHandle not found');
+                                            }
+                                            onHandleHover?.(`risk-point-${i}-target`);
+                                        }}
+                                        onMouseLeave={() => {
+                                            console.log('🔴 Risk 9.5 icon unhovered');
                                             const globalHandler = (window as any).setHoveredHandle;
                                             if (globalHandler) {
                                                 globalHandler(null);

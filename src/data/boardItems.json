@@ -2953,6 +2953,7 @@
     "width": 320,
     "height": 2400,
     "componentType": "Sidebar",
+    "draggable": false,
     "content": {
       "props": {
         "patientData": {
@@ -3007,6 +3008,7 @@
     "width": 2400,
     "height": 400,
     "componentType": "EncounterTrack",
+    "draggable": false,
     "content": {
       "props": {
         "encounters": [
@@ -3151,6 +3153,7 @@
     "width": 2380,
     "height": 170,
     "componentType": "MedicationTrack",
+    "draggable": false,
     "content": {
       "props": {
         "encounters": [
@@ -3247,6 +3250,7 @@
     "width": 2380,
     "height": 850,
     "componentType": "LabTrack",
+    "draggable": false,
     "content": {
       "props": {
         "encounters": [
@@ -3424,6 +3428,7 @@
     "width": 2380,
     "height": 170,
     "componentType": "RiskTrack",
+    "draggable": false,
     "content": {
       "props": {
         "encounters": [
@@ -3519,6 +3524,7 @@
     "width": 2380,
     "height": 300,
     "componentType": "KeyEventsTrack",
+    "draggable": false,
     "content": {
       "props": {
         "encounters": [

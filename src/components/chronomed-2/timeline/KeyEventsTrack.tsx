@@ -69,8 +69,16 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
 
     if (events.length === 0) return null;
 
+    // Track decorations (background, lines, dots) should fade when in focus mode
+    const trackDecorationsOpacity = displayedHandle ? 0.05 : 1;
+
     return (
-        <div className="relative w-full mt-6 border-t border-red-100/50 bg-gradient-to-b from-red-50/30 to-transparent transition-all duration-500" style={{ height: trackHeight }}>
+        <div 
+            className="relative w-full mt-6 border-t border-red-100/50 bg-gradient-to-b from-red-50/30 to-transparent transition-all duration-500" 
+            style={{ 
+                height: trackHeight
+            }}
+        >
              {/* Header Label */}
              <div className="absolute left-4 -top-3 px-3 py-1 bg-white border border-red-200 rounded-full shadow-sm flex items-center gap-2 z-10">
                 <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
@@ -99,7 +107,7 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
                         {isStoryEvent && (() => {
                             // Check if this marker is part of the active scenario
                             const isInActiveScenario = activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId);
-                            const markerOpacity = displayedHandle && !isInActiveScenario ? 0.3 : 1;
+                            const markerOpacity = displayedHandle && !isInActiveScenario ? 0.05 : 1;
                             
                             return (
                                 <div
@@ -205,12 +213,18 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
 
                         {/* Connector Line */}
                         <div 
-                            className="absolute top-0 w-px border-l-2 border-dashed border-red-300"
-                            style={{ height: topPos + 4 }}
+                            className="absolute top-0 w-px border-l-2 border-dashed border-red-300 transition-opacity duration-300"
+                            style={{ 
+                                height: topPos + 4,
+                                opacity: trackDecorationsOpacity
+                            }}
                         ></div>
 
                         {/* Timeline Dot */}
-                        <div className="absolute top-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm z-10 transform -translate-y-1/2"></div>
+                        <div 
+                            className="absolute top-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white shadow-sm z-10 transform -translate-y-1/2 transition-opacity duration-300"
+                            style={{ opacity: trackDecorationsOpacity }}
+                        ></div>
                         
                         {/* Card Container */}
                         <div 
@@ -218,23 +232,11 @@ export const KeyEventsTrack: React.FC<KeyEventsTrackProps> = ({ events, scale, s
                             style={{ 
                                 marginTop: topPos, 
                                 width: CARD_WIDTH,
-                                opacity: displayedHandle && !isStoryEvent ? 0.3 : 1,
-                                transition: 'opacity 0.3s ease'
-                            }}
-                            onMouseEnter={() => {
-                                const handleId = `key-event-${i}-target`;
-                                if (onHandleHover) {
-                                    onHandleHover(handleId);
-                                } else if (typeof (window as any).setHoveredHandle === 'function') {
-                                    (window as any).setHoveredHandle(handleId);
-                                }
-                            }}
-                            onMouseLeave={() => {
-                                if (onHandleHover) {
-                                    onHandleHover(null);
-                                } else if (typeof (window as any).setHoveredHandle === 'function') {
-                                    (window as any).setHoveredHandle(null);
-                                }
+                                opacity: displayedHandle && !(activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId)) ? 0.05 : 1,
+                                transition: 'opacity 0.3s ease, box-shadow 0.3s ease',
+                                boxShadow: isStoryEvent && (activeScenarioHandles.includes(targetHandleId) || activeScenarioHandles.includes(sourceHandleId)) 
+                                    ? '0 0 0 4px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6), 0 8px 24px rgba(0, 0, 0, 0.3)' 
+                                    : undefined
                             }}
                         >
                             {/* Header */}

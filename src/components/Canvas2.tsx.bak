@@ -850,18 +850,18 @@ function Canvas2() {
                 label: '6 weeks of MTX → ALT 185',
                 animated: true,
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#f59e0b',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#f59e0b', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -895,18 +895,18 @@ function Canvas2() {
                 label: 'AST 130',
                 animated: true,
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#f59e0b',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#f59e0b', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -941,18 +941,18 @@ function Canvas2() {
                 targetHandle: riskTargetHandle,
                 label: 'ALT 185 → Risk 0.8',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -980,18 +980,18 @@ function Canvas2() {
                 targetHandle: riskTargetHandle,
                 label: 'AST 130 confirms injury',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#f97316', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1086,18 +1086,18 @@ function Canvas2() {
                 targetHandle: altCrisisTargetHandle,
                 label: 'MTX 5mg → ALT 490',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1121,18 +1121,18 @@ function Canvas2() {
                 targetHandle: astCrisisTargetHandle,
                 label: 'MTX 5mg → AST 350',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1156,18 +1156,18 @@ function Canvas2() {
                 targetHandle: bilirubinCrisisTargetHandle,
                 label: 'MTX 5mg → Bilirubin 110',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1192,18 +1192,18 @@ function Canvas2() {
                 targetHandle: altCrisisTargetHandle,
                 label: 'MTX 5mg → ALT 490',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1221,18 +1221,18 @@ function Canvas2() {
                 targetHandle: astCrisisTargetHandle,
                 label: 'MTX 5mg → AST 350',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1250,18 +1250,18 @@ function Canvas2() {
                 targetHandle: bilirubinCrisisTargetHandle,
                 label: 'MTX 5mg → Bilirubin 110',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1279,18 +1279,18 @@ function Canvas2() {
                 targetHandle: risk95TargetHandle,
                 label: 'ALT 490 → Risk 9.5',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1308,18 +1308,18 @@ function Canvas2() {
                 targetHandle: risk95TargetHandle,
                 label: 'AST 350 → Risk 9.5',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1337,18 +1337,18 @@ function Canvas2() {
                 targetHandle: risk95TargetHandle,
                 label: 'Bilirubin 110 → Risk 9.5',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1373,18 +1373,18 @@ function Canvas2() {
                 targetHandle: aug12EventTargetHandle,
                 label: 'Risk 9.5 → Crisis',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1402,18 +1402,18 @@ function Canvas2() {
                 targetHandle: nacHandleId,
                 label: 'Crisis → NAC infusion',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#ef4444', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1466,18 +1466,18 @@ function Canvas2() {
                 targetHandle: altAug15TargetHandle,
                 label: 'MTX stopped + NAC → ALT begins to fall',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#10b981', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1517,18 +1517,18 @@ function Canvas2() {
                 targetHandle: aug15EventTargetHandle,
                 label: 'Bilirubin 190 → peak cholestasis',
                 style: { 
-                    stroke: '#3b82f6', 
+                    stroke: '#ef4444', 
                     strokeWidth: 4,
-                    filter: 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))'
+                    filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.6))'
                 },
                 markerEnd: {
                     type: MarkerType.ArrowClosed,
                     width: 20,
                     height: 20,
-                    color: '#3b82f6',
+                    color: '#ef4444',
                 },
                 labelStyle: { 
-                    fill: '#000000', 
+                    fill: '#f59e0b', 
                     fontWeight: 600, 
                     fontSize: 11
                 },
@@ -1952,7 +1952,7 @@ function Canvas2() {
             targetHandle: 'left',
             type: 'default',
             animated: true,
-            style: { stroke: '#3b82f6', strokeWidth: 3 },
+            style: { stroke: '#ef4444', strokeWidth: 3 },
           },
            {
             id: 'edge-encounter-5-6',
@@ -1962,7 +1962,7 @@ function Canvas2() {
             targetHandle: 'left',
             type: 'default',
             animated: true,
-            style: { stroke: '#3b82f6', strokeWidth: 3 },
+            style: { stroke: '#ef4444', strokeWidth: 3 },
           },
         ];
 
@@ -3397,7 +3397,7 @@ function Canvas2() {
           }}
         >
           {isMuted ? (
-            <MicOff size={22} style={{ color: '#3b82f6' }} />
+            <MicOff size={22} style={{ color: '#ef4444' }} />
           ) : (
             <Mic size={22} style={{ color: '#22c55e' }} />
           )}

@@ -28,7 +28,7 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
   const groupKeys = Object.keys(groupedMedications);
 
   return (
-    <div className="relative w-full py-1 border-t border-gray-100 bg-slate-50/30 z-10">
+    <div className="relative w-full py-1  border-t border-gray-100 bg-slate-50/30 z-10">
        <div className="absolute left-4 -top-2.5 px-1.5 py-0.5 bg-white border border-gray-100 rounded text-[9px] font-bold text-gray-400 uppercase tracking-wider shadow-sm">
             Medications
        </div>
@@ -193,8 +193,9 @@ export const MedicationTrack: React.FC<MedicationTrackProps> = ({ medications, s
                                     style={{ 
                                         left: start, 
                                         width: width,
-                                        opacity: displayedHandle && !isIndividualStoryMed ? 0.3 : 1,
-                                        transition: 'opacity 0.3s ease'
+                                        opacity: displayedHandle && !isIndividualStoryMed ? 0.05 : 1,
+                                        transition: 'opacity 0.3s ease, box-shadow 0.3s ease',
+                                        boxShadow: isIndividualStoryMed ? '0 0 0 4px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.6), 0 8px 24px rgba(0, 0, 0, 0.3)' : undefined
                                     }}
                                 >
                                      <div className={`w-1 h-1 rounded-full mr-1.5 ${dotClass} shrink-0`}></div>
