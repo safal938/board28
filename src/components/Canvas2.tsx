@@ -1783,6 +1783,18 @@ function Canvas2() {
           const isRawDataDocument = item.id?.includes('raw-') || item.componentType === 'RawClinicalNote' || item.componentType === 'ICELabData';
           const isSubzone = item.id?.includes('subzone-') || item.type === 'zone';
           
+          // Check if this is a track item or sidebar (non-draggable timeline tracks and sidebars)
+          const isTrackItem = item.draggable === false && (
+            item.id?.includes('-track-') || 
+            item.id?.includes('sidebar-') ||
+            item.componentType === 'EncounterTrack' ||
+            item.componentType === 'MedicationTrack' ||
+            item.componentType === 'LabTrack' ||
+            item.componentType === 'RiskTrack' ||
+            item.componentType === 'KeyEventsTrack' ||
+            item.componentType === 'Sidebar'
+          );
+          
           // For triageFlow, ehrHub, and zone nodes, use item.data directly (or item for zones)
           const nodeData = (item.type === 'triageFlow' || item.type === 'ehrHub')
             ? item.data 
@@ -1803,7 +1815,7 @@ function Canvas2() {
             data: nodeData,
             draggable: item.draggable !== false && !isSubzone,
             selectable: item.selectable !== false && item.type !== 'triageFlow' && item.componentType !== 'SingleEncounterDocument' && !isSubzone,
-            zIndex: isSubzone ? -2 : (isRawDataDocument ? 10 : (nodeType === 'singleEncounter' ? 2 : 1)),
+            zIndex: isSubzone ? -2 : (isTrackItem ? -1 : (isRawDataDocument ? 10 : (nodeType === 'singleEncounter' ? 2 : 1))),
             style: item.style,
           };
         });
@@ -2997,6 +3009,18 @@ function Canvas2() {
               const isRawDataDocument = item.id?.includes('raw-') || item.componentType === 'RawClinicalNote' || item.componentType === 'ICELabData';
               const isSubzone = item.id?.includes('subzone-') || item.type === 'zone';
               
+              // Check if this is a track item or sidebar (non-draggable timeline tracks and sidebars)
+              const isTrackItem = item.draggable === false && (
+                item.id?.includes('-track-') || 
+                item.id?.includes('sidebar-') ||
+                item.componentType === 'EncounterTrack' ||
+                item.componentType === 'MedicationTrack' ||
+                item.componentType === 'LabTrack' ||
+                item.componentType === 'RiskTrack' ||
+                item.componentType === 'KeyEventsTrack' ||
+                item.componentType === 'Sidebar'
+              );
+              
               const nodeData = (item.type === 'triageFlow' || item.type === 'ehrHub')
                 ? item.data 
                 : item.type === 'zone'
@@ -3016,7 +3040,7 @@ function Canvas2() {
                 data: nodeData,
                 draggable: item.draggable !== false && !isSubzone,
                 selectable: item.selectable !== false && item.type !== 'triageFlow' && item.componentType !== 'SingleEncounterDocument' && !isSubzone,
-                zIndex: isSubzone ? -2 : (isRawDataDocument ? 10 : (nodeType === 'singleEncounter' ? 2 : 1)),
+                zIndex: isSubzone ? -2 : (isTrackItem ? -1 : (isRawDataDocument ? 10 : (nodeType === 'singleEncounter' ? 2 : 1))),
                 style: item.style,
               };
             });
