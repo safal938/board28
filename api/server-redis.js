@@ -638,9 +638,15 @@ app.get("/api/board-items", async (req, res) => {
     // Load items from backend storage (Redis or static data)
     const items = await loadBoardItems();
 
-    console.log(`📊 Returning ${items.length} board items`);
+    // Filter out ehrHub, zone, and button types
+    const filteredItems = items.filter(item => {
+      const type = item.type;
+      return type !== 'ehrHub' && type !== 'zone' && type !== 'button';
+    });
 
-    res.json(items);
+    console.log(`📊 Returning ${filteredItems.length} board items (filtered from ${items.length} total, excluded ${items.length - filteredItems.length} ehrHub/zone/button items)`);
+
+    res.json(filteredItems);
   } catch (error) {
     console.error("Error loading board items:", error);
     res.status(500).json({ error: "Failed to load board items" });
