@@ -504,8 +504,8 @@ const findPositionInZone = (newItem, existingItems, zoneConfig) => {
 
 // Doctor's Notes Zone boundaries
 const DOCTORS_NOTE_ZONE = {
-  x: 2600,
-  y: 11400,
+  x: 2680,
+  y: 13200,
   width: 2000,
   height: 2100,
 };
@@ -1809,8 +1809,8 @@ app.post("/api/doctor-notes", async (req, res) => {
     const noteId = `doctor-note-${Date.now()}`;
 
     // Determine position - use provided or default to Doctor's Note Zone
-    const noteX = x !== undefined ? x : 2600;
-    const noteY = y !== undefined ? y : 11400;
+    const noteX = x !== undefined ? x : 2680;
+    const noteY = y !== undefined ? y : 13200;
     const noteWidth = width || 450;
     const noteHeight = height || 600;
 
